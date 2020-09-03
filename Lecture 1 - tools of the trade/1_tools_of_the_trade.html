@@ -1353,6 +1353,11 @@ opacity: 0;
 }
 @media print {
 
+@page {
+size: landscape;
+margin: 0;
+}
+
 slides slide {
 display: block !important;
 position: relative;
@@ -3113,7 +3118,7 @@ slide:not(.current) .plotly.html-widget{
         <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
     <hgroup class="auto-fadein">
       <h1 data-config-title><!-- populated from slide_config.json --></h1>
-      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      
       <p data-config-presenter><!-- populated from slide_config.json --></p>
           </hgroup>
   </slide>
@@ -3246,7 +3251,6 @@ slide:not(.current) .plotly.html-widget{
 
 <ul>
 <li>Rstudio -&gt; file -&gt; new -&gt; R markdown…</li>
-<li></li>
 </ul>
 
 </article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>gitHub</h2></hgroup><article  id="github">

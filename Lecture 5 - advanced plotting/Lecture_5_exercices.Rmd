@@ -105,7 +105,7 @@ library(tidyverse)
 ```
 
 
-# quand faie quel type de plot? 
+# quand faire quel type de plot? 
 
 ## **barplots**: x discrete, y count / frequency
 

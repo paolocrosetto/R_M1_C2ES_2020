@@ -110,7 +110,7 @@ knitr::opts_chunk$set(echo = FALSE)
 ## Rmarkdown: tutorial
 
 - Rstudio -> file -> new -> R markdown...
-- 
+
 
 # gitHub
 
