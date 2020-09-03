@@ -1,0 +1,256 @@
+---
+title: "Exercices Lecture 4"
+author: "Paolo Crosetto"
+date: "9/12/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(nycflights13)
+
+planes <- planes
+flights <- flights
+airports <- airports
+```
+
+
+# révisons: `left_join()` + tout le reste
+
+## Exercice 1
+
+> en utilisant les jeux de données planes, flights et airports, trouver combien de vols partis de chacun de trois aéroports de NYC a atteri à Denver (DEN) en mai et a été desservi par des avions produits entre 2005 et 2010.
+
+```{r ex1}
+flights %>% 
+  filter(dest == "DEN") %>% 
+  filter(month == 5) %>% 
+  select(tailnum, origin, dest) %>% 
+  left_join(planes, by = "tailnum") %>% 
+  filter(year >= 2005 & year <= 2010) %>% 
+  group_by(origin) %>% 
+  summarise(reponse = n())
+```
+
+
+
+# creating tidy data: reshape with `gather()` and `spread()`
+
+**notes**: `gather()` prend des données au format 'large' (plus de colonnes que des lignes) et le reformate au format 'long' (plus de lignes que des colonnes). `spread()` est l'opération inverse, qui permet de passer de 'long' à 'large'. 
+
+## Exercice 2: `gather()`
+
+> utilisez le jeu de données `table4b` et créez une variable 'année' et une variable 'population'
+
+
+```{r ex2}
+#1. dire à gather quelles variables recueillir
+table4b %>% 
+  gather(`1999`,`2000`, key = year, value = population)
+
+#2. dire à gather les variables qu'on ne veut PAS recueillir
+table4b %>% 
+  gather(-country, key = year, value = population)
+  
+```
+
+
+## Exercice 3: `gather()`
+
+> visualisez et importez dans votre espace de travail les jeux de données `table1` et `table2`. Ils contiennent les mêmes informations. Manipulez `table1` pour obtenir `table2`
+
+```{r ex3}
+table1 <- table1
+table2 <- table2
+
+## 1 et 2 strictement équivalents
+
+#1. dire à gather ce qu'on veut recueillir
+table1 %>% 
+  gather(cases, population, key = type, value = count) %>% 
+  arrange(country, year)
+
+#2. dire à gather ce qu'on ne veut PAS recueilir
+table1 %>% 
+  gather(-country, -year, key = type, value = count)%>% 
+  arrange(country, year)
+
+```
+
+
+## Exercice 4: `gather()`
+
+> reordonnez `world_bank_pop` afin que 'year' soit une variable et pour chaque pays et chaque année vous avez deux observations, population urbaine et croissance de la population. Sauvegardez votre résultat dans un objet dans votre workplace.
+
+```{r ex4}
+wbp <- world_bank_pop
+
+wbp %>% 
+  gather(-country, -indicator, key = year, value = values) -> wbp_long
+```
+
+
+## Exercice 5: `spread()`
+
+> isualisez et importez dans votre espace de travail les jeux de données `table1` et `table2`. Ils contiennent les mêmes informations. Manipulez `table2` pour obtenir `table1`
+
+```{r ex5}
+table2 %>% 
+  spread(key = type, value = count)
+  
+```
+
+## Exercice 6: `spread()`
+
+> utilisez le jeu de données issu de l'exercice 4. Créez un jeu de données 'large' qui montre la croissance de la population urbaine de tous les pays sur les années 2000 et 2001, avec une colonne pour chacune de ces années.
+
+```{r ex6}
+wbp_long %>% 
+  spread(key = year, value = values) -> wbp_ex6
+```
+
+
+
+# creating tidy data: `separate()` and `unite()`
+
+## Exercice 7: `separate()`
+
+> utilisez le jeu de données `table3`. séparez la variable 'rate' dans les deux variables 'cases' et 'population'
+
+```{r ex7}
+table3 %>% 
+  separate(rate, into = c("cases", "population"), sep = "/")
+```
+
+
+## Exercice 8: `separate()`
+
+> utilisez `world_bank_pop` et créez une variable qui vous permette de distinguer entre indicateurs 'pop' and 'urban' et une autre pour distinguer enre indicateurs de 'total' and 'growth'.
+
+```{r ex8}
+wbp %>% 
+  separate(indicator, into = c("poubelle", "urb_pop", "tot_grow")) %>% 
+  select(-poubelle)
+  
+```
+
+
+## Exercice 9: `unite()`
+
+> utilisez le jeu de données `table5` et mergez dans une seule variable 'année' les colones 'century' et 'year'
+
+```{r ex9}
+table5 %>% 
+  unite("anee", century, year, sep = "")
+  
+```
+
+
+## Exercice 10: `unite()`
+
+> utilisez le jeu de données `flights` et créez une variable unique 'date' pour jour, mois et année 
+
+```{r ex10}
+flights %>% 
+  unite("date", day, month, year, sep = ".")
+  
+```
+
+
+  
+# récapitulons le tout: babynames
+
+On va ici utiliser le jeu de données `babynames` (dans le package `babynames`).
+
+1. installez le package `babynames`
+2. regardez les données. Cela contient quoi?
+3. on va faire quelaues exercices. 
+
+## babynames ex1: 'Mary' (`filter` + `ggplot`)
+
+> plottez (geom_line) le nombre de Mary aux EE.UU. sur toute la longueur des données.
+
+```{r baby1}
+library(babynames)
+
+df <- babynames
+
+df %>%
+  filter(name == "Mary") %>%  
+  filter(sex == "F") %>% 
+  ggplot(aes(x = year, y = prop))+geom_line()
+```
+
+## babynames ex2: 'Mary vs. 'Anna' (`filter` + `ggplot`)
+
+> plottez (geom_line) le nombre de Mary et de Anna aux EE.UU. sur toute la longueur des données. Quand est-ce que Anna est devenue plus populaire que Mary (si jamais)? Coloriez différemment les lignes pour Anna et Mary
+
+```{r baby2}
+df %>% 
+  filter(name == "Mary" | name == "Anna") %>%  
+  filter(sex == "F") %>% 
+  ggplot(aes(x = year, y = prop, color = name))+
+  geom_line()
+```
+
+## babynames ex3: prénoms de garçons
+
+> isolez le prénom le plus populaire pour les garçons pour chaque année. Quel nom était le plus utilisé en 1890? et en 1990?
+
+```{r baby3}
+df %>% 
+  filter(sex == "M") %>% 
+  group_by(year) %>% 
+  filter(n == max(n)) %>% 
+  filter(year == 1890 | year == 1990)
+```
+
+
+## babynames ex4: dispersion des prénoms
+
+> est-ce que les prénoms étaient plus concentrés dans le passé (moins de noms, plus de gens pour chaque nom) qu'aujours'hui? Calculez le nombre de noms, séparément pour hommes et femmes, par année. Plottez les résultats comme une geom_line, colorié par sexe. Est-ce que le nombre de noms augmente ou diminue? plus pour les filles ou pour les garçons?
+
+```{r baby4}
+df %>% 
+  group_by(year, sex) %>% 
+  summarise(n = n()) %>% 
+  ggplot(aes(x = year, y = n, color = sex))+
+  geom_line()
+```
+
+
+## babynames ex5: tab prénom populaires
+
+> créez un tableau avec le prénom le plus populaire (en valeur absolue) pour chaque **décennie** du 20ème siècle, pour les filles et les garçons. Faites un tableau 'large' avec comme variable 'décennie', 'M' et 'F'
+
+```{r baby5}
+df %>% 
+  mutate(decade = (year %/% 10)*10) %>% 
+  group_by(decade, sex) %>% 
+  filter(n == max(n)) %>% 
+  select(decade, sex, name) -> temp
+
+temp %>% 
+  spread(key = sex, value = name) -> reponse
+
+```
+
+## babynames ex6: ggplot
+
+> créez un plot qui montre, dans un facet (subplot) pour chaque prénom (lignes) et par sèxe (colonnes), le profil au cours du temps des prénoms suivants: "Mary" "John"   "Robert"  "James"    "Linda"    "Michael"  "David"    "Lisa"     "Jennifer" "Jessica"  "Ashley"   "Emily"    "Jacob"    "Emma" "Isabella" "Sophia"   "Noah"     "Liam" 
+
+```{r baby6}
+df %>% 
+  filter(name %in% c("Mary", "John",   "Robert",  "James",    "Linda",    "Michael",  "David",    "Lisa",     "Jennifer", "Jessica",  "Ashley",   "Emily",    "Jacob",    "Emma", "Isabella", "Sophia",   "Noah",     "Liam")) %>% 
+  group_by(year, name) %>% 
+  arrange(year, name, -prop) %>% 
+  mutate(i = seq_along(prop)) %>% 
+  filter(i == 1) %>% 
+  ggplot(aes(x = year, y = prop, color = name))+
+  geom_line()+
+  facet_grid(name~sex, scale = "free") -> plot
+```
+
+
+

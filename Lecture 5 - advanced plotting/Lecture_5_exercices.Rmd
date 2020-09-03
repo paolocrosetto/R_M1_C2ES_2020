@@ -1,0 +1,231 @@
+---
+title: "Exercices Lecture 5"
+author: "Paolo Crosetto"
+date: "9/12/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+
+```
+
+
+# Un graphique simple pour commencer et reviser
+
+> en utilisant le jeu de données `iris` créez un scatter plot de Sepal.Length contre Sepal.Width. Sauvegardez ce plot comme plot1
+
+```{r ex1}
+
+```
+
+> maintenat, ajoutez la couleur par espèce, sauvegardez dans plot_color
+
+```{r}
+
+```
+
+> divisez le plot colorié en trois facets de façon horizontale
+
+```{r}
+
+```
+
+> ajoutez un smooth standard à chacun des sousplots
+
+```{r}
+
+```
+
+> et maintenant, un smooth linéaire. sauvegardez ça comme `plot_base`
+
+```{r}
+
+```
+
+
+
+
+# changer le *look and feel* avec les fonctions `theme_*`
+
+
+> produisez 5 plots en utilisant les 5 parmi les thèmes par défaut de ggplot
+
+
+```{r plot1}
+  
+```
+
+
+```{r plot2}
+  
+```
+
+```{r plot3}
+
+  
+```
+
+```{r plot4}
+
+  
+```
+
+```{r plot5}
+
+```
+
+
+# changer les couleurs, les axes, les symboles avec les fonctions `scale_*_*`
+
+> utilisez plot_color. Changez les couleurs de trois groupes selon votre plaisir
+
+```{r}
+
+```
+
+
+> utilisez plot_color. Mappez Species à des symboles (*shape*)
+
+```{r}
+
+```
+
+> avec le plot utilisant différents symboles, changez ce symboles
+
+```{r}
+
+```
+
+> changez les labels des axes et du plot en général -- `labs()`
+
+```{r}
+
+```
+
+
+# quand faie quel type de plot? 
+
+## **barplots**: x discrete, y count / frequency
+
+**Note** utilisez le jeu de données **mpg**
+
+> plottez un barplot des *class* dans mpg; sauvegardez comme 'bar'
+
+```{r}
+
+```
+
+
+> utilisez 'bar'. coloriez le barplot selon la variable `drv`
+
+```{r}
+
+```
+
+> mettez les barres les unes à côté des autres  -- position_dodge
+
+```{r}
+
+```
+
+> mettez les barres les unes sur les autres -- position_stack
+
+```{r}
+
+```
+
+
+> mettez les barres les unes sur les autres et faites les sommer à 100% -- position_fill
+
+```{r}
+
+```
+
+> tournez le graphique de 90 degrés -- coord_flip
+
+```{r}
+
+```
+
+
+## **line plots**: time-related continuous x, continuous y
+
+> utilisez `nycflights13`, le jeu de données `flights`. 1. calculez le nombre de départs par jour par aéroport newyorkais. plottez en line plot l'évolution sur l'année, en mappant la couleur à l'aéroport.
+
+
+```{r}
+library(nycflights13)
+
+  
+```
+
+> beaucoup trop d'info. groupez par mois et faites la meme chose 
+
+```{r}
+
+```
+
+
+> recap sur les fonctions `scale_x_y`: mappez le type de ligne à 'origin' et changez le type de ligne pour JFK à "solid"
+
+```{r}
+
+```
+
+
+
+## **slope charts**: time-related but discrete x, continuous y
+
+slope charts sont une version de line plots avec peu de points, et où il faut montrer le taux de changement sur des petits intervalles
+
+> utilisez les données `mpg`. 1. calculez la moyenne de consommation en autoroute pour chaque marque pour 1999 et 2008. 3. Créez un slope chart en utilisant `geom_line`. 3. changez le thème pour qu'i soit plus lisible
+
+```{r}
+
+```
+
+> le plot est toujours assez peu lisible. une façon de faire est de ramener à zéro l'année de référence, en éliminant le point de départ. Faites le point 1. de l'exo précédent. Puis, reformattez la base pour avoir une variable pour chaque année. Calculez la différence. Plottez un slope chart qui parte de zéro pour 1999 -- utilisez `geom_segment()`
+
+```{r}
+
+  
+```
+
+
+# Trois variables, deux discrètes, une continue: heatmap
+
+> utilisez flights. Quels sont les jours avec plus de traffic à NYC sur la totalité des aéroports? visualisez une grille avec jour et mois et coloriez chaque case selon le nombre de vols -- cela se fait avec `geom_tile()`. Rappel: avant il faut calculer le nombre de vols par jour et mois. 
+
+```{r}
+
+  
+```
+
+> même plot, mais cette fois ci par aéroport d'origine. 
+
+```{r}
+
+```
+
+# A vous de jouer. 
+
+> essayez de reproduire ce plot (pas important si les couleurs, police, etc ne sont pas les mêmes)
+
+plot: https://pbs.twimg.com/media/EAVOkU7WwAIlX4U?format=png&name=small
+
+```{r}
+df <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-07-23/wildlife_impacts.csv")
+```
+
+
+
+> essayez de reproduire ce plot (pas important si les couleurs, police, etc ne sont pas les mêmes)
+
+plot: https://pbs.twimg.com/media/D8QcVu7WsAArvFr?format=jpg&name=small 
+
+```{r}
+df <- read.csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-06-04/ramen_ratings.csv")
+```
+

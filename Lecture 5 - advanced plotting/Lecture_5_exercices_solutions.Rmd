@@ -1,0 +1,323 @@
+---
+title: "Exercices Lecture 5"
+author: "Paolo Crosetto"
+date: "9/12/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+
+```
+
+
+# Un graphique simple pour commencer et reviser
+
+> en utilisant le jeu de données `iris` créez un scatter plot de Sepal.Length contre Sepal.Width. Sauvegardez ce plot comme plot1
+
+```{r ex1}
+iris %>% 
+  ggplot(aes(x = Sepal.Length, y = Sepal.Width))+
+  geom_point() -> plot1
+```
+
+> maintenat, ajoutez la couleur par espèce, sauvegardez dans plot_color
+
+```{r}
+plot1 + aes(color = Species) -> plot_color
+```
+
+> divisez le plot coloré en trois facets par Species de façon horizontale
+
+```{r}
+plot_color + facet_grid(.~Species) -> plot_facet
+```
+
+> ajoutez un smooth standard à chacun des sousplots
+
+```{r}
+plot_facet + geom_smooth()
+```
+
+> et maintenant, un smooth linéaire. sauvegardez ça comme `plot_base`
+
+```{r}
+plot_facet + geom_smooth(method = "lm") -> plot_base
+```
+
+
+
+
+# changer le *look and feel* avec les fonctions `theme_*`
+
+
+> produisez 5 plots en utilisant les 5 parmi les thèmes par défaut de ggplot
+
+
+```{r plot1}
+  plot_base + theme_linedraw()
+```
+
+
+```{r plot2}
+  plot_base + theme_bw()
+```
+
+```{r plot3}
+plot_base + theme_classic()
+```
+
+```{r plot4}
+plot_base + theme_dark()
+  
+```
+
+```{r plot5}
+plot_base + theme_minimal()
+```
+
+## davantage des thèmes
+
+```{r}
+library(ggthemes)
+plot_base + theme_solarized()
+```
+
+
+# changer les couleurs, les axes, les symboles avec les fonctions `scale_*_*`
+
+> utilisez plot_color. Changez les couleurs de trois groupes selon votre plaisir
+
+```{r}
+plot_color + scale_color_manual(values = c("red", "blue", "pink"))
+```
+
+```{r}
+
+plot_color + scale_color_brewer(palette = "Set1")
+```
+
+
+> utilisez plot_color. Mappez Species à des symboles (*shape*)
+
+```{r}
+plot_color + aes(shape = Species)
+```
+
+> avec le plot utilisant différents symboles, changez ce symboles
+
+```{r}
+plot_color + 
+  aes(shape = Species) + 
+  scale_shape_manual(values = c(4, 3, 1)) +
+  scale_color_manual(values = c("red", "purple", "green"))
+```
+
+> changez les labels des axes et du plot en général -- `labs()`
+
+```{r}
+plot_base +
+  labs(x = "ça c'est l'axe des x",
+       y = "ça c'est Y",
+       title = "titre du plot",
+       subtitle = "soutitre",
+       caption = "@paolocrosetto -- sept2019")
+```
+
+> fine-tuning des thèmes 'à la main'
+
+```{r}
+plot_base +
+  theme(legend.position = "bottom")
+```
+
+
+# quand faire quel type de plot? 
+
+## **barplots**: x discrete, y count / frequency
+
+**Note** utilisez le jeu de données **mpg**
+
+> plottez un barplot des *class* dans mpg; sauvegardez comme 'bar'
+
+```{r}
+mpg %>% 
+  ggplot(aes(class))+
+  geom_bar() -> bar
+
+```
+
+
+> utilisez 'bar'. coloriez le barplot selon la variable `drv`
+
+```{r}
+bar + aes(fill = drv)
+```
+
+> mettez les barres les unes à côté des autres  -- position_dodge
+
+```{r}
+mpg %>% 
+  ggplot(aes(class))+
+  aes(fill = drv) +
+  geom_bar(position = position_dodge2())
+```
+
+> mettez les barres les unes sur les autres -- position_stack
+
+```{r}
+mpg %>% 
+  ggplot(aes(class))+
+  aes(fill = drv) +
+  geom_bar(position = position_stack())
+```
+
+
+> mettez les barres les unes sur les autres et faites les sommer à 100% -- position_fill
+
+```{r}
+mpg %>% 
+  ggplot(aes(class))+
+  aes(fill = drv) +
+  geom_bar(position = position_fill()) -> bar_color
+bar_color
+```
+
+> tournez le graphique de 90 degrés -- coord_flip
+
+```{r}
+bar_color +
+  coord_flip()
+```
+
+
+## **line plots**: time-related continuous x, continuous y
+
+> utilisez `nycflights13`, le jeu de données `flights`. 
+> 1. calculez le nombre de départs par jour par aéroport newyorkais. 
+> 2.plottez en line plot l'évolution sur l'année, en mappant la couleur à l'aéroport.
+
+
+```{r}
+library(nycflights13)
+flights %>% 
+  group_by(origin, month, day) %>% 
+  summarise(n = n()) %>% 
+  unite("mois_jour", month, day) %>% 
+  ggplot(aes(x= mois_jour, y = n, color = origin, group = origin))+
+  geom_line()+
+  theme_minimal()+
+  scale_color_brewer(palette = "Set1")
+  
+```
+
+> beaucoup trop d'info. groupez par mois et faites la meme chose 
+
+```{r}
+flights %>% 
+  group_by(origin, month) %>% 
+  summarise(n = n()) %>% 
+  ggplot(aes(x= month, y = n, color = origin, group = origin))+
+  geom_line()+
+  theme_minimal()+
+  scale_color_brewer(palette = "Set1") -> lignes
+```
+
+
+> recap sur les fonctions `scale_x_y`: mappez le type de ligne à 'origin' et changez le type de ligne pour JFK à "solid"
+
+```{r}
+lignes +
+  aes(linetype = origin)+
+  scale_linetype_manual(values = c("dashed", "dotted", "solid"))+
+  geom_hline(yintercept = 9000, color = 'purple', linetype = "dashed")
+```
+
+
+
+## **slope charts**: time-related but discrete x, continuous y
+
+slope charts sont une version de line plots avec peu de points, et où il faut montrer le taux de changement sur des petits intervalles
+
+> utilisez les données `mpg`. 1. calculez la moyenne de consommation en autoroute pour chaque marque pour 1999 et 2008. 3. Créez un slope chart en utilisant `geom_line`. 3. changez le thème pour qu'i soit plus lisible
+
+```{r}
+mpg %>% 
+  group_by(manufacturer, year) %>% 
+  summarise(m = mean(hwy, na.rm = T)) %>% 
+  ggplot(aes(year, m, color = manufacturer, group = manufacturer))+
+  geom_line()+
+  theme_minimal()+
+  geom_vline(xintercept = c(1999, 2008))+
+  geom_text(aes(x = 2008+0.5, label = manufacturer), hjust = 0)+
+  theme(legend.position = "none")
+```
+
+> le plot est toujours assez peu lisible. une façon de faire est de ramener à zéro l'année de référence, en éliminant le point de départ. Faites le point 1. de l'exo précédent. Puis, reformattez la base pour avoir une variable pour chaque année. Calculez la différence. Plottez un slope chart qui parte de zéro pour 1999 -- utilisez `geom_segment()`
+
+```{r}
+
+  
+```
+
+
+# Trois variables, deux discrètes, une continue: heatmap
+
+> utilisez flights. Quels sont les jours avec plus de traffic à NYC sur la totalité des aéroports? visualisez une grille avec jour et mois et coloriez chaque case selon le nombre de vols -- cela se fait avec `geom_tile()`. Rappel: avant il faut calculer le nombre de vols par jour et mois. 
+
+```{r}
+flights %>% 
+  mutate(month = as_factor(month),
+         day = as_factor(day)) %>%
+  group_by(day, month) %>% 
+  summarise(n = n()) %>% 
+  ggplot(aes(x = day, y = month, fill = n)) +
+  geom_tile()+
+  scale_fill_gradient(low = "grey", high = "red")
+  
+```
+
+> même plot, mais cette fois ci par aéroport d'origine. 
+
+```{r}
+
+```
+
+# A vous de jouer. 
+
+> essayez de reproduire ce plot (pas important si les couleurs, police, etc ne sont pas les mêmes)
+
+plot: https://pbs.twimg.com/media/EAVOkU7WwAIlX4U?format=png&name=small
+
+```{r}
+df <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-07-23/wildlife_impacts.csv")
+```
+
+```{r}
+df %>% 
+  filter(incident_year >= 2000) %>%
+  mutate(incident_month = as_factor(incident_month),
+         incident_year = as_factor(incident_year)) %>% 
+  group_by(operator, incident_month, incident_year) %>% 
+  summarise(n_acc = n()) %>% 
+  ggplot(aes(x = incident_month, y = incident_year, fill = n_acc))+
+  geom_tile(color = "white")+
+  facet_wrap(~operator)+
+  theme_minimal()+
+  labs(y = "Year",
+       x = "Month",
+       title = "Airlines Bird Strikes",
+       subtitle = "2000 - 2018")+
+  scale_fill_gradient(high = "#e95492", low = "white")
+```
+
+
+> essayez de reproduire ce plot (pas important si les couleurs, police, etc ne sont pas les mêmes)
+
+plot: https://pbs.twimg.com/media/D8QcVu7WsAArvFr?format=jpg&name=small 
+
+```{r}
+df <- read.csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-06-04/ramen_ratings.csv")
+```
+

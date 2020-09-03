@@ -1,0 +1,187 @@
+---
+title: "Exercices Lecture 4"
+author: "Paolo Crosetto"
+date: "9/12/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(nycflights13)
+
+planes <- planes
+flights <- flights
+airports <- airports
+```
+
+
+# révisons: `left_join()` + tout le reste
+
+## Exercice 1
+
+> en utilisant les jeux de données planes, flights et airports, trouver combien de vols partis de chacun de trois aéroports de NYC a atteri à Denver (DEN) en mai et a été desservi par des avions produits entre 2005 et 2010.
+
+```{r ex1}
+
+```
+
+
+
+# creating tidy data: reshape with `gather()` and `spread()`
+
+**notes**: `gather()` prend des données au format 'large' (plus de colonnes que des lignes) et le reformate au format 'long' (plus de lignes que des colonnes). `spread()` est l'opération inverse, qui permet de passer de 'long' à 'large'. 
+
+## Exercice 2: `gather()`
+
+> utilisez le jeu de données `table4` et créez une variable 'année' et une variable 'population'
+
+
+```{r ex2}
+
+  
+```
+
+
+## Exercice 3: `gather()`
+
+> visualisez et importez dans votre espace de travail les jeux de données `table1` et `table2`. Ils contiennent les mêmes informations. Manipulez `table1` pour obtenir `table2`
+
+```{r ex3}
+
+
+
+```
+
+
+## Exercice 4: `gather()`
+
+> reordonnez `world_bank_pop` afin que 'year' soit une variable et pour chaque pays et whaque année vous avez deux observations, population urbaine et croissance de la population. Sauvegardez votre résultat dans un objet dans votre workplace.
+
+```{r ex4}
+
+  
+```
+
+
+## Exercice 5: `spread()`
+
+> isualisez et importez dans votre espace de travail les jeux de données `table1` et `table2`. Ils contiennent les mêmes informations. Manipulez `table2` pour obtenir `table1`
+
+```{r ex5}
+
+  
+```
+
+## Exercice 6: `spread()`
+
+> utilisez le jeu de données issu de l'exercice 4. Créez un jeu de données 'long' qui montre la croissance de la population urbaine de tous les pays sur les années 2000 et 2001, avec une colonne pour chacune de ces années.
+
+```{r ex6}
+
+```
+
+
+
+# creating tidy data: `separate()` and `unite()`
+
+## Exercice 7: `separate()`
+
+> utilisez le jeu de données `table3`. séparez la variable 'rate' dans les deux variables 'cases' et 'population'
+
+```{r ex7}
+
+```
+
+
+## Exercice 8: `separate()`
+
+> utilisez `world_bank_pop` et créez une variable qui vous permette de distinguer entre indicateurs 'pop' and 'urban' et une autre pour distinguer enre indicateurs de 'total' and 'growth'.
+
+```{r ex8}
+
+  
+```
+
+
+## Exercice 9: `unite()`
+
+> utilisez le jeu de données `table5` et mergez dans une seule variable 'année' les colones 'century' et 'year'
+
+```{r ex9}
+
+  
+```
+
+
+## Exercice 10: `unite()`
+
+> utilisez le jeu de données `flights` et créez une variable unique 'date' pour jour, mois et année 
+
+```{r ex10}
+
+  
+```
+
+
+  
+# récapitulons le tout: babynames
+
+On va ici utiliser le jeu de données `babynames` (dans le package `babynames`).
+
+1. installez le package `babynames`
+2. regardez les données. Cela contient quoi?
+3. on va faire quelaues exercices. 
+
+## babynames ex1: 'Mary' (`filter` + `ggplot`)
+
+> plottez (geom_line) le nombre de Mary aux EE.UU. sur toute la longueur des données.
+
+```{r baby1}
+
+```
+
+## babynames ex2: 'Mary vs. 'Anna' (`filter` + `ggplot`)
+
+> plottez (geom_line) le nombre de Mary et de Anna aux EE.UU. sur toute la longueur des données. Quand est-ce que Anna est devenue plus populaire que Mary (si jamais)? COloriez différemment les lignes pour Anna et Mary
+
+```{r baby2}
+
+```
+
+## babynames ex3: prénoms de garçons
+
+> isolez le prénom le plus populaire pour les garçons pour chaque année. Quel nom était le plus utilisé en 1890? et en 1990?
+
+```{r baby3}
+
+```
+
+
+## babynames ex4: dispersion des prénoms
+
+> est-ce que les prénoms étaient plus concentrés dans le passé (moins de noms, plus de gens pour chaque nom) qu'aujours'hui? Calculez le nombre de noms, séparément pour hommes et femmes, par année. Plottez les résultats comme une geom_line, colorié par sexe. Est-ce que le nombre de noms augmente ou diminue? plus pour les filles ou pour les garçons?
+
+```{r baby4}
+
+```
+
+
+## babynames ex5: tab prénom populaires
+
+> créez un tableau avec le prénom le plus populaire (en valeur absolue) pour chaque **décennie** du 20ème siècle, pour les filles et les garçons. Faites un tableau 'large' avec comme variable 'décennie', 'M' et 'F'
+
+```{r baby5}
+
+```
+
+## babynames ex6: ggplot
+
+> créez un plot qui montre, dans un facet (subplot) pour chaque prénom (lignes) et par sèxe (colonnes), le profil au cours du temps des prénoms suivants: "Mary" "John"   "Robert"  "James"    "Linda"    "Michael"  "David"    "Lisa"     "Jennifer" "Jessica"  "Ashley"   "Emily"    "Jacob"    "Emma" "Isabella" "Sophia"   "Noah"     "Liam" 
+
+```{r baby6}
+
+```
+
+
+
