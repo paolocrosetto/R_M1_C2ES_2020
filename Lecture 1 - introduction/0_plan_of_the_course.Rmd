@@ -27,6 +27,20 @@ We will be dealing with the basics of data handling:
 
 Slides will be in English. **All** R documentation is in English. Out there you will be needing help, and it is good to be taught in the language you're going to get helped with. 
 
+
+## Our take on R
+
+- **R is a programming language for statistics**. It can do many things.
+
+- here we will concentrate on **descriptive data analysis** only. 
+- there is much more to R, but this is our aim for this course. 
+
+> In practice, we will deal with ONE object: data frames
+
+> We will maipulate, extract, analyze, plot, more or less complex **data frames**
+
+> We will **not** do high-level R programming or low-level R commands.
+
 ## Lecture plan
 
 - **Lecture 1**: setup, tools, workflow
