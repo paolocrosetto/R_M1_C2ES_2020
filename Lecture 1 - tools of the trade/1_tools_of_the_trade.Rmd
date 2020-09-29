@@ -73,6 +73,7 @@ knitr::opts_chunk$set(echo = FALSE)
 - comment extensively
 - or, if too lazy, use a code that is *readable*
 
+
 # Rstudio
 
 ## Rstudio tour
@@ -84,6 +85,17 @@ knitr::opts_chunk$set(echo = FALSE)
 - plots
 - packages
 - help
+
+# R basics
+
+## Some R basic commands (we won't use them)
+
+- concatenate: c()
+- assign: <-
+- vector, matrices: rbind(), cbind()
+- matrix extraction: [ ]
+- variable extraction: $
+- data frames: mpg
 
 # Rmarkdown
 
@@ -206,6 +218,7 @@ knitr::opts_chunk$set(echo = FALSE)
 8. commit and push -- check on gitHub the result
 
 9. Explore gitHub to see what it offers
+
 
 ## Rmarkdown exercise
 
