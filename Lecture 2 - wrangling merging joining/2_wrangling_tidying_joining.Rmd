@@ -13,44 +13,6 @@ library(tidyverse)
 theme_set(theme_minimal())
 ```
 
-
-**start_with**
-**containt**
-**end_with**
-
-Exercice 1 
-vol partie de la guardia le 17 juillet 
-```{r}
-filter(df,origin=="LGA",month=="7",day=="17")
-```
-Exercice 2 
-vol qui ne vont pas a paris CDG
-```{r}
-filter(df,dest!="CDG")
-```
-
-exercice 3 liste des destination des vole de noel 
-
-```{r}
-df_noel<-filter(df,month==12 & day==25 & dep_time>1100 & dep_time<1300)
-table(df_noel$dest)
-```
-
-Exercice 4
-```{r}
-ggplot(df_noel,aes(dest))+geom_bar()+
-  coord_flip()
-```
-
-exercice 5 
-crée jeu de donné 4_juillet qui contient tout les vol du quatre juillet depart-destination
-```{r}
-f_jully<-filter(df,month==7 & day==4)
-f_jully<-select(f_jully,origin,dest)
-f_jully
-```
-
-
 # Lecture 2: data import, export, manipulation, merging, tidying
 
 
