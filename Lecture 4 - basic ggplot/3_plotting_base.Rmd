@@ -14,23 +14,6 @@ theme_set(theme_minimal())
 
 # Lecture 1: plotting
 
-## Before we start: Rstudio
-
-- Interactive console
-- Object explorer
-- Script window
-- Plot window
-
-## Before we start: R
-
-- concatenate: c()
-- assign: <-
-- vector, matrices: rbind(), cbind()
-- matrix extraction: [ ]
-- variable extraction: $
-- data frames: mpg
-
-
 
 ## Why do we plot
 
