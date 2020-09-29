@@ -15,11 +15,11 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Tools of the trade
 
-- the course is (loosely) based on the *R for Data Science* book. Free reading and code [here](http://r4ds.had.co.nz/)
-- R editor: [Rstudio (free)](www.rstudio.com)
-- Packages: [tidyverse (free)](https://www.tidyverse.org/)
-- Hosting and version control: [gitHub (free)](https://github.com/)
-- Data: freely available data + eurostat + US data + web crawling (all free)
+- **Book**: the course is (loosely) based on the *R for Data Science* book. Free reading and code [here](http://r4ds.had.co.nz/)
+- **R editor**: [Rstudio (free)](www.rstudio.com)
+- **Packages**: [tidyverse (free)](https://www.tidyverse.org/)
+- **Hosting** and **version control**: [gitHub (free)](https://github.com/)
+- **Data**: freely available data + eurostat + US data + web crawling (all free)
 
 # R
 
@@ -93,7 +93,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 - renders to HTML by default
 - (but also to PDF or to different types of slides)
-- (and to word)
+- (and to word, and to powerpoint)
 - minimal syntax
 - cheat sheet (Rstudio -> Help -> Cheatsheets -> R Markdown reference guide)
 
