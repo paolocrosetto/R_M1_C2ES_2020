@@ -27,22 +27,19 @@ We will be dealing with the basics of data handling:
 
 Slides will be in English. **All** R documentation is in English. Out there you will be needing help, and it is good to be taught in the language you're going to get helped with. 
 
-## Lecture plan: week 1
+## Lecture plan
 
-- **Lecture 1**: (tue 8th) setup, tools, workflow
-- **Lecture 2**: (wed 9th) basic plotting
-- **Lecture 3**: (thu 10th) data IO & basic data wrangiling
-- **Lecture 4**: (fri 11th) advanced data wrangling
+- **Lecture 1**: setup, tools, workflow
+- **Lecture 2**: data IO & basic data wrangiling
+- **Lecture 3**: advanced data wrangling
+- **Lecture 4**: basic plotting
+- **Lecture 5**: advanced plotting
+- **Lecture 6**: tidy statistical analysis
+- **Lecture 7**: crawling data from the web
 
-## Lecture plan: week 2
+## Assignment
 
-- **Lecture 5**: (tue 15th) tidy statistical analysis
-- **Lecture 6**: (wed 16th) advanced plotting
-- **Lecture 7**: (thu 17th) crawling data
-
-## Assignment: week 4
-
-In **Lecture 8** (wed sep 30th) each of you will present a **statistical report** on a topic of choice (list provided at the end of L7). 
+In **Lecture 8**, that will take place ~2 weeks *after* lecture 7, each of you will present a **statistical report** on a topic of choice (list provided at the end of L7). 
 
 This report will be
 
@@ -60,4 +57,5 @@ Example: https://jtanwk.github.io/us-solar/#how_have_solar_panel_costs_changed
 - [paolo.crosetto@gmail.com](mailto:paolo.crosetto@gmail.com)
 - Office 413, 4th floor, BATEG
 - do not hesitate to pop by or send an email if needed
+- online office hours: **fridays, 3pm - 4pm**, here: https://meet.univ-grenoble-alpes.fr/b/pao-6da-t9m
 
