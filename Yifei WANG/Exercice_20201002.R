@@ -129,3 +129,18 @@ df %>%
   summarize(meanspeed = mean(speed, na.rm = TRUE),
             meandist = mean(distance, na.rm = TRUE)) %>%
   arrange(-meanspeed)
+
+# ---------------------------------------------------------------
+# Questions
+# 1) What is the mean delay of flights by carrier, for each month?
+df %>%
+  select(arr_delay, month, carrier) %>%
+  group_by(month, carrier) %>%
+  summarize(mean_delay = mean(arr_delay, na.rm = T))
+
+# 2) From which airport do the longer haul flights depart?
+df %>%
+  select(origin, distance) %>%
+  group_by(origin) %>%
+  summarize(reponse = mean(distance, na.rm = T),
+            variance = sd(distance, na.rm = T))
