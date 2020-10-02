@@ -67,5 +67,74 @@ select(df, everything(), -year)
 ##Sauvegarder dans un objet les delais
 delays<- select(df, contains("delay"))
 
-select(df, everything(), -year)
+## Rename : Renommer les variables
 
+rename(df, mois = month, année = year, jour = day)
+
+##Mutate : permet de modifier les variable
+
+# calculer la vitesse
+
+mutate(df, speed_mile_minute = distance/air_time)
+df2 <-mutate(df, speed_mile_minute = distance/air_time)
+
+select(df2, speed_mile_minute, everything())
+
+#Calculer le vitesse en km/h
+
+mutate(df2, speed_km_h = speed_mile_minute/60*1.60934)
+df3 <-mutate(df2, speed_km_h = speed_mile_minute*1.60934/60)
+select(df3, starts_with("speed"))
+
+##Enter THE PIPE
+##%>%
+##%>%
+
+##Pour tous les vols de décembre montrer juste les délai
+df %>%
+filter(month == 12) %>%  
+select(month,contains("delay"))  
+
+## Calculer vitesse en km/h
+df %>%
+select(air_time,distance) %>%  
+mutate(distance_km = distance*1.6, time_h = air_time/60) %>% 
+mutate(speed_km_h = distance_km/time_h)  
+
+## Summarise(summarize)
+
+# meme chose du début
+df %>%
+  select(air_time,distance) %>%  
+  mutate(distance_km = distance*1.6, time_h = air_time/60) %>% 
+  mutate(speed_km_h = distance_km/time_h) %>%
+  summarise(mean=mean(speed_km_h,na.rm=TRUE))
+
+summarise(max = max(speed_km_h, na.rm=TRUE))
+
+
+
+
+
+
+
+#Pourquoi? peut être c'est lié aux distances?
+df %>%
+  select(air_time, distance, carrier) %>% 
+  mutate(speed_km_h = distance_km/air_time) %>%
+  group_ by(carrier) %>%
+  summarise(meanspeed=mean(speed,na.rm=TRUE)),
+meandist = mean(distance, na.rm=TRUE)
+
+#What is th mean delay of flights by carrier, for each month?
+df %>%
+  select(arr_delay, month, carrier)%>%
+group_by(month, carrier) %>%  
+summarise(mean_delay = mean(arr_delay, na.rm = T))  
+
+# From which airport do the longer haul flights depart?
+df%>%
+select(origin, distance) %>%  
+group_by(origin)%>%   
+summarise(response = mean(distance, na.rm = T))  
+variance = sd(distance, na.rm = T)

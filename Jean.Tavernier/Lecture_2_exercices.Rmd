@@ -1,6 +1,6 @@
 ---
 title: "Exercises lecture 3 -- data wrangling"
-author: "Paolo Crosetto"
+author: "Jean Tavernier"
 date: "octobre 2020"
 output: html_document
 ---
@@ -22,9 +22,9 @@ df <- flights
 > sauvegardez dans un nouvel objet tous les vols partis entre midi et deux heures, en gardant juste l'info sur l'aéroport de départ et d'arrivée
 
 ```{r ex1}
-df %>% 
-  filter(dep_time >= 1200 & dep_time <= 1400) %>% 
-  select(dep_time, origin, dest) -> df_midday
+df %>%
+  filter(dep_time >= 1200 & dep_time <= 1400) %>%
+  select(origin, dest, dep_time) -> df_midday
 
 ```
 ## Exercice 2
