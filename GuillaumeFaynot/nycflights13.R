@@ -33,3 +33,4 @@ select(df,everything())
 
 #Sauvegarder dans un objet les délais
 delays <- select(df,contains("delay"))
+#On fait une pause
