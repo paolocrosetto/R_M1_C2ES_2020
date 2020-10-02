@@ -11,4 +11,11 @@ select(df, everything())
 select(df, arr_delay, dep_delay, everything())
 
 delays <- select(df, contains("delay"))
-print("hello")
+delays
+
+rename(df, mois = month, annee = year, jour = day)
+
+df2 <-mutate(df, speed_miles_minutes = distance / air_time)
+select(df2, speed_miles_minutes, everything())
+
+
