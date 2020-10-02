@@ -1,5 +1,5 @@
-library(nycflights13) # chargement des librairies. 
-library(tidyverse)
-df <- flights 
-HDI <-read_csv("Data/HDIdata.csv") # importation d'un fichier. 
-HDI
+library('nycflights13')
+library('tidyverse')
+df <- flights
+vol_jfk_lax <- filter(df, month == 1 & origin == 'JFK' & dest == 'LAX')
+
