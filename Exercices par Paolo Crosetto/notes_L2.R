@@ -31,3 +31,25 @@ vol_jfk_lax_decembre <- filter(df, month == 12 & origin == "JFK" & dest == "LAX"
 
 # tous les vols de janvier qui partent de JFK et qui ne vont pas à LAX
 filter(df, month == 1 & origin == "JFK" & dest != "LAX")
+
+##arrange
+# ordonner les données par variable
+
+arrange(df, month, day, dep_delay)
+
+##select
+# sélectionner des colonnes
+select(df, month, day, dep_delay)
+
+#de-sélectionner des colonnes
+select(df, -month, -year)
+
+#aide à la sélection
+select(df, starts_with("arr"))
+select(df, ends_with("y"))
+select(df, contains("y"))
+select(df, everything())
+select(df, arr_delay, dep_delay, everything())
+
+#sauvegarder dans un objet les délais 
+delays <- select(df, contains("delay"))
