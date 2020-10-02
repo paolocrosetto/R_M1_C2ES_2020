@@ -17,3 +17,22 @@ filter(df,month==12)
 filter(df,month==12 & origin == 'JFK' & dest == 'LAX')
 #Tous les vols de décembre en provenance de JKF allant partout sauf à LAX
 filter(df,month==12 & origin == 'JFK' & dest != 'LAX')
+
+
+
+#Ordonne les données dans le sens que l'on veut 
+arrange(df,month,day,dep_delay)
+
+#Selectionner des colonnes
+select(df, -month, -year)
+
+#Aide à la sélection 
+select(df, starts_with("arr"))
+select(df,ends_with("y"))
+select(df,contains("y"))
+select(df,contains("y"))
+select(df,everything())
+select(df,arr_delay,dep_delay,everything())
+
+#sauvegarder dans un objet les délais 
+delays<- select(df,contains("delay"))

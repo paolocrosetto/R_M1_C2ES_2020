@@ -364,7 +364,7 @@ summary {
 
 <h1 class="title toc-ignore">Exercises lecture 3 – data wrangling</h1>
 <h4 class="author">Paolo Crosetto</h4>
-<h4 class="date">9/11/2019</h4>
+<h4 class="date">octobre 2020</h4>
 
 </div>
 
@@ -376,6 +376,9 @@ summary {
 <blockquote>
 <p>sauvegardez dans un nouvel objet tous les vols partis entre midi et deux heures, en gardant juste l’info sur l’aéroport de départ et d’arrivée</p>
 </blockquote>
+<pre class="r"><code>df %&gt;% 
+  filter(dep_time &gt;= 1200 &amp; dep_time &lt;= 1400) %&gt;% 
+  select(dep_time, origin, dest) -&gt; df_midday</code></pre>
 </div>
 <div id="exercice-2" class="section level2">
 <h2>Exercice 2</h2>
