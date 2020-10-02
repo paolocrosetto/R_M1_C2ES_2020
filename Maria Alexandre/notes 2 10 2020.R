@@ -66,3 +66,4 @@ select(df, everything(), -year)
 
 ##Sauvegarder dans un objet les delais
 delays<- select(df, contains("delay"))
+
