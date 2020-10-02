@@ -122,4 +122,4 @@ df %>%
 df %>%
   select(origin,distance)%>%
   group_by(origin)%>%
-  summarise(reponse=mean(distance,na.rm = T),variance=sd(distance,na.rm = T))
+  summarise(reponse=mean(distance,na.rm = T),variance=sd(distance,na.rm = T))->result
