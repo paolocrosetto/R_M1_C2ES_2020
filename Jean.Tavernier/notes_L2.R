@@ -11,5 +11,4 @@ select(df, everything())
 select(df, arr_delay, dep_delay, everything())
 
 delays <- select(df, contains("delay"))
-
 print("hello")
