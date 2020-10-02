@@ -1,5 +1,7 @@
 
 df<-flights
+
+df<-flights
 library(skimr)
 skim(df)
 install.packages("dplyr")
@@ -14,3 +16,7 @@ vol_jfk_lax_decembre<-filter(df,month==12 & origin=="JFK" & dest=="LAX")
 
 #tous les vols de Janvier qui partent de JFK et qui ne vont pas à LAX
 filter(df,month==1 & origin=="JFK" & dest !="LAX")
+
+#arrange
+#ordonner les données par variables
+arrange(df,month,day,arr_delay)
