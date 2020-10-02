@@ -54,8 +54,18 @@ select(df,arr_delay,dep_delay,everything())
 delays<-select(df,contains("delay"))
 
 
-#
+#rename
+#renommer les variables
+rename(df,mois=month,annee=year,jour=day)
 
+#creating new variable
+#modifier des variables
+##calculer la vitesse des avions en milles/minute
+df2<-mutate(df,speed_miles_minute=distance/air_time)
+select(df2,speed_miles_minute,everything())
 
+#calculer la vitesse en km/h
+df3<-mutate(df2,speed_km_h=speed_miles_minute*60/1.60934)
+select(df3,starts_with("speed"))
 
 
