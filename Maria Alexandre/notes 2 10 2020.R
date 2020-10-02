@@ -206,3 +206,6 @@ df %>%
   summarise(reponse = mean(distance, na.rm = T),
             vairance = sd(distance, na.rm = T))
 
+#
+
+
