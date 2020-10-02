@@ -30,3 +30,9 @@ select(df, -month, -year)
 select(df, starts_with("arr"))
 select(df,ends_with("y"))
 select(df,contains("y"))
+select(df,contains("y"))
+select(df,everything())
+select(df,arr_delay,dep_delay,everything())
+
+#sauvegarder dans un objet les délais 
+delays<- select(df,contains("delay"))
