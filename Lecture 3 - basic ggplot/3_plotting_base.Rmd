@@ -1,18 +1,20 @@
 ---
 title: "Introduction to R and the tidyverse"
 author: "Paolo Crosetto"
+date: "October 2020"
 output:
   ioslides_presentation: default
 ---
 
 ```{r setup, include=FALSE, warning=FALSE, message=FALSE, fig.align='center'}
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_chunk$set(warnings = FALSE)
+knitr::opts_chunk$set(warnings = FALSE, message = FALSE)
 library(tidyverse)
+library(kableExtra)
 theme_set(theme_minimal())
 ```
 
-# Lecture 1: plotting
+# Lecture 3: plotting
 
 
 ## Why do we plot
@@ -26,11 +28,40 @@ theme_set(theme_minimal())
 - to have fun
 - (to show your colleagues how nice your plot is)
 
-## What do you see?
+## The importance of plotting: eyeballing the data
 
-![](fig/SlopePlot_pourcentage.png)
+> Looking at the data as a *first step* of analysis is **always** a good idea
 
-- Plots allow to convey a lot of information in a compact way
+- data could look similar at a first glance
+- and even have similar descriptive statistics (i.e. mean, variance)
+- but still be *very* different in practice
+
+## An example: the Datasaurus
+
+> A striking example of this is the "Datasaurus dozen": a dull an not impressive dataset.
+
+- the dataset contains two variables, `x` and `y`, over 13 different conditions. Mean and variance by condition are the exact same:
+
+```{r datas1, echo = FALSE, message=FALSE, warning=FALSE}
+df <- read_tsv("data/DatasaurusDozen.tsv")
+df %>% 
+  group_by(dataset) %>% 
+  summarise(mean_x = round(mean(x),2), mean_y = round(mean(y),2)) %>% kable()
+```
+
+## Datasaurus, plotted
+
+```{r datas2, echo = FALSE}
+df %>% 
+  ggplot(aes(x,y))+
+  geom_point()+
+  facet_wrap(~dataset)
+```
+
+
+## The importance of plotting: compact information
+
+> TODO
 
 ## Good plots, bad plots
 
