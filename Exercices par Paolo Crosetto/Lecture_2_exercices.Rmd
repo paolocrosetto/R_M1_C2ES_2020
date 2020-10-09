@@ -2,7 +2,10 @@
 title: "Exercises lecture 2 -- data wrangling"
 author: "Paolo Crosetto"
 date: "octobre 2020"
-output: html_document
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -25,6 +28,7 @@ df <- flights
 df %>% 
   filter(dep_time >= 1200 & dep_time <= 1400) %>% 
   select(dep_time, origin, dest) -> df_midday
+df_midday
 
 ```
 ## Exercice 2
