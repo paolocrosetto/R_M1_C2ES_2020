@@ -3,9 +3,9 @@ title: "Exercises lecture 2 -- data wrangling"
 author: "Paolo Crosetto"
 date: "octobre 2020"
 output:
-  word_document: default
-  pdf_document: default
   html_document: default
+  pdf_document: default
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -30,7 +30,6 @@ df %>%
   select(dep_time, origin, dest) -> df_midday
 df_midday
 
-df_midday
 ```
 ## Exercice 2
 
@@ -163,6 +162,11 @@ cor(jfk$max,lga$max)
 
 ```{r ex10}
 
+df %>% 
+  select(origin,distance) %>% 
+  group_by(origin) %>% 
+  summarise(mean = mean(distance, na.rm = T)) %>% 
+  arrange(-mean)
 ```
 
 
