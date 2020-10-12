@@ -35,9 +35,13 @@ df_midday
 ```{r ex2}
 df %>% 
   filter(dep_time >= 0000 & dep_time <= 0100 & (origin == 'JFK' | origin =='LGA')) %>% 
-  select(origin, origin,dest) -> df_midnight
+  select(origin,dest) %>% 
+  group_by(origin) %>%
+  # summarise(unique_types = n_distinct(dest)) -> df_midnight
+  count(dest) %>% 
+  top_n(1) -> df_midnight
 
-skim(df_midnight)
+df_midnight
 
 ```
 
@@ -78,6 +82,8 @@ df_percent_imp
 
 ```{r ex5}
 
+df %>% 
+  summarise(mean = mean(arr_delay,na.rm = T), sd = sd(arr_delay,na.rm = T), min = min(arr_delay,na.rm = T),max = max(arr_delay,na.rm = T) )
 
 ```
 
@@ -86,7 +92,9 @@ df_percent_imp
 > même chose que l'exercice 6, mais par aéroport de départ
 
 ```{r ex6}
-
+df %>% 
+  group_by(origin) %>% 
+  summarise(mean = mean(arr_delay,na.rm = T), sd = sd(arr_delay,na.rm = T), min = min(arr_delay,na.rm = T),max = max(arr_delay,na.rm = T))
 
 ```
 
@@ -95,9 +103,10 @@ df_percent_imp
 > calculez la moyenne du retard par compagnie aérienne
 
 ```{r ex7}
-
-
-
+df %>% 
+  group_by(carrier) %>% 
+  summarise(mean = mean(arr_delay,na.rm = T)) %>% 
+  arrange(-mean)
 ```
 
 
@@ -107,8 +116,12 @@ df_percent_imp
 
 ```{r ex8}
 
+df %>% 
+  mutate(speed = distance/air_time) %>% 
+  filter(dep_time>=1100 & dep_time<=1300) %>% 
+  group_by(month) %>% 
+  summarise(mean = mean(speed,na.rm = T))
 
-  
 ```
 
 
@@ -125,7 +138,17 @@ df_percent_imp
 
 ```{r ex9}
 
+df %>% 
+  filter(origin == 'JFK') %>% 
+  group_by(origin,month, day) %>% 
+  summarise(max = max(arr_delay,na.rm = T)) -> jfk 
 
+df %>% 
+  filter(origin=='LGA') %>% 
+  group_by(origin,month, day) %>% 
+  summarise(max = max(arr_delay,na.rm = T)) -> lga 
+
+cor(jfk$max,lga$max)
   
 ```
 
