@@ -30,22 +30,12 @@ df %>%
   select(dep_time, origin, dest) -> df_midday
 df_midday
 
-df_midday
 ```
 ## Exercice 2
 
 > isolez dans un nouvel objet tous les vols partis entre minuit et une heure du matin de JFK et de LGA. Quelle est, pour chacun de deux aéroport, la destionation la plus fréquente? 
 
 ```{r ex2}
-df %>% 
-  filter(dep_time >= 0000 & dep_time <= 0100 & (origin == 'JFK' | origin =='LGA')) %>% 
-  select(origin,dest) %>% 
-  group_by(origin) %>%
-  # summarise(unique_types = n_distinct(dest)) -> df_midnight
-  count(dest) %>% 
-  top_n(1) -> df_midnight
-
-df_midnight
 
 ```
 
@@ -56,11 +46,7 @@ df_midnight
 > créez une variable qui montre la vitesse de chaque avion
 
 ```{r ex3}
-df %>% 
-  mutate(speed = distance/air_time) %>% 
-  select(speed, everything())-> df_speed
 
-df_speed
 ```
 
 
@@ -69,11 +55,6 @@ df_speed
 > créez une variable qui calcule l'impact (en %) du retard à l'arrivée sur le temps de vol
 
 ```{r ex4}
-
-df %>% 
-  mutate(percent_imp = 100*arr_delay/(arr_time-dep_time)) %>% 
-  select(percent_imp, everything()) -> df_percent_imp
-df_percent_imp
 
 ```
 
@@ -86,8 +67,6 @@ df_percent_imp
 
 ```{r ex5}
 
-df %>% 
-  summarise(mean = mean(arr_delay,na.rm = T), sd = sd(arr_delay,na.rm = T), min = min(arr_delay,na.rm = T),max = max(arr_delay,na.rm = T) )
 
 ```
 
@@ -96,9 +75,7 @@ df %>%
 > même chose que l'exercice 6, mais par aéroport de départ
 
 ```{r ex6}
-df %>% 
-  group_by(origin) %>% 
-  summarise(mean = mean(arr_delay,na.rm = T), sd = sd(arr_delay,na.rm = T), min = min(arr_delay,na.rm = T),max = max(arr_delay,na.rm = T))
+
 
 ```
 
@@ -107,10 +84,9 @@ df %>%
 > calculez la moyenne du retard par compagnie aérienne
 
 ```{r ex7}
-df %>% 
-  group_by(carrier) %>% 
-  summarise(mean = mean(arr_delay,na.rm = T)) %>% 
-  arrange(-mean)
+
+
+
 ```
 
 
@@ -120,11 +96,7 @@ df %>%
 
 ```{r ex8}
 
-df %>% 
-  mutate(speed = distance/air_time) %>% 
-  filter(dep_time>=1100 & dep_time<=1300) %>% 
-  group_by(month) %>% 
-  summarise(mean = mean(speed,na.rm = T))
+
 
 ```
 
@@ -142,18 +114,8 @@ df %>%
 
 ```{r ex9}
 
-df %>% 
-  filter(origin == 'JFK') %>% 
-  group_by(origin,month, day) %>% 
-  summarise(max = max(arr_delay,na.rm = T)) -> jfk 
 
-df %>% 
-  filter(origin=='LGA') %>% 
-  group_by(origin,month, day) %>% 
-  summarise(max = max(arr_delay,na.rm = T)) -> lga 
 
-cor(jfk$max,lga$max)
-  
 ```
 
 
