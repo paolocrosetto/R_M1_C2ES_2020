@@ -1,8 +1,11 @@
 ---
-title: "Exercises lecture 3 -- data wrangling"
+title: "Exercises lecture 2 -- data wrangling"
 author: "Paolo Crosetto"
 date: "octobre 2020"
-output: html_document
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -22,14 +25,27 @@ df <- flights
 > sauvegardez dans un nouvel objet tous les vols partis entre midi et deux heures, en gardant juste l'info sur l'aéroport de départ et d'arrivée
 
 ```{r ex1}
+df %>% 
+  filter(dep_time >= 1200 & dep_time <= 1400) %>% 
+  select(dep_time, origin, dest) -> df_midday
+df_midday
 
-
+df_midday
 ```
 ## Exercice 2
 
 > isolez dans un nouvel objet tous les vols partis entre minuit et une heure du matin de JFK et de LGA. Quelle est, pour chacun de deux aéroport, la destionation la plus fréquente? 
 
 ```{r ex2}
+df %>% 
+  filter(dep_time >= 0000 & dep_time <= 0100 & (origin == 'JFK' | origin =='LGA')) %>% 
+  select(origin,dest) %>% 
+  group_by(origin) %>%
+  # summarise(unique_types = n_distinct(dest)) -> df_midnight
+  count(dest) %>% 
+  top_n(1) -> df_midnight
+
+df_midnight
 
 ```
 
@@ -40,7 +56,11 @@ df <- flights
 > créez une variable qui montre la vitesse de chaque avion
 
 ```{r ex3}
+df %>% 
+  mutate(speed = distance/air_time) %>% 
+  select(speed, everything())-> df_speed
 
+df_speed
 ```
 
 
@@ -49,6 +69,11 @@ df <- flights
 > créez une variable qui calcule l'impact (en %) du retard à l'arrivée sur le temps de vol
 
 ```{r ex4}
+
+df %>% 
+  mutate(percent_imp = 100*arr_delay/(arr_time-dep_time)) %>% 
+  select(percent_imp, everything()) -> df_percent_imp
+df_percent_imp
 
 ```
 
@@ -61,6 +86,8 @@ df <- flights
 
 ```{r ex5}
 
+df %>% 
+  summarise(mean = mean(arr_delay,na.rm = T), sd = sd(arr_delay,na.rm = T), min = min(arr_delay,na.rm = T),max = max(arr_delay,na.rm = T) )
 
 ```
 
@@ -69,7 +96,9 @@ df <- flights
 > même chose que l'exercice 6, mais par aéroport de départ
 
 ```{r ex6}
-
+df %>% 
+  group_by(origin) %>% 
+  summarise(mean = mean(arr_delay,na.rm = T), sd = sd(arr_delay,na.rm = T), min = min(arr_delay,na.rm = T),max = max(arr_delay,na.rm = T))
 
 ```
 
@@ -78,9 +107,10 @@ df <- flights
 > calculez la moyenne du retard par compagnie aérienne
 
 ```{r ex7}
-
-
-
+df %>% 
+  group_by(carrier) %>% 
+  summarise(mean = mean(arr_delay,na.rm = T)) %>% 
+  arrange(-mean)
 ```
 
 
@@ -90,8 +120,12 @@ df <- flights
 
 ```{r ex8}
 
+df %>% 
+  mutate(speed = distance/air_time) %>% 
+  filter(dep_time>=1100 & dep_time<=1300) %>% 
+  group_by(month) %>% 
+  summarise(mean = mean(speed,na.rm = T))
 
-  
 ```
 
 
@@ -108,7 +142,17 @@ df <- flights
 
 ```{r ex9}
 
+df %>% 
+  filter(origin == 'JFK') %>% 
+  group_by(origin,month, day) %>% 
+  summarise(max = max(arr_delay,na.rm = T)) -> jfk 
 
+df %>% 
+  filter(origin=='LGA') %>% 
+  group_by(origin,month, day) %>% 
+  summarise(max = max(arr_delay,na.rm = T)) -> lga 
+
+cor(jfk$max,lga$max)
   
 ```
 
@@ -121,50 +165,5 @@ df <- flights
 
 ```
 
-# `join_...()` family of functions
-
-> first run this setup R code chunk. It will load in your workspace 3 data frames:
-
-- **airports**: avec données sur les aéroports américains
-- **flights**: qu'on connait déjà
-- **planes**: avec les données pour chaque avion
-
-```{r setup_join}
-planes <- planes
-flights <- flights
-airports <- airports
-```
-
-## Exercice 11
-
-> est-ce que les routes plus longues sont desservies apr les avions les plus modernes?
-
-*notes*: utilisez `left_join()` et mergez les dataframes `flights` et `planes`
-
-```{r ex11}
-
-
-```
-
-## Exercice 12
-
-> combien de vols qui partent des trois aéroport de NY atterrisent dans des destinations  au dessus de 1000m s.n.m.?
-
-```{r ex12}
-
-
-```
-
-
-# creating tidy data: reshape with `gather()` and `spread()`
-
-## Exercice 13
-
-> tidy world_bank_pop dataset so that 'year' is a variable and for each country and each year you have urban population and urban population growh only. Plot as a geom_line the total population for each country over the years.
-
-```{r ex13}
-
-  
-```
 
 
