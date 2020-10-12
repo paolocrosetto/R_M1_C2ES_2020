@@ -26,12 +26,18 @@ df %>%
   filter(dep_time >= 1200 & dep_time <= 1400) %>% 
   select(dep_time, origin, dest) -> df_midday
 
+df_midday
 ```
 ## Exercice 2
 
 > isolez dans un nouvel objet tous les vols partis entre minuit et une heure du matin de JFK et de LGA. Quelle est, pour chacun de deux aéroport, la destionation la plus fréquente? 
 
 ```{r ex2}
+df %>% 
+  filter(dep_time >= 0000 & dep_time <= 0100 & (origin == 'JFK' | origin =='LGA')) %>% 
+  select(origin, origin,dest) -> df_midnight
+
+skim(df_midnight)
 
 ```
 
@@ -42,7 +48,11 @@ df %>%
 > créez une variable qui montre la vitesse de chaque avion
 
 ```{r ex3}
+df %>% 
+  mutate(speed = distance/air_time) %>% 
+  select(speed, everything())-> df_speed
 
+df_speed
 ```
 
 
@@ -51,6 +61,11 @@ df %>%
 > créez une variable qui calcule l'impact (en %) du retard à l'arrivée sur le temps de vol
 
 ```{r ex4}
+
+df %>% 
+  mutate(percent_imp = 100*arr_delay/(arr_time-dep_time)) %>% 
+  select(percent_imp, everything()) -> df_percent_imp
+df_percent_imp
 
 ```
 
