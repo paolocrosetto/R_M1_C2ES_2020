@@ -107,7 +107,12 @@ réponse7 <- df %>%
 > quelle est la vitesse moyenne des vols qui partent entre 11h et 13h, par mois?
 
 ```{r ex8}
-
+réponse8 <- df %>% 
+  mutate(speed = distance/air_time) %>% 
+  filter(dep_time>=1100 & dep_time<=1300) %>% 
+  group_by(month) %>% 
+  summarise(mean = mean(speed,na.rm = TRUE))
+réponse8
 
   
 ```
