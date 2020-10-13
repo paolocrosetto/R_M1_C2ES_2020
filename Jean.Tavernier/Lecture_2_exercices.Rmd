@@ -32,7 +32,9 @@ df %>%
 > isolez dans un nouvel objet tous les vols partis entre minuit et une heure du matin de JFK et de LGA. Quelle est, pour chacun de deux aéroport, la destionation la plus fréquente? 
 
 ```{r ex2}
-
+answer2 <- df %>%
+  filter(dep_time >= 0000 & dep_time <= 0100 & origin == 'JFK' & origin = 'LGA') %>%
+  
 ```
 
 # `mutate()`
@@ -42,6 +44,10 @@ df %>%
 > créez une variable qui montre la vitesse de chaque avion
 
 ```{r ex3}
+vitesse <- df %>% 
+  mutate(speed = distance/air_time) %>% 
+  select(speed, everything())
+
 
 ```
 
