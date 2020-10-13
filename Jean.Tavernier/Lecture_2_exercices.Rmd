@@ -95,8 +95,9 @@ réponse6
 > calculez la moyenne du retard par compagnie aérienne
 
 ```{r ex7}
-
-
+réponse7 <- df %>% 
+  group_by(carrier) %>% 
+  summarise(mean = mean(arr_delay,na.rm = TRUE))
 
 ```
 
