@@ -73,8 +73,9 @@ réponse4
 > calculez la moyenne, l'écart type, le min et le max du rétard à l'arrivée
 
 ```{r ex5}
-
-
+réponse5 <- df %>% 
+  summarise(mean = mean(arr_delay,na.rm = TRUE), sd = sd(arr_delay,na.rm = TRUE), min = min(arr_delay,na.rm = TRUE),max = max(arr_delay,na.rm = TRUE))
+réponse5
 ```
 
 ## Exercice 6
