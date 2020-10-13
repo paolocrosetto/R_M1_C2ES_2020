@@ -35,7 +35,7 @@ df %>%
 réponse2 <- df %>%
   filter(dep_time >= 0000 & dep_time <= 0100 & (origin == 'JFK' | origin == 'LGA')) %>%
   select(dest)
-  
+réponse2
 ```
 
 # `mutate()`
@@ -48,8 +48,7 @@ réponse2 <- df %>%
 vitesse <- df %>% 
   mutate(speed = distance/air_time) %>% 
   select(speed, everything())
-
-
+vitesse
 ```
 
 
@@ -58,6 +57,11 @@ vitesse <- df %>%
 > créez une variable qui calcule l'impact (en %) du retard à l'arrivée sur le temps de vol
 
 ```{r ex4}
+réponse4 <- df %>% 
+  mutate(impact = arr_delay/arr_time-dep_time * 100) %>% 
+  select(impact, everything()) 
+réponse4
+
 
 ```
 
