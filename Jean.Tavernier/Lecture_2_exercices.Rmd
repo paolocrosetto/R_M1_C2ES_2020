@@ -83,7 +83,10 @@ réponse5
 > même chose que l'exercice 6, mais par aéroport de départ
 
 ```{r ex6}
-
+réponse6 <- df %>% 
+  group_by(origin) %>%
+  summarise(mean = mean(arr_delay,na.rm = TRUE), sd = sd(arr_delay,na.rm = TRUE), min = min(arr_delay,na.rm = TRUE),max = max(arr_delay,na.rm = TRUE)) 
+réponse6
 
 ```
 
