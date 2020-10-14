@@ -16,6 +16,8 @@ theme_set(theme_minimal())
 
 # Lecture 3: plotting
 
+# Part 1: Why do we plot? 
+
 
 ## Why do we plot
 
@@ -40,16 +42,20 @@ theme_set(theme_minimal())
 
 > A striking example of this is the "Datasaurus dozen": a dull an not impressive dataset.
 
-- the dataset contains two variables, `x` and `y`, over 13 different conditions. Mean and variance by condition are the exact same:
+- data contains vars `x` and `y`, over 13 different conditions
+- import the data (it is in `data/DatasaurusDozen.tsv`) and compute mean and st.dev. by `dataset`
 
-```{r datas1, echo = FALSE, message=FALSE, warning=FALSE}
+```{r datas1, echo = TRUE, message=FALSE, warning=FALSE}
 df <- read_tsv("data/DatasaurusDozen.tsv")
 df %>% 
   group_by(dataset) %>% 
-  summarise(mean_x = round(mean(x),2), mean_y = round(mean(y),2)) %>% kable()
+  summarise(mean_x = round(mean(x),2), mean_y = round(mean(y),2)) %>% 
+  kable()
 ```
 
 ## Datasaurus, plotted
+
+> But if you plot it, you'll see **stark** differences
 
 ```{r datas2, echo = FALSE}
 df %>% 
@@ -70,12 +76,6 @@ df %>%
   - size
   - shape
 - you can combine multiple plots to create infographics (cool!)
-
-## A gallery of good plots, 1
-
-## A gallery of good plots, 2
-
-## A gallery of good plots, 3
 
 ## Good plots, bad plots
 
@@ -120,6 +120,29 @@ df %>%
 - be honest
 - draw your axis first
 - choose your visualization wisely
+- a good plot gives lots of precise information in a concise way. 
+
+**Examples:**
+
+
+## Good plots, 1
+
+![](fig/carte_circ.jpg){width=100%}
+
+## Good plots, 2
+
+![](fig/Minard.png){width=100%}
+
+## Good plots, 3
+
+![](fig/vax.png){width=100%}
+
+## Good plots, 4
+
+![](fig/siberian_arctic.jpeg){width=100%}
+
+
+# Plotting with ggplot
 
 ## Some data
 
@@ -159,8 +182,8 @@ Advantages of ggplot2
 -   consistent underlying `grammar of graphics` (Wilkinson, 2005)
 -   plot specification at a high level of abstraction
 -   very flexible
--   theme system for polishing plot appearance
 -   mature and complete graphics system
+-   theme system for polishing plot appearance
 -   many users, active, fast & competent support
 
 ## What is a grammar of graphics?
@@ -181,13 +204,15 @@ The basic idea: independently specify plot building blocks and combine them to c
 
 **As in a grammar the minimal sentence is a subject in a plot the minimal object is data **
 
-```{r, echo=TRUE}
+```{r, echo=TRUE, fig.width=7, fig.height=4}
 ggplot(mpg)
 ```
 
+## basics
+
 **In a grammar, you need a verb. In plots, this is axis**
 
-```{r, echo=TRUE}
+```{r, echo=TRUE, fig.width=7, fig.height=4}
 p <- ggplot(mpg, aes(x = displ, y = hwy))
 p
 ```
@@ -198,22 +223,22 @@ p
 ## Generating a plot
 
 **But you also need an object. In ggplot, this is *geoms* **
-```{r, echo=TRUE}
+```{r, echo=TRUE, fig.width=7, fig.height=4}
 p + geom_point()
 ```
 
 ## Generating a plot, 2
 
 **But you also need an object. In ggplot, this is *geoms* **
-```{r, echo=TRUE}
+```{r, echo=TRUE, fig.width=7, fig.height=4}
 p + geom_smooth()
 ```
 
 
 ## Generating a plot, 3
 
-**But you also need an object. In ggplot, this is *geoms* **
-```{r, echo=TRUE}
+**You can add (+) as many *geoms* as you wish**
+```{r, echo=TRUE, fig.width=7, fig.height=4}
 p + geom_smooth()+geom_point()
 ```
 
@@ -228,38 +253,50 @@ p + geom_smooth()+geom_point()
 
 ## Adding meaning: color
 
-```{r, echo=TRUE}
+```{r, echo=TRUE, fig.width=7, fig.height=4}
 p + geom_point(aes(color=class))
 ```
 
 ## Adding meaning: size
 
-```{r, echo=TRUE}
+```{r, echo=TRUE, fig.width=7, fig.height=4}
 p + geom_point(aes(size=cyl))
 ```
 
 
 ## Adding meaning: color AND size
 
-```{r, echo=TRUE}
+```{r, echo=TRUE, fig.width=7, fig.height=4}
 p + geom_point(aes(size = cyl, color=class))
 ```
 
 ## Adding meaning: shape
 
-```{r, echo=TRUE}
+```{r, echo=TRUE, fig.width=7, fig.height=4}
 p + geom_point(aes(shape=fl))
 ```
 
 
 
 
-## Adding meaning: all together
+## Adding meaning: all together (maybe too much)
 
-```{r, echo=TRUE}
+```{r, echo=TRUE, fig.width=7, fig.height=4}
 p + geom_point(aes(color=manufacturer, shape =fl, size = cyl))
 ```
 
+## Recap so far
+
+- ggplot works like a grammar
+- start with `ggplot()`
+- first argument is "the subject", i.e. *data*: `ggplot(df, ...)`
+- then you map variables to `aes`thetics (x, y, color, fill, shape, size, ...)
+- `ggplot(df, aes(dimension = variable))`
+- then you add (+) meaning with geometric objects: `geom_*`
+- `+ geom_line()`
+- notes: 
+  - `geom`s inherit the `aes` of the plot if not specified
+  - all variables mapped to `aes` vary with the data
 
 ## Facets
 
@@ -271,7 +308,7 @@ p + geom_point(aes(color=manufacturer, shape =fl, size = cyl))
 
 ## Facets
 
-```{r, echo=TRUE}
+```{r, echo=TRUE, fig.width=7, fig.height=4}
 p + geom_point(aes(color=manufacturer, size = cyl))+facet_grid(.~fl)
 ```
 
@@ -304,7 +341,7 @@ And then you can change how things look and behave:
 ## Barplots
 - let's look at the drive type of the cars: front, rear, or 4wd
 
-```{r}
+```{r, fig.width=7, fig.height=4}
 p <- ggplot(mpg, aes(drv))
 p + geom_bar()
 ```
@@ -314,7 +351,7 @@ p + geom_bar()
 
 - not so fancy. should we add color?
 
-```{r}
+```{r, fig.width=7, fig.height=4}
 p <- ggplot(mpg, aes(drv))
 p + geom_bar(aes(color=drv))
 ```
@@ -323,7 +360,7 @@ p + geom_bar(aes(color=drv))
 
 - ups. Maybe we meant fill?
 
-```{r}
+```{r, fig.width=7, fig.height=4}
 p <- ggplot(mpg, aes(drv))
 p + geom_bar(aes(fill=drv))
 ```
@@ -331,9 +368,9 @@ p + geom_bar(aes(fill=drv))
 
 ## Barplots
 
-- nice. doesn't add much information, though. what if we cross it with car class?
+- what if we cross it with another variable?
 
-```{r}
+```{r, fig.width=7, fig.height=4}
 p <- ggplot(mpg, aes(drv))
 p + geom_bar(aes(fill=class))
 ```
@@ -343,7 +380,7 @@ p + geom_bar(aes(fill=class))
 
 - By default stacked. How to unstack?
 
-```{r}
+```{r, fig.width=7, fig.height=4}
 p <- ggplot(mpg, aes(drv))
 p + geom_bar(aes(fill=class), position = position_dodge())
 ```
@@ -352,7 +389,7 @@ p + geom_bar(aes(fill=class), position = position_dodge())
 
 - By default stacked. How to show relative weight?
 
-```{r}
+```{r, fig.width=7, fig.height=4}
 p <- ggplot(mpg, aes(drv))
 p + geom_bar(aes(fill=class), position = position_fill())
 ```
@@ -361,51 +398,183 @@ p + geom_bar(aes(fill=class), position = position_fill())
 ## One variable, continuous: mpg on highway
 
 * When the variable is continuous, it makes more sense to show distributions
-```{r}
+```{r, fig.width=7, fig.height=4}
 p <- ggplot(mpg, aes(hwy))
 p + geom_histogram()
 ```
 
 ## Histograms: binwidth
 
-```{r}
+```{r, fig.width=7, fig.height=4}
 p + geom_histogram(bins = 10)
 ```
 
 ## Histograms: binwidth
 
-```{r}
+```{r, fig.width=7, fig.height=4}
 p + geom_histogram(bins = 100)
 ```
 
 ## An alternative do histogram: dotplot
-```{r}
+```{r, fig.width=7, fig.height=4}
 p + geom_dotplot(binwidth = 0.5)
 ```
 
 ## Continuous distribution: Kernel Density Estimation
 
-```{r}
+```{r, fig.width=7, fig.height=4}
 p + geom_density()
 ```
 
 ## Continuous distribution: Kernel Density Estimation
 
-```{r}
+```{r, fig.width=7, fig.height=4}
 p + geom_density(adjust = 3)
 ```
 
 ## Continuous distribution: Kernel Density Estimation
 
-```{r}
+```{r, fig.width=7, fig.height=4}
 p + geom_density(adjust = 0.5)
 ```
 
+
 ## Exploring data with plots: two variables
 
-> TODO
+*Plot types depend on the variable type*
+
+
+- *both vars continuous*: scatter, smooth
+- *one continuous, one discrete*: columns (i.e., bars), boxplot, violins
+- *both discrete*: count
+
+
+## Scatter
+
+> if two variables are continuous, your choice is scatter
+
+```{r, fig.width=7, fig.height=4}
+p <- ggplot(mpg, aes(x = cty, y = hwy))
+p + geom_point()
+```
+
+## Smooth
+
+> still, you might just want to show the general tendency
+
+```{r, fig.width=7, fig.height=4}
+p + geom_smooth()
+```
+
+## Scatter + smooth
+
+> or both
+
+```{r, fig.width=7, fig.height=4}
+p + geom_smooth() + geom_point()
+```
+
+
+
+## Columns: a special type of bars
+
+> one variable discrete, the other continuous (note: it needs a `summarise()`)
+
+```{r, fig.width=7, fig.height=4}
+mpg %>% group_by(manufacturer) %>% summarise(n = n()) %>% 
+ggplot(aes(manufacturer, n))+
+  geom_col()
+```
+
+## Columns: why bother?
+
+> the above could have been easily done with geom_bar (that counts for us)
+
+```{r, fig.width=7, fig.height=4}
+mpg %>% ggplot(aes(manufacturer))+
+  geom_bar()
+```
+
+## Columns: a special type of bars
+
+> but columns give you more options, since now you condition on a proper variable (n). For instance: order by n
+
+```{r, fig.width=7, fig.height=4}
+mpg %>% group_by(manufacturer) %>% summarise(n = n()) %>% 
+ggplot(aes(reorder(manufacturer, -n), n))+
+  geom_col()
+```
+
+
+## Boxplots
+
+> boxplots show a distribution but can do so over different levels of a categorical var
+
+```{r, fig.width=7, fig.height=4}
+mpg %>% ggplot(aes(drv, hwy))+
+  geom_boxplot()
+```
+
+## An alternative to boxplot: violin
+
+> boxplots are bulky and only show relevant info. Want full distribution? Use violins
+
+```{r, fig.width=7, fig.height=4}
+mpg %>% ggplot(aes(drv, hwy))+
+  geom_violin()
+```
+
+
+## An alternative to boxplot: violin
+
+> remember: all is modular. We can always add color, fill...
+
+```{r, fig.width=7, fig.height=4}
+mpg %>% ggplot(aes(drv, hwy, color = drv, fill = drv))+
+  geom_violin()
+```
+
+## An alternative to boxplot: violin
+
+> remember: all is modular. ...facets
+
+```{r, fig.width=7, fig.height=4}
+mpg %>% ggplot(aes(drv, hwy, color = drv, fill = drv))+
+  geom_violin()+
+  facet_grid(.~year)
+```
+
+## Counts
+
+> if both variables are categorical, you can count their cross-tabulation
+
+```{r, fig.width=7, fig.height=4}
+mpg %>% ggplot(aes(fl, drv))+
+  geom_count()
+```
+
+
+
+## Exploring data with plots: three variables
+
+*Plot types depend on the variable type*
+
+
+- *all continuous*: contour plot (think: elevation in maps)
+- *some discrete*: tile
+
+## Tile
+
+> two variables define the x,y grid. A third defines the color of the cell. city consumption by year and drive (note: usually requires `summarise()`)
+
+```{r, fig.width=7, fig.height=4}
+mpg %>% group_by(year, drv) %>% summarise(n = n()) %>% 
+  ggplot(aes(x = drv, y = year, fill = n)) +  geom_tile()
+```
 
 ## Additional resources
 
-- try to look for PlotCon2016 videos, and especially [this one](https://www.youtube.com/watch?v=RG_BKQRbJZw)
-- ...
+- the ggplot **cheatsheet** is your friend (Help -> cheatsheets)
+- **stack overflow** helps out for trickier questions
+- not feeling inspired? 50 cool visualisations here: http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html
+- need a complete tour of possibilities? https://www.r-graph-gallery.com/
