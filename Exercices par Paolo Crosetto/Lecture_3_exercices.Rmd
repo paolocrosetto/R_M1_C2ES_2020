@@ -1,5 +1,5 @@
 ---
-title: "Exercices Lecture 3"
+title: "Exercices Lecture 3 -- basic plots"
 author: "Paolo Crosetto"
 date: "octobre 2020"
 output: html_document
@@ -9,32 +9,25 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(nycflights13)
-
-planes <- planes
-flights <- flights
-airports <- airports
 ```
 
 
-# révisons: `left_join()` + tout le reste
+# Plots of one variable
 
 ## Exercice 1
 
-> en utilisant les jeux de données planes, flights et airports, trouver combien de vols partis de chacun de trois aéroports de NYC a atteri à Denver (DEN) en mai et a été desservi par des avions produits entre 2005 et 2010.
+> en utilisant les jeux de données flights, plotter la distribution du retard à l'arrivée
 
 ```{r ex1}
 
 ```
 
 
+## Exercice 2
 
-# creating tidy data: reshape with `gather()` and `spread()`
+> montrez un bar plot du nombre de vols par mois
 
-**notes**: `gather()` prend des données au format 'large' (plus de colonnes que des lignes) et le reformate au format 'long' (plus de lignes que des colonnes). `spread()` est l'opération inverse, qui permet de passer de 'long' à 'large'. 
-
-## Exercice 2: `gather()`
-
-> utilisez le jeu de données `table4` et créez une variable 'année' et une variable 'population'
+Attention: cette variable n'existe pas dans la base de données... il faut la créer d'abord!
 
 
 ```{r ex2}
@@ -43,24 +36,28 @@ airports <- airports
 ```
 
 
-## Exercice 3: `gather()`
+## Exercice 3
 
-> visualisez et importez dans votre espace de travail les jeux de données `table1` et `table2`. Ils contiennent les mêmes informations. Manipulez `table1` pour obtenir `table2`
+> ajoutez l'information de l'aéroport de départ au plot de l'exercice 2. 
+
+**attention** il y a plusieurs façon de faire!
 
 ```{r ex3}
-
 
 
 ```
 
 
-## Exercice 4: `gather()`
+# Plots of two variables
 
-> reordonnez `world_bank_pop` afin que 'year' soit une variable et pour chaque pays et whaque année vous avez deux observations, population urbaine et croissance de la population. Sauvegardez votre résultat dans un objet dans votre workplace.
+# both continuous
+
+## Exercice 4
+
+> Y a-t-il une rélation entre l'heure de départ des vols et leur retard? (Limitez vous aux vols de janvier pour éviter des longues attentes pour les calculs)
 
 ```{r ex4}
 
-  
 ```
 
 
