@@ -258,10 +258,10 @@ table4b  #population
 - `tidyr` is part fo the tidyverse
 - it is automatically loaded with `library(tidyverse)`
 - `tidyr` provides 4 main verbs
-- `gather` vs. `spread`
+- `pivot_longer` vs. `pivot_wider`
 - `separate` vs. `unite`
 
-## gathering: from wide to long
+## from wide to long: `pivot_longer`
 
 > sometimes variables are in the column names: bad!
 
@@ -272,72 +272,78 @@ table4a
 - 'year' is a variable but it is on the column names
 - content is 'cases' but has no variable name
 
-## gathering
+## reshaping to longer
 
 > we need to reshape the data from *wide* to *long*, so that *year* becomes a variable and *1999* and *2000* become values.
 
-- we use `gather(vars, key, value)`
+- we use `pivot_longer(vars, names_to = ..., values_to =...)`
 - `vars` is the variable names that are not actually variables but values
-- `key` is the (new) name to be given to the (new) column that will be created to store the (former) variable names
-- `value` is the (new) name to be given to the  (new) column that will be created to store the values that were spread over several variables
+- `names_to` is the (new) name to be given to the (new) column that will be created to store the (former) variable names
+- `values_to` is the (new) name to be given to the  (new) column that will be created to store the values that were spread over several variables
 
-## gathering
 
-> what happens if we just provide NO arguments?
+## reshaping to longer
 
-- everything is gathered just two columns left (key & value)
-
-```{r}
-table4a %>% gather()
-```
-
-## gathering
-
-> what if we provide arguments?
+> what if we provide just the columns? 
 
 ```{r}
-cases <- table4a %>% gather(`1999`,`2000`, key = year, value = cases) %>% arrange(country, year)
-cases
+table4a %>% pivot_longer(!country)
 ```
 
+- it works: it correctly guesses that the columns provide the name and the values provide the values. 
 
-## gathering
+## reshaping to longer
 
-> we can do the same for the population table (`table4b`)
+> what if we provide full arguments? 
 
 ```{r}
-pop <- table4b %>% gather(`1999`,`2000`, key = year, value = population)
-pop
+table4a %>% pivot_longer(!country, names_to = "year", values_to = "val")
 ```
 
-## gathering 
-
-> we can merge the two tables and we'll get back to table1
-
-```{r}
-left_join(cases,pop, by = c("country","year"))
-```
+- arguments allow us to provide custom names 
+- always better to spell out all arguments for future readability of the code
+- often the automatic detection fails!
 
 
-## spreading: from long to wide
+## reshaping to wider
+
+Let's look at a messy version of table1. 
 ```{r}
 table2
 ```
 
-## spreading: from long to wide
+## reshaping to wider
 
 > we need to reshape the data from *long* to *wide*, so that *type* gets split into the variables *cases* and *population* and *count* values get assigned to the proper column.
 
-- we use `spread(key, value)`
-- `key` is the (existing) name of the column that contains variable names
-- `value` is the (existing) name of the variable that contains values of the (to be created) variables
+- we use `pivot_wider(vars, names_from = ..., values_from = ...`
+- `names_from` is the (existing) name of the column that contains variable names
+- `values_from` is the (existing) name of the variable that contains values of the (to be created) variables
 
 
-## spreading: from long to wide
+## reshaping to wider
+
 ```{r}
-spread(table2, key = type, value = count)
+table2 %>% pivot_wider(names_from = type, values_from = count)
 ```
 
+## pivot_longer and pivot_wider are inverse functions
+
+- if you pivot_longer a data frame then you pivot_wider, you get the original df.
+- step 1: mess up the data
+
+```{r}
+table1 %>% pivot_longer(!country & !year)
+```
+
+
+## pivot_longer and pivot_wider are inverse functions
+
+- step 2: get back in shape
+
+```{r}
+table1 %>% pivot_longer(!country & !year) %>% pivot_wider(names_from = name, values_from = value)
+```
 
 ## separating: from one to more variables
 
