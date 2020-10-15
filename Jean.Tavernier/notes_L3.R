@@ -9,3 +9,8 @@ df %>%
   summarise(mean_x = mean(x), mean_y = mean(y), sd_x = sd(x), sd_y = sd(y)) -> analysis
 analysis
 
+print('hello')
+
+
+
+
