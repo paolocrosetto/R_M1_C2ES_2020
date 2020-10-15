@@ -1,6 +1,6 @@
 ---
 title: "Exercises lecture 3 -- data wrangling"
-author: "Paolo Crosetto"
+author: "Jean Tavernier"
 date: "octobre 2020"
 output: html_document
 ---
@@ -22,7 +22,9 @@ df <- flights
 > sauvegardez dans un nouvel objet tous les vols partis entre midi et deux heures, en gardant juste l'info sur l'aéroport de départ et d'arrivée
 
 ```{r ex1}
-
+df %>%
+  filter(dep_time >= 1200 & dep_time <= 1400) %>%
+  select(origin, dest, dep_time) -> df_midday
 
 ```
 ## Exercice 2
@@ -30,7 +32,10 @@ df <- flights
 > isolez dans un nouvel objet tous les vols partis entre minuit et une heure du matin de JFK et de LGA. Quelle est, pour chacun de deux aéroport, la destionation la plus fréquente? 
 
 ```{r ex2}
-
+réponse2 <- df %>%
+  filter(dep_time >= 0000 & dep_time <= 0100 & (origin == 'JFK' | origin == 'LGA')) %>%
+  select(dest)
+réponse2
 ```
 
 # `mutate()`
@@ -40,7 +45,10 @@ df <- flights
 > créez une variable qui montre la vitesse de chaque avion
 
 ```{r ex3}
-
+vitesse <- df %>% 
+  mutate(speed = distance/air_time) %>% 
+  select(speed, everything())
+vitesse
 ```
 
 
@@ -49,6 +57,11 @@ df <- flights
 > créez une variable qui calcule l'impact (en %) du retard à l'arrivée sur le temps de vol
 
 ```{r ex4}
+réponse4 <- df %>% 
+  mutate(impact = arr_delay/arr_time-dep_time * 100) %>% 
+  select(impact, everything()) 
+réponse4
+
 
 ```
 
@@ -60,8 +73,9 @@ df <- flights
 > calculez la moyenne, l'écart type, le min et le max du rétard à l'arrivée
 
 ```{r ex5}
-
-
+réponse5 <- df %>% 
+  summarise(mean = mean(arr_delay,na.rm = TRUE), sd = sd(arr_delay,na.rm = TRUE), min = min(arr_delay,na.rm = TRUE),max = max(arr_delay,na.rm = TRUE))
+réponse5
 ```
 
 ## Exercice 6
@@ -69,7 +83,10 @@ df <- flights
 > même chose que l'exercice 6, mais par aéroport de départ
 
 ```{r ex6}
-
+réponse6 <- df %>% 
+  group_by(origin) %>%
+  summarise(mean = mean(arr_delay,na.rm = TRUE), sd = sd(arr_delay,na.rm = TRUE), min = min(arr_delay,na.rm = TRUE),max = max(arr_delay,na.rm = TRUE)) 
+réponse6
 
 ```
 
@@ -78,8 +95,9 @@ df <- flights
 > calculez la moyenne du retard par compagnie aérienne
 
 ```{r ex7}
-
-
+réponse7 <- df %>% 
+  group_by(carrier) %>% 
+  summarise(mean = mean(arr_delay,na.rm = TRUE))
 
 ```
 
@@ -89,7 +107,12 @@ df <- flights
 > quelle est la vitesse moyenne des vols qui partent entre 11h et 13h, par mois?
 
 ```{r ex8}
-
+réponse8 <- df %>% 
+  mutate(speed = distance/air_time) %>% 
+  filter(dep_time>=1100 & dep_time<=1300) %>% 
+  group_by(month) %>% 
+  summarise(mean = mean(speed,na.rm = TRUE))
+réponse8
 
   
 ```
