@@ -4,4 +4,5 @@ library(tidyverse)
 mpg
 ggplot(mpg, aes(x = cty, y = hwy)) + geom_point() + geom_smooth()
 
+print('hello')
 
