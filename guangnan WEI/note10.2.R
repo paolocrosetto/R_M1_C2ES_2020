@@ -23,7 +23,7 @@ library(dplyr)
 #cela permet de sélectionner des lignes
 
 #tous les vols de décembre
-filter(df,month=12)
+filter(df,month==12)
 
 #tous les vols de décembre qui partent de JFK et qui vont à LAX
 vol_jfk_lax_decembre<-filter(df,month==12 & origin=="JFK" & dest=="LAX")
