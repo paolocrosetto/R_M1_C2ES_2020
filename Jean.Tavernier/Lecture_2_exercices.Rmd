@@ -32,7 +32,10 @@ df %>%
 > isolez dans un nouvel objet tous les vols partis entre minuit et une heure du matin de JFK et de LGA. Quelle est, pour chacun de deux aéroport, la destionation la plus fréquente? 
 
 ```{r ex2}
-
+réponse2 <- df %>%
+  filter(dep_time >= 0000 & dep_time <= 0100 & (origin == 'JFK' | origin == 'LGA')) %>%
+  select(dest)
+réponse2
 ```
 
 # `mutate()`
@@ -42,7 +45,10 @@ df %>%
 > créez une variable qui montre la vitesse de chaque avion
 
 ```{r ex3}
-
+vitesse <- df %>% 
+  mutate(speed = distance/air_time) %>% 
+  select(speed, everything())
+vitesse
 ```
 
 
@@ -51,6 +57,11 @@ df %>%
 > créez une variable qui calcule l'impact (en %) du retard à l'arrivée sur le temps de vol
 
 ```{r ex4}
+réponse4 <- df %>% 
+  mutate(impact = arr_delay/arr_time-dep_time * 100) %>% 
+  select(impact, everything()) 
+réponse4
+
 
 ```
 
@@ -62,8 +73,9 @@ df %>%
 > calculez la moyenne, l'écart type, le min et le max du rétard à l'arrivée
 
 ```{r ex5}
-
-
+réponse5 <- df %>% 
+  summarise(mean = mean(arr_delay,na.rm = TRUE), sd = sd(arr_delay,na.rm = TRUE), min = min(arr_delay,na.rm = TRUE),max = max(arr_delay,na.rm = TRUE))
+réponse5
 ```
 
 ## Exercice 6
@@ -71,7 +83,10 @@ df %>%
 > même chose que l'exercice 6, mais par aéroport de départ
 
 ```{r ex6}
-
+réponse6 <- df %>% 
+  group_by(origin) %>%
+  summarise(mean = mean(arr_delay,na.rm = TRUE), sd = sd(arr_delay,na.rm = TRUE), min = min(arr_delay,na.rm = TRUE),max = max(arr_delay,na.rm = TRUE)) 
+réponse6
 
 ```
 
@@ -80,8 +95,9 @@ df %>%
 > calculez la moyenne du retard par compagnie aérienne
 
 ```{r ex7}
-
-
+réponse7 <- df %>% 
+  group_by(carrier) %>% 
+  summarise(mean = mean(arr_delay,na.rm = TRUE))
 
 ```
 
@@ -91,7 +107,12 @@ df %>%
 > quelle est la vitesse moyenne des vols qui partent entre 11h et 13h, par mois?
 
 ```{r ex8}
-
+réponse8 <- df %>% 
+  mutate(speed = distance/air_time) %>% 
+  filter(dep_time>=1100 & dep_time<=1300) %>% 
+  group_by(month) %>% 
+  summarise(mean = mean(speed,na.rm = TRUE))
+réponse8
 
   
 ```
