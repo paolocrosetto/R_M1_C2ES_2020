@@ -50,7 +50,7 @@ df %>%
   geom_point(aes(color=carrier))
 
 # ==============================================================
-# Facets : sous-plot
+# Facets : Les sous-plots
 df %>% 
   filter(month == 6) %>%
   ggplot(aes(x=dep_delay, y=arr_delay)) +
