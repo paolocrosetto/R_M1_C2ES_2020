@@ -2,7 +2,6 @@
 
 library(tidyverse)
 mpg
-ggplot(mpg, aes(x = cty, y = hwy)) + geom_point() + geom_smooth()
+ggplot(mpg, aes(x = cty, y = hwy)) + geom_point(aes(color = class)) + geom_smooth()
 
-print('hello')
 
