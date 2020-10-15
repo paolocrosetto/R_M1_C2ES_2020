@@ -25,7 +25,7 @@ skim(df)
 filter(df,month==12)
 
 # tous les vols de decembre qui partent de JFK
-filter(df,month==12&origin=="JFK")
+filter(df,month==12 & origin=="JFK")
 
 #tous les vols de decembre qui partent de JFK et qui vont à LAx
 filter(df,month==12&origin=="JFK"&dest=="LAX")
