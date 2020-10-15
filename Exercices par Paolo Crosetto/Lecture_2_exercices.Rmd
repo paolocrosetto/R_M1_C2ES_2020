@@ -1,8 +1,11 @@
 ---
-title: "Exercises lecture 3 -- data wrangling"
+title: "Exercises lecture 2 -- data wrangling"
 author: "Paolo Crosetto"
 date: "octobre 2020"
-output: html_document
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -25,6 +28,7 @@ df <- flights
 df %>% 
   filter(dep_time >= 1200 & dep_time <= 1400) %>% 
   select(dep_time, origin, dest) -> df_midday
+df_midday
 
 ```
 ## Exercice 2
@@ -93,7 +97,7 @@ df %>%
 ```{r ex8}
 
 
-  
+
 ```
 
 
@@ -111,7 +115,7 @@ df %>%
 ```{r ex9}
 
 
-  
+
 ```
 
 
@@ -123,50 +127,5 @@ df %>%
 
 ```
 
-# `join_...()` family of functions
-
-> first run this setup R code chunk. It will load in your workspace 3 data frames:
-
-- **airports**: avec données sur les aéroports américains
-- **flights**: qu'on connait déjà
-- **planes**: avec les données pour chaque avion
-
-```{r setup_join}
-planes <- planes
-flights <- flights
-airports <- airports
-```
-
-## Exercice 11
-
-> est-ce que les routes plus longues sont desservies apr les avions les plus modernes?
-
-*notes*: utilisez `left_join()` et mergez les dataframes `flights` et `planes`
-
-```{r ex11}
-
-
-```
-
-## Exercice 12
-
-> combien de vols qui partent des trois aéroport de NY atterrisent dans des destinations  au dessus de 1000m s.n.m.?
-
-```{r ex12}
-
-
-```
-
-
-# creating tidy data: reshape with `gather()` and `spread()`
-
-## Exercice 13
-
-> tidy world_bank_pop dataset so that 'year' is a variable and for each country and each year you have urban population and urban population growh only. Plot as a geom_line the total population for each country over the years.
-
-```{r ex13}
-
-  
-```
 
 
