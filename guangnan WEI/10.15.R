@@ -61,7 +61,7 @@ df%>%
 #2 dimension 2 facets
 
 plot2+
-  facet_grid(carrier~origin) ##syntaxe ligne 
+  facet_grid(carrier~origin) ##syntaxe ligne -colonne
 
 #################################@
 plot2+
@@ -71,9 +71,90 @@ plot2+
 
 plot2+
   facet_wrap(~day)
-
-plot2+
-  facet_wrap(~day)
-
+#=======================================
 
 p+geom_point(aes(col=manufacturer,size=cyl))+facet_grid(~fl)
+#==========================================================================================================
+#exploring data with plots: one variable
+#continue
+flights
+#density simple
+flights%>%
+  ggplot(aes(x=dep_time))+
+  geom_density()
+
+#with layers
+flights%>%
+  ggplot(aes(x=dep_time))+
+  geom_density(aes(col=origin))+
+  facet_wrap(~origin)
+#histogram
+#simple
+
+
+
+flights%>%
+  ggplot(aes(x=dep_time))+
+  geom_histogram(binwidth = 200)
+
+flights%>%
+  ggplot(aes(x=dep_time))+
+  geom_histogram(binwidth = 20)
+
+flights%>%
+  ggplot(aes(x=dep_time))+
+  geom_histogram(bins=2)
+flights%>%
+  ggplot(aes(x=dep_time))+
+  geom_histogram(bins = 200)
+
+flights%>%
+  ggplot(aes(x=dep_time))+
+  geom_histogram()->hist1
+
+flights%>%
+  ggplot(aes(x=dep_time))+
+  geom_histogram(aes(col=origin))
+
+flights%>%
+  ggplot(aes(x=dep_time))+
+  geom_histogram(aes(col=origin,fill=origin))
+
+flights%>%
+  ggplot(aes(x=dep_time))+
+  geom_histogram(aes(col=origin,fill=origin))+
+  facet_grid(~origin)
+#une seul variable ,discrete
+#nombre de vols pour compagnie, simplez
+flights%>%
+  ggplot(aes(x=carrier))+
+  geom_bar()
+
+#complex
+flights%>%
+  ggplot(aes(x=carrier))+
+  geom_bar(aes(col=origin,fill=origin))
+
+
+#position des barres
+#par défaut empilées
+flights%>%
+  ggplot(aes(x=carrier))+
+  geom_bar(aes(col=origin,fill=origin))
+
+#fréquence relatives
+flights%>%
+  ggplot(aes(x=carrier))+
+  geom_bar(aes(col=origin,fill=origin),position = position_fill())
+
+
+#barres les unes à côté des autres
+flights%>%
+  ggplot(aes(x=carrier))+
+  geom_bar(aes(col=origin,fill=origin),position = position_dodge())
+
+
+
+
+
+
