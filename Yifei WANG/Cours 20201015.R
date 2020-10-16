@@ -226,7 +226,7 @@ flights %>%
   group_by(origin, dest) %>%
   summarise(n=n()) %>% 
   filter(n>1000) %>%
-  ggplot(aes(x=dest, y=origin, z=n)) +
+  ggplot(aes(x=dest, y=origin, z=n,fill=n)) +
   geom_tile()
 
 

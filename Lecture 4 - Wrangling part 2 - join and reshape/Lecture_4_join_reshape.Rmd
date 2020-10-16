@@ -174,8 +174,8 @@ answer %>% group_by(year) %>%
 
 > how many flights through NYC land in an airport whose altitude is > 1000mt?
 
-- note: 1 mètre = 3,28084 mètres
-- altitude is in the *airports* df
+- note: 1 mètre = 3,28084 feet
+- altitude is in the *airports* df (in feet)
 - flights are in the *flights* df
 
 ## solution
