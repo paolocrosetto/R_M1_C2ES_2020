@@ -187,7 +187,8 @@ Pour répondre à cela il faut faire une régression par an, et après regarder 
 
 Malheureusement, une approche simple et naive (groupez puis faites le lm) ne marche pas. 
 
-```{r}
+```{r, fig.width=12}
+
 
 ```
 
