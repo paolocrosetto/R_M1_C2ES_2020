@@ -1,0 +1,312 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Exercises lecture 3 -- data wrangling},
+  pdfauthor={Paolo Crosetto},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+\title{Exercises lecture 3 -- data wrangling}
+\author{Paolo Crosetto}
+\date{octobre 2020}
+
+\begin{document}
+\maketitle
+
+\hypertarget{filter-select}{%
+\section{\texorpdfstring{\texttt{filter()} \&
+\texttt{select()}}{filter() \& select()}}\label{filter-select}}
+
+\hypertarget{exercice-1}{%
+\subsection{Exercice 1}\label{exercice-1}}
+
+\begin{quote}
+sauvegardez dans un nouvel objet tous les vols partis entre midi et deux
+heures, en gardant juste l'info sur l'aéroport de départ et d'arrivée
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(dep_time }\OperatorTok{>=}\StringTok{ }\DecValTok{1200} \OperatorTok{&}\StringTok{ }\NormalTok{dep_time }\OperatorTok{<=}\StringTok{ }\DecValTok{1400}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(dep_time, origin, dest) ->}\StringTok{ }\NormalTok{df_midday}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{exercice-2}{%
+\subsection{Exercice 2}\label{exercice-2}}
+
+\begin{quote}
+isolez dans un nouvel objet tous les vols partis entre minuit et une
+heure du matin de JFK et de LGA. Quelle est, pour chacun de deux
+aéroport, la destionation la plus fréquente?
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df}\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(dep_time}\OperatorTok{>=}\DecValTok{0000} \OperatorTok{&}\StringTok{ }\NormalTok{dep_time}\OperatorTok{<=}\DecValTok{0100}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 892 x 19
+##     year month   day dep_time sched_dep_time dep_delay arr_time sched_arr_time
+##    <int> <int> <int>    <int>          <int>     <dbl>    <int>          <int>
+##  1  2013     1     2       42           2359        43      518            442
+##  2  2013     1     3       32           2359        33      504            442
+##  3  2013     1     3       50           2145       185      203           2311
+##  4  2013     1     4       25           2359        26      505            442
+##  5  2013     1     5       14           2359        15      503            445
+##  6  2013     1     5       37           2230       127      341            131
+##  7  2013     1     6       16           2359        17      451            442
+##  8  2013     1     7       49           2359        50      531            444
+##  9  2013     1     9        2           2359         3      432            444
+## 10  2013     1     9        8           2359         9      432            437
+## # ... with 882 more rows, and 11 more variables: arr_delay <dbl>,
+## #   carrier <chr>, flight <int>, tailnum <chr>, origin <chr>, dest <chr>,
+## #   air_time <dbl>, distance <dbl>, hour <dbl>, minute <dbl>, time_hour <dttm>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \KeywordTok{filter}\NormalTok{(df,origin}\OperatorTok{==}\StringTok{'JFK'} \OperatorTok{&}\StringTok{ }\NormalTok{origin}\OperatorTok{==}\StringTok{'LGA'}\NormalTok{)->}\StringTok{ }\NormalTok{OBJ1}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{mutate}{%
+\section{\texorpdfstring{\texttt{mutate()}}{mutate()}}\label{mutate}}
+
+\hypertarget{exercice-3}{%
+\subsection{Exercice 3}\label{exercice-3}}
+
+\begin{quote}
+créez une variable qui montre la vitesse de chaque avion
+\end{quote}
+
+\hypertarget{exercice-4}{%
+\subsection{Exercice 4}\label{exercice-4}}
+
+\begin{quote}
+créez une variable qui calcule l'impact (en \%) du retard à l'arrivée
+sur le temps de vol
+\end{quote}
+
+\hypertarget{summarise-and-group_by}{%
+\section{\texorpdfstring{\texttt{summarise()} and
+\texttt{group\_by()}}{summarise() and group\_by()}}\label{summarise-and-group_by}}
+
+\hypertarget{exercice-5}{%
+\subsection{Exercice 5}\label{exercice-5}}
+
+\begin{quote}
+calculez la moyenne, l'écart type, le min et le max du rétard à
+l'arrivée
+\end{quote}
+
+\hypertarget{exercice-6}{%
+\subsection{Exercice 6}\label{exercice-6}}
+
+\begin{quote}
+même chose que l'exercice 6, mais par aéroport de départ
+\end{quote}
+
+\hypertarget{exercice-7}{%
+\subsection{Exercice 7}\label{exercice-7}}
+
+\begin{quote}
+calculez la moyenne du retard par compagnie aérienne
+\end{quote}
+
+\hypertarget{exercice-8-filter-select-mutate-summarise-group_by}{%
+\subsection{Exercice 8 -- filter + select + mutate + summarise +
+group\_by}\label{exercice-8-filter-select-mutate-summarise-group_by}}
+
+\begin{quote}
+quelle est la vitesse moyenne des vols qui partent entre 11h et 13h, par
+mois?
+\end{quote}
+
+\hypertarget{meet-the-pipe}{%
+\section{\texorpdfstring{meet the pipe:
+\texttt{\%\textgreater{}\%}}{meet the pipe: \%\textgreater\%}}\label{meet-the-pipe}}
+
+\hypertarget{meta-exercice-1}{%
+\subsection{meta-exercice 1}\label{meta-exercice-1}}
+
+\begin{quote}
+\textbf{re-faites} \emph{tous} les exercices ci-dessus en utilisant
+l'opérateur `et après' / pipe \texttt{\%\textgreater{}\%}
+\end{quote}
+
+\hypertarget{exercice-9}{%
+\subsection{Exercice 9}\label{exercice-9}}
+
+\begin{quote}
+trouvez le maximum retard au depart par aéroport pour JFK et LGA pour
+chaque jour de l'an. Est-ce que les retards sont corrélés?
+\end{quote}
+
+\hypertarget{exercice-10}{%
+\subsection{Exercice 10}\label{exercice-10}}
+
+\begin{quote}
+de quel aéroport partent les vols à plus longue distance?
+\end{quote}
+
+\hypertarget{join_...-family-of-functions}{%
+\section{\texorpdfstring{\texttt{join\_...()} family of
+functions}{join\_...() family of functions}}\label{join_...-family-of-functions}}
+
+\begin{quote}
+first run this setup R code chunk. It will load in your workspace 3 data
+frames:
+\end{quote}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{airports}: avec données sur les aéroports américains
+\item
+  \textbf{flights}: qu'on connait déjà
+\item
+  \textbf{planes}: avec les données pour chaque avion
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{planes <-}\StringTok{ }\NormalTok{planes}
+\NormalTok{flights <-}\StringTok{ }\NormalTok{flights}
+\NormalTok{airports <-}\StringTok{ }\NormalTok{airports}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{exercice-11}{%
+\subsection{Exercice 11}\label{exercice-11}}
+
+\begin{quote}
+est-ce que les routes plus longues sont desservies apr les avions les
+plus modernes?
+\end{quote}
+
+\emph{notes}: utilisez \texttt{left\_join()} et mergez les dataframes
+\texttt{flights} et \texttt{planes}
+
+\hypertarget{exercice-12}{%
+\subsection{Exercice 12}\label{exercice-12}}
+
+\begin{quote}
+combien de vols qui partent des trois aéroport de NY atterrisent dans
+des destinations au dessus de 1000m s.n.m.?
+\end{quote}
+
+\hypertarget{creating-tidy-data-reshape-with-gather-and-spread}{%
+\section{\texorpdfstring{creating tidy data: reshape with
+\texttt{gather()} and
+\texttt{spread()}}{creating tidy data: reshape with gather() and spread()}}\label{creating-tidy-data-reshape-with-gather-and-spread}}
+
+\hypertarget{exercice-13}{%
+\subsection{Exercice 13}\label{exercice-13}}
+
+\begin{quote}
+tidy world\_bank\_pop dataset so that `year' is a variable and for each
+country and each year you have urban population and urban population
+growh only. Plot as a geom\_line the total population for each country
+over the years.
+\end{quote}
+
+\end{document}
