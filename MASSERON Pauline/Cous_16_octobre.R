@@ -170,8 +170,8 @@ wbp_long %>%
   pivot_wider(names_from = year, values_from = value)
 
 
-#exercice 2 : avec table2
-#transformer table2 en table1
+# exercice 2 : avec table2
+# transformer table2 en table1
 
 table2 %>% 
   pivot_wider(names_from = type, values_from = count)
@@ -190,5 +190,29 @@ wbp %>%
 table3 %>% 
   separate(col = rate, into = c("cases", "population"), sep = "/")
 
+
+# separate exo 2
+
+wbp %>% 
+  separate(col = indicator, into = c("sert_a_rien", "territory", "indicator")) %>% 
+  select(-sert_a_rien)
+
+
+#l'inverse de separate c'est unite
+
+# exercice transformer table5 en table1
+
+table5 %>% 
+  unite(col = "year", century, year, sep ="") %>% 
+  separate(rate, into = c("cases", "population"), sep = "/") %>% 
+  mutate(cases = as.integer(cases), population = as.integer(population))
+
+
+
+
+chr <- c("a", "a", "b", "c")
+fct <- as.factor(chr)
+
+levels(fct)
 
 
