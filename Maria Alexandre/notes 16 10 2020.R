@@ -193,3 +193,11 @@ fct<-as.factor(chr)
 levels(fct)
 
 
+## Exercice babynames
+
+library(babynames)
+babynames
+df1 <-babynames
+
+df1 %>%
+  filter
