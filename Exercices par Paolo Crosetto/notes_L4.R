@@ -81,5 +81,39 @@ flights %>%
 ## pas de relation apparaente -- faudrait faire des régressions (prochaine fois)
 
 # exercice 2.
-# 
+# combien de vols atterissent à plus de 1000mt?
+
+flights %>% 
+  left_join(airports, by = c("dest" = "faa")) %>% 
+  mutate(alt_mt = alt/3.28084) %>% 
+  filter(alt_mt > 1000) %>% 
+  group_by(dest, name, alt_mt) %>% 
+  summarise(n = n())
+
+# exercice 3
+#
+flights %>% 
+  left_join(airports, by = c("dest" = "faa")) %>% 
+  mutate(alt_mt = alt/3.28084) %>% 
+  filter(alt_mt > 1000) -> vols_plus_1000
+
+vols_plus_1000 %>% 
+  select(-year) %>% 
+  left_join(planes, by = 'tailnum') -> vols_plus_1000
+
+# diffrentes fçons de donner une réponse
+
+# 1. avec moyenne et sd
+vols_plus_1000 %>% 
+  summarise(meanyear = mean(year, na.rm = T),
+            sdyear = sd(year, na.rm = T))
+
+# 2. avec un graphique
+vols_plus_1000 %>% 
+  ggplot(aes(x = year)) +
+  geom_density()
+
+vols_plus_1000 %>% 
+  ggplot(aes(x = year)) +
+  geom_histogram()
 
