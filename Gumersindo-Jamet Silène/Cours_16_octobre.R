@@ -77,3 +77,108 @@ flights %>%
 
 ############ Exercice 2
 #cbm de vols qui partent de nyc et atterissent dans un aéroport à + de 1000m d'atitude
+
+flights %>% 
+  left_join(airports, by = c("dest"="faa")) %>% 
+  mutate (alt_mt = alt/3.28084) %>% 
+  filter (alt_mt >1000) %>% 
+  group_by (dest, name, alt_mt) %>% 
+  summarise (n =n())
+
+############ Exercice 3
+flights %>% 
+  left_join(airports, by = c("dest"="faa")) %>% 
+  mutate (alt_mt = alt/3.28084) %>% 
+  filter (alt_mt >1000) -> vols_plus_1000
+
+vols_plus_1000 %>% 
+  select(-year) %>% 
+  left_join(planes, by = "tailnum") -> vols_plus_1000
+
+#différences dacon de donner une réponse
+
+#1. avec moyenne et sd
+vols_plus_1000 %>% 
+  summarise (meanyear = mean(year, na.rm = TRUE),
+             sdyear = sd(year, na.rm = TRUE))
+
+#2. avec un graphique
+vols_plus_1000 %>% 
+  ggplot(aes(x=year)) + geom_density()
+
+vols_plus_1000 %>% 
+  ggplot(aes(x=year)) + geom_histogram()
+             
+# on a appris a faire de join
+
+########### PARTIE 2 -- pivot
+
+#pivot_langer --> prend une base de données larget et la rend longue
+
+#tableau a 2 problemes :
+# - la variable "year" est cachée dans le titre d'autres variables
+# - les valeurs des cas n'ont pas de nom
+
+t4a_tidy <- table4a %>% 
+  pivot_longer( cols = !country , names_to = "année" , values_to= "cas" )
+
+t4b_tidy <- table4b %>% 
+  pivot_longer( cols= !country, names_to = "année", values_to = "pop")
+
+
+t4a_tidy %>%  left_join(t4b_tidy)
+
+# pivot_longer 
+################ exercice 2
+# donnée de la banque mondiale
+wbp <- world_bank_pop
+
+wbp %>% 
+  pivot_longer(cols= country & !indicator,
+                      names_to = "year",
+                      values_to = "value") -> wbp_long
+
+# pivot_vider -> transforme une base de données en "largeur"
+
+wbp_long %>% 
+  pivot_wider (names_from = year, values_from = value)
+            
+             
+####################exercie avec la table2
+#transformer table 2 en table 1
+
+table2 %>% 
+  pivot_wider (names_from = type , values_from = count)
+
+
+#montrer qu'il s'agit d'opérateur inverse
+wbp %>% 
+  pivot_longer(cols = !country & !indicator,
+               names_to = "year",
+               values_to = "val") %>% 
+  pivot_wider(names_from = year, values_from = val)
+
+#separate 
+#séparer une case quand il y a plus qu'une valeur à son intérieur
+table3 %>% 
+  separate( col = rate,
+            into= c("cases", "population"),
+            sep = c(3,6))
+
+# separate exercice 2
+wbp %>% 
+  separate(col= indicator,
+           into = c("sert_a_rien", "territory", "indicator")) %>% 
+  select (sert_a_rien)
+
+## l'inverse de separate c'est unite
+
+# exercice transformer table5 en table1
+
+table5 %>% 
+  unite (col = year, century, year, sep ="")
+  separte ( rate, into = c("cases", "population"), sep = "/")
+  
+
+
+
