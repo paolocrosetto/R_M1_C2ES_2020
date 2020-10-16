@@ -35,6 +35,7 @@ vol_jfk_lax_decembre<-filter(df, month==12 & origin== "JFK" & dest == "LAX")
 #tous les vols de décembre qui partent de jfk et qui ne vont pas à LAX
 filter(df, month==12 & origin== "JFK" & dest != "LAX")
 
+
 ##arrange
 #ordonner les données par variables lignes
 arrange(df,dep_delay)
