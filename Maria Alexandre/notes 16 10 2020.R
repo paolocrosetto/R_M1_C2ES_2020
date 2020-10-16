@@ -98,14 +98,14 @@ vol_plus_1000 %>%
 sdyear= sd(year, na.rm=T))
 
 #avec un graphique
+library(viridisLite)
 vol_plus_1000 %>%
   ggplot(aes(x=year))+
   geom_density()
 
-
 vol_plus_1000 %>%
   ggplot(aes(x=year))+
-  geom_histogram()
+  geom_histogram(aes(color = year))+
 
 ##Partie 2 --PIVOT
 
@@ -124,5 +124,72 @@ t4b_tidy<-table4b %>%
 #Joining to get the table 1 back again         
 t4a_tidy%>%
   left_join(t4b_tidy)
+
+
+#Exercice 2 : données de la banque mondiale
+
+wbp<- world_bank_pop
+
+wbp %>%
+  pivot_longer(cols= !country & !indicator,
+               names_to="year", 
+               values_to="value")-> wbp_long
+
+#pivot_wider -> transforme une base de données en largeur
+
+wbp_long %>%
+  pivot_wider(names_from="year", 
+               values_from="value")
+
+#Exercice 3 avec table 2
+#transformer table 2 en table 1
+table2 %>%
+  pivot_wider(names_from="type", 
+              values_from="count")
+
+#Montrer qu'il s'agit d'opérations inverses
+wbp %>%
+  pivot_longer(cols= !country & !indicator,
+               names_to="year", values_to="val")%>%
+  pivot_wider(names_from="year", values_from="val")
+
+#separate
+#séparer une case quand il y a plus qu'une valeur à son intérieur
+table3 %>%
+  separate(col=rate, into = c("cases", "population", sep= .4))
+
+#separate exercice 2
+wbp %>%
+  separate(col=indicator, 
+           into = c("sert_a_rien", "territory", "indicator")) %>%
+  select(- sert_a_rien)
+
+##L'inverse de separate c'est unite
+
+#exercice : transformer table5 en table1
+table5 %>%
+  unite(col= year, century, year, sep="")%>%
+  separate(rate, into=c("cases", "population"), sep="/")
+
+table5 %>%
+  unite(col= year, century, year, sep="")%>%
+  separate(rate, into=c("cases", "population"), sep="/")%>%
+  mutate(cases= as.integer(cases), population = as.integer(population))
+
+table5 %>%
+  unite(col= year, century, year, sep="")%>%
+  separate(rate, into=c("cases", "population"), sep="/")%>%
+  mutate(cases= as.double(cases), population = as.integer(population))
+
+table5 %>%
+  unite(col= year, century, year, sep="")%>%
+  separate(rate, into=c("cases", "population"), sep="/")%>%
+  mutate(cases= as.integer(cases), population = as.integer(population),
+         yearf=as.factor(year))
+
+chr <- c("a", "a", "b", "c")
+fct<-as.factor(chr)
+
+levels(fct)
 
 
