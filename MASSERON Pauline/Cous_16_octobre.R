@@ -134,10 +134,61 @@ vols_plus_1000 %>%
 
 
 
+#### NETTOYAGE DES DONNEES
+
+#pivot_longer -> prend une base de données large et la rend longue
+
+# table4a a 2 problemes :
+# - la variable "year" est cahcée dans le titre d'autres variables
+# - les valeurs des cas n'ont pas de nom
+
+
+table4a %>% 
+  pivot_longer(cols = !country, names_to = "année", values_to = "cas") -> t4a_tidy
+
+
+table4b %>% 
+  pivot_longer(cols = !country, names_to = "année", values_to = "pop") -> t4b_tidy
+
+
+t4a_tidy %>% 
+  left_join(t4b_tidy)
+
+
+# données de la banque mondiale
+world_bank_pop -> wbp
+
+
+wbp %>% 
+  pivot_longer(cols = !country & !indicator, names_to = "year", values_to = "value") -> wbp_long
 
 
 
+#pivot_wider -> transforme une base de données en largeur
 
+wbp_long %>% 
+  pivot_wider(names_from = year, values_from = value)
+
+
+#exercice 2 : avec table2
+#transformer table2 en table1
+
+table2 %>% 
+  pivot_wider(names_from = type, values_from = count)
+
+
+
+# montrer qu'il s'agit d'opération inverse
+
+wbp %>% 
+  pivot_longer(cols = !country & !indicator, names_to = "year", values_to = "val") %>% 
+  pivot_wider(names_from = year, values_from = val)
+
+
+#separate -> séparer une case quand elle contient plus d'une valeur
+
+table3 %>% 
+  separate(col = rate, into = c("cases", "population"), sep = "/")
 
 
 
