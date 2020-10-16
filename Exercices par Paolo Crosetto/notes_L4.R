@@ -203,7 +203,8 @@ table5 %>%
          population = as.integer(population),
          yearf = as.factor(year))
 
+
+## difference betweencharacter vectors and factors
 chr <- c("a", "a", "b", "c")
 fct <- as.factor(chr)
 
-levels(fct)
