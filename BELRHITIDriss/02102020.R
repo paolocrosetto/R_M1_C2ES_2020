@@ -178,4 +178,75 @@ flights %>%
 
 #ressources disponibles sur les slides, "The R slide gallery"
 #jeux de données TidyTuesday
+
+
+#Join R
+
+library("tidyverse")
+library("nycflights13")
+
+df <-flights  
+
+planes <- planes
+planes
   
+#left join
+
+planes %>% count(tailnum)%>% filter(n!=1)
+df %>% count(tailnum)%>% filter(n!=1)%>%
+arrange(desc(n))
+
+fplanes <- df%>%
+select(-year)%>%
+left_join(planes, by = "tailnum")
+
+airports <- airports
+
+# left join 2nd exemple
+
+airports %>% count(faa)%>% filter(n!=1)
+
+df%>%
+left_join(airports, by=c("dest"="faa"))
+
+df%>%
+  rename("faa"="dest")%>%
+  left_join(airports,by="faa")
+
+airports%>%
+  rename("dest"="faa")%>%
+  right_join(df,by="dest")
+
+#inner join, intersection de deux db
+
+df%>%
+  inner_join(airports,by=c("dest"="faa"))
+
+airports%>%
+  filter(alt>2000)%>%
+  inner_join(df,by=c("faa"="dest"))
+
+df %>%
+  full_join(airports, by=c("dest" = "faa"))
+
+flights%>%
+  select(-year)%>%
+  left_join(planes, by = "tailnum")%>%
+  ggplot(aes(x = year, y=distance)) +
+  geom_point()+
+  geom_smooth()
+
+#Vol NYC alt > 1000m
+
+fplanes%>%
+left_join(airports, by=c("dest"="faa"))%>%
+filter(alt > 3280.84)%>%
+count(origin)->total
+colSums(total[,2], na.rm=FALSE)
+
+fplanes%>%
+  left_join(airports, by=c("dest"="faa"))%>%
+  filter(alt > 3280.84)%>%
+  ggplot(aes(x=year))+
+  geom_bar(fill=20)
+
