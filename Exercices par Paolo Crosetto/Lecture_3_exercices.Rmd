@@ -1,5 +1,5 @@
 ---
-title: "Exercices Lecture 3 -- basic plots"
+title: "Exercices Lecture 3"
 author: "Paolo Crosetto"
 date: "octobre 2020"
 output: html_document
@@ -9,25 +9,32 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(nycflights13)
+
+planes <- planes
+flights <- flights
+airports <- airports
 ```
 
 
-# Plots of one variable
+# révisons: `left_join()` + tout le reste
 
 ## Exercice 1
 
-> en utilisant les jeux de données flights, plotter la distribution du retard à l'arrivée
+> en utilisant les jeux de données planes, flights et airports, trouver combien de vols partis de chacun de trois aéroports de NYC a atteri à Denver (DEN) en mai et a été desservi par des avions produits entre 2005 et 2010.
 
 ```{r ex1}
 
 ```
 
 
-## Exercice 2
 
-> montrez un bar plot du nombre de vols par mois
+# creating tidy data: reshape with `gather()` and `spread()`
 
-Attention: cette variable n'existe pas dans la base de données... il faut la créer d'abord!
+**notes**: `gather()` prend des données au format 'large' (plus de colonnes que des lignes) et le reformate au format 'long' (plus de lignes que des colonnes). `spread()` est l'opération inverse, qui permet de passer de 'long' à 'large'. 
+
+## Exercice 2: `gather()`
+
+> utilisez le jeu de données `table4` et créez une variable 'année' et une variable 'population'
 
 
 ```{r ex2}
@@ -36,40 +43,39 @@ Attention: cette variable n'existe pas dans la base de données... il faut la cr
 ```
 
 
-## Exercice 3
+## Exercice 3: `gather()`
 
-> ajoutez l'information de l'aéroport de départ au plot de l'exercice 2. 
-
-**attention** il y a plusieurs façon de faire!
+> visualisez et importez dans votre espace de travail les jeux de données `table1` et `table2`. Ils contiennent les mêmes informations. Manipulez `table1` pour obtenir `table2`
 
 ```{r ex3}
 
 
+
 ```
 
 
-# Plots of two variables
+## Exercice 4: `gather()`
 
-## Exercice 4
-
-> Y a-t-il une rélation entre l'heure de départ des vols et leur retard? (Limitez vous aux vols de janvier pour éviter des longues attentes pour les calculs)
+> reordonnez `world_bank_pop` afin que 'year' soit une variable et pour chaque pays et whaque année vous avez deux observations, population urbaine et croissance de la population. Sauvegardez votre résultat dans un objet dans votre workplace.
 
 ```{r ex4}
 
+  
 ```
 
 
-## Exercice 5
+## Exercice 5: `spread()`
 
-> Y a-t-il des compagnies aériennes "saisonnières"? Visualisez les départs par mois et par compagnie. 
+> isualisez et importez dans votre espace de travail les jeux de données `table1` et `table2`. Ils contiennent les mêmes informations. Manipulez `table2` pour obtenir `table1`
 
 ```{r ex5}
 
+  
 ```
 
-## Exercice 6
+## Exercice 6: `spread()`
 
-> Est-ce que le profil horaire des trois aéroports diffère? (utilisez geom_density)
+> utilisez le jeu de données issu de l'exercice 4. Créez un jeu de données 'long' qui montre la croissance de la population urbaine de tous les pays sur les années 2000 et 2001, avec une colonne pour chacune de ces années.
 
 ```{r ex6}
 
@@ -77,28 +83,20 @@ Attention: cette variable n'existe pas dans la base de données... il faut la cr
 
 
 
-## Exercice 7
+# creating tidy data: `separate()` and `unite()`
 
-> est-ce que la distribution des retards au départ diffère par compagnie? Utilisez boxplot
+## Exercice 7: `separate()`
+
+> utilisez le jeu de données `table3`. séparez la variable 'rate' dans les deux variables 'cases' et 'population'
 
 ```{r ex7}
 
 ```
 
 
-## Exercice 7bis
+## Exercice 8: `separate()`
 
-> est-ce que la **moyenne** des retards au départ diffère par compagnie? (nécessite un summarise...)
-
-```{r ex7bis}
-
-```
-
-
-
-## Exercice 8
-
-> plot de trois variables en utilisant la couleur. Pour les vols de mai, y a-t-il une rélation entre le retard à l'arrivée et au départ, par compagnie?
+> utilisez `world_bank_pop` et créez une variable qui vous permette de distinguer entre indicateurs 'pop' and 'urban' et une autre pour distinguer enre indicateurs de 'total' and 'growth'.
 
 ```{r ex8}
 
@@ -106,20 +104,9 @@ Attention: cette variable n'existe pas dans la base de données... il faut la cr
 ```
 
 
+## Exercice 9: `unite()`
 
-## Exercice 8bis
-
-> ce n'est pas très simple à voir. Et avec facet?
-
-```{r ex8bis}
-
-```
-
-
-
-## Exercice 9
-
-> Quelle est la vitesse moyenne par compagnie et mois? Visualisez avec tiles
+> utilisez le jeu de données `table5` et mergez dans une seule variable 'année' les colones 'century' et 'year'
 
 ```{r ex9}
 
@@ -127,12 +114,66 @@ Attention: cette variable n'existe pas dans la base de données... il faut la cr
 ```
 
 
-## Exercice 10
+## Exercice 10: `unite()`
 
-> Un exercice un peu plus compliqué. Montrez, pour chaque aéroport d'origine et chaque compagnie, le nombre de vols par créneau horaire d'une heure. 
+> utilisez le jeu de données `flights` et créez une variable unique 'date' pour jour, mois et année 
 
 ```{r ex10}
 
   
 ```
+
+
+  
+# récapitulons le tout: babynames
+
+On va ici utiliser le jeu de données `babynames` (dans le package `babynames`).
+
+1. installez le package `babynames`
+2. regardez les données. Cela contient quoi?
+3. on va faire quelques exercices. 
+
+## babynames ex1: 'Mary' (`filter`)
+
+> montrez le nombre de Mary aux EE.UU. sur toute la longueur des données.
+
+```{r baby1}
+
+```
+
+## babynames ex2: 'Mary vs. 'Anna' (`filter`)
+
+> montrez le nombre de Mary et de Anna aux EE.UU. sur toute la longueur des données. Quand est-ce que Anna est devenue plus populaire que Mary (si jamais)? COloriez différemment les lignes pour Anna et Mary
+
+```{r baby2}
+
+```
+
+## babynames ex3: prénoms de garçons
+
+> isolez le prénom le plus populaire pour les garçons pour chaque année. Quel nom était le plus utilisé en 1890? et en 1990?
+
+```{r baby3}
+
+```
+
+
+## babynames ex4: dispersion des prénoms
+
+> est-ce que les prénoms étaient plus concentrés dans le passé (moins de noms, plus de gens pour chaque nom) qu'aujours'hui? Calculez le nombre de noms, séparément pour hommes et femmes, par année. Est-ce que le nombre de noms augmente ou diminue? plus pour les filles ou pour les garçons?
+
+```{r baby4}
+
+```
+
+
+## babynames ex5: tab prénom populaires
+
+> créez un tableau avec le prénom le plus populaire (en valeur absolue) pour chaque **décennie** du 20ème siècle, pour les filles et les garçons. Faites un tableau 'large' avec comme variable 'décennie', 'M' et 'F'
+
+```{r baby5}
+
+```
+
+
 
