@@ -239,14 +239,72 @@ flights%>%
 #Vol NYC alt > 1000m
 
 fplanes%>%
-left_join(airports, by=c("dest"="faa"))%>%
-filter(alt > 3280.84)%>%
-count(origin)->total
-colSums(total[,2], na.rm=FALSE)
+  left_join(airports, by=c("dest"="faa"))%>%
+  filter(alt > 3280.84)%>%
+  count(origin)->total
+  colSums(total[,2], na.rm=FALSE)
+  
+  
 
 fplanes%>%
   left_join(airports, by=c("dest"="faa"))%>%
   filter(alt > 3280.84)%>%
-  ggplot(aes(x=year))+
-  geom_bar(fill=20)
+  summarize(n=n())%>%
+  .$n
+  
+fplanes%>%
+  left_join(airports, by=c("dest"="faa"))%>%
+  filter(alt > 3280.84)%>%
+  ggplot(aes(x=year, fill = ..count..))+
+  scale_fill_gradient(low="dark blue" ,high=23)+
+  geom_bar()
 
+
+#Partie pivot
+
+t4a <- table4a %>%
+  pivot_longer(cols=!country,names_to= "année",values_to="cas")
+
+t4b <- table4b %>%
+  pivot_longer(cols=!country,names_to= "année",values_to="pop")
+
+t4c <- t4a%>%
+  left_join(t4b)
+
+#BM
+
+BM<-world_bank_pop
+BMlong <- BM%>%
+  pivot_longer(cols=!country & !indicator,
+               names_to= "année",values_to="pop")
+#pivot_wider
+
+BMlong %>% 
+  pivot_wider( names_from = année, values_from = pop)
+
+#separate, séparer une case
+
+table3 %>%
+  separate(col= rate, into=c("cases","population"), sep = "/")
+
+BM%>%
+  separate(col=indicator, into=c("misc","territory","indicator"))%>%
+  select(-misc)
+
+#unite
+
+table5 %>%
+  unite(yearF,century,year,sep="")%>%
+  separate(col= rate, into=c("cases","population"), sep = "/", convert=TRUE)
+
+#ou alors
+
+table5 %>%
+  unite(yearF,century,year,sep="")%>%
+  separate(col= rate, into=c("cases","population"), sep = "/")%>%
+  mutate(cases = as.integer(cases), population=as.integer(population))
+
+babynames %>%
+  filter(sex =="F", name=="Mary" | name =="Anna")%>%
+  ggplot(aes(x=year,y=n))+
+  geom_line(aes(group=name, color=name))
