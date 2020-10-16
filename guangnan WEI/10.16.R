@@ -29,7 +29,7 @@ flights_planes<-df%>%
   select (-year)%>%
   left_join(planes,by="tailnum")
 
-
+flights_planes
 #join base avec clé avec non différent
 #join airports et flignts ,l'acronyme de l'aéroport s'appelle "dest" dans df
 
@@ -119,28 +119,104 @@ vol_plus_1000%>%
   geom_density()
 
 
+#Partie 2 tidy data
+#messy data->tidy data
+
+table1
+table2
+table3
+table4a #case
+table4b   #population
+#tidyr is part for the tidyverse
+#tidyr provide 4 variable
+
+#pivot_longezr --> prend une base de données "large " et la rend " longue"
+
+#table4a a deux problème
+#la variable "year" est cachée dans le titre d'autres variables
+#content is "cases" but has no variable name
+
+t4a_tidy<-table4a%>%
+  pivot_longer(cols = !country,names_to="année",values_to="cas")
+
+t4b_tidy<-table4b%>%
+  pivot_longer(cols=!country,names_to="année",values_to="pop")
+
+#joining to get table1 back again
+t4a_tidy%>%
+  left_join(t4b_tidy)
+
+#pivot_longer exercice 2
+#données de la banque mondiale
+wbp<-world_bank_pop
+
+wbp%>%
+  pivot_longer(cols=!country & !indicator ,names_to="year",values_to="value")->wbp_long
+
+#pivot_wider->transformer une base de données en "largeur".
+
+wbp_long%>%
+  pivot_wider(names_from=year,values_from=value)
+
+#ex 2: avec table2
+table2
+#transformer table2 en table1
+table2%>%
+  pivot_wider(names_from = type,values_from=count)
+
+#montrer qu'il s'agit d'opérations inverses
+wbp%>%
+  pivot_longer(cols=!country& !indicator,names_to="year",values_to="val")%>%
+  pivot_wider(names_from = year,values_from=val)
 
 
+#separate
+#séparer une case quand il y a plus qu'une valeur à son intérieur
+table3%>%
+  separate(col=rate,into=c("case","population"),sep="/")
+
+table3%>%
+  separate(col=rate,into=c("case","population"))
+
+table3%>%
+  separate(col=rate,into=c("case","population"),sep=4)
+
+table3%>%
+  separate(col=rate,into=c("case","population"),sep=-4)
+
+table3%>%
+  separate(col=rate,into=c("case","population"),sep=c(3,5))
+
+table3%>%
+  separate(col=rate,into=c("case","population","nimportequoi"),sep=c(3,5))
+#separer ex2
+wbp%>%
+  separate(col=indicator,into=c("sert_a_rien","territory","indicator"))%>%
+  select(-sert_a_rien)
+
+#l'inverse de separate c'est unite
+table5
+#transfomer table5 en table1
+table5%>%
+  unite(col=year,century,year,sep="")%>%
+  separate(rate,into=c("cases","population"),sep="/")
 
 
+table5%>%
+  unite(col=year,century,year,sep="")%>%
+  separate(rate,into=c("cases","population"),sep="/",convert = T)
+
+table5%>%
+  unite(col=year,century,year,sep="")%>%
+  separate(rate,into=c("cases","population"),sep="/")%>%
+  mutate(cases=as.integer(cases),population=as.integer(population))
+
+table5%>%
+  unite(col=year,century,year,sep="")%>%
+  separate(rate,into=c("cases","population"),sep="/")%>%
+  mutate(cases=as.double(cases),population=as.integer(population),yearf=as.factor(year))
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+chr<-c("a","b","c","a")
+fct<-as.factor(chr)
+levels(fct)
