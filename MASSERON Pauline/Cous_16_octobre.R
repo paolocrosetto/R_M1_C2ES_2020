@@ -70,4 +70,74 @@ airports %>%
 
 
 
+# full_join()
+
+#union de deux bases
+df %>% 
+  full_join(airports, by = c("dest" = "faa"))
+
+
+## EXERCICE 1
+#est-ce que c'est les avions les plus modernes qui volent le plus loin ?
+
+# vols dans flights
+#age des avions dans planes
+
+flights %>% 
+  select(-year) %>% 
+  left_join(planes, by = "tailnum") %>% 
+  ggplot(aes(x = year, y = distance)) + geom_point() + geom_smooth()
+
+# pas de relations apparentes
+
+
+## EXERCICE 2
+#combien de vols qui partent de nyc atterissent dans un aéroport à plus de 1000m d'altitude
+
+flights %>% 
+  left_join(airports, by = c("dest" = "faa")) %>% 
+  mutate(alt_mt = alt/3.28) %>% 
+  filter(alt_mt > 1000) %>% 
+  group_by(dest, name, alt_mt) %>% 
+  summarise(n = n())
+
+
+
+## EXERCICE 3
+#
+
+flights %>% 
+  left_join(airports, by = c("dest" = "faa")) %>% 
+  mutate(alt_mt = alt/3.28) %>% 
+  filter(alt_mt > 1000) -> vols_plus_1000
+
+vols_plus_1000 %>% 
+  select(-year) %>% 
+  left_join(planes, by = "tailnum") -> vols_plus_1000
+
+# différentes facons de donner une réponse
+
+# 1. avec moyenne et sd
+vols_plus_1000 %>% 
+  summarise(meanyear = mean(year, na.rm = T), sdyear = sd(year, na.rm = T))
+
+
+# 2. avec un graphique
+vols_plus_1000 %>% 
+  ggplot(aes(x = year)) + geom_density()
+
+
+vols_plus_1000 %>% 
+  ggplot(aes(x = year)) + geom_histogram()
+
+
+
+
+
+
+
+
+
+
+
 
