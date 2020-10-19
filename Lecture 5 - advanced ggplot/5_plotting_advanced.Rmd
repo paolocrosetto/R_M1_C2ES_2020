@@ -1,0 +1,145 @@
+---
+title: "Introduction to R and the tidyverse"
+author: "Paolo Crosetto"
+date: "October 2020"
+output:
+  ioslides_presentation: default
+---
+
+```{r setup, include=FALSE, warning=FALSE, message=FALSE, fig.align='center'}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warnings = FALSE, message = FALSE)
+library(tidyverse)
+library(kableExtra)
+theme_set(theme_minimal())
+```
+
+# Lecture 5: advanced plotting
+
+# 1. Tweaking ggplots
+
+
+## Small Recap of ggplot
+
+> *A general ggplot template*
+
+`ggplot(data = ..., aes(x = ..., y = ..., ...))+`
+
+`geom_*()+` add geometrical objects (points, lines, areas, ...)
+    
+`facet_*()+` split in subplots
+    
+`coord_*()+` changes the coordinate system
+    
+`scale_*_*()+` changes the way `geoms` look
+    
+`theme_*()` changes the look & feel of the plot
+
+
+## A base plot to work with
+
+```{r}
+base <- iris %>% 
+  ggplot(aes(x = Sepal.Length, y = Sepal.Width, 
+             color = Species, size = Petal.Width))+
+  geom_point()
+base
+```
+
+# Coordinates
+
+## Coord_functions
+
+> `coord_*` functions change the behavior / scale of the **axes**
+
+- invert coordinates
+- boundaries
+- scale (linear, log)
+- type (cartesian, polar)
+
+
+
+## Invert axes
+
+```{r}
+base + coord_flip()
+```
+
+
+## Cartesian linear coordinates: limits
+
+> change the limits of the plot to 'zoom' on a part of it (!!handle with care!!)
+
+```{r}
+base + coord_cartesian(xlim = c(5, 6), ylim = c(3,4))
+```
+
+
+## Cartesian linear coordinates: fixed
+
+> sometimes you need the two scales on the two axes to be comparable
+
+```{r}
+ggplot(mpg, aes(cty, hwy)) + geom_point() + labs(title = "It looks like mileage in City and Highway is the same!")
+```
+
+## Cartesian linear coordinates: fixed
+
+> sometimes you need the two scales on the two axes to be comparable
+
+```{r}
+ggplot(mpg, aes(cty, hwy)) + geom_point() + 
+  coord_fixed() + labs(title = "But mileage is higher in highways!")
+```
+
+## Cartesian linear coordinates: fixed
+
+> sometimes you need axes to be n an exact proportion
+
+```{r}
+ggplot(mpg, aes(cty, hwy)) + geom_point() + 
+  coord_fixed(ratio = 1/5) + labs(title = "City is 5 times as big as highway here")
+```
+
+
+## coordinate transformations
+
+> log scales
+
+```{r}
+ggplot(mpg, aes(cty, hwy)) + geom_point() + coord_trans(x = "log10", y = "log10")+ labs(title = "log axes")
+```
+
+
+## polar coordinates
+
+> we can also transform a (x,y) coordinate into a (distance, angle)
+
+```{r}
+base + coord_polar()
+```
+
+## Polar coordinates: pie charts
+
+> this is the only way to make a pie chart in ggplot: a bar chart in polar coordinates. 
+
+```{r}
+ggplot(mpg, aes(x = class, fill = class)) + geom_bar()
+```
+
+## Polar coordinates: pie charts
+
+> this is the only way to make a pie chart in ggplot: a bar chart in polar coordinates. 
+
+```{r}
+ggplot(mpg, aes(x = "", y = class, fill = class)) + geom_col() + coord_polar("y", start = 0)
+```
+
+
+
+## Additional resources
+
+- the ggplot **cheatsheet** is your friend (Help -> cheatsheets)
+- **stack overflow** helps out for trickier questions
+- not feeling inspired? 50 cool visualisations here: http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html
+- need a complete tour of possibilities? https://www.r-graph-gallery.com/
