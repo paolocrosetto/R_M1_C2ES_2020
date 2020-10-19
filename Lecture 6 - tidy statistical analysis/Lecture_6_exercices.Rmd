@@ -211,6 +211,8 @@ on peut maintenant avec aise plotter les résultats et voir si notre idée que l
 
 rappel: un point dans ce plot ne répresente pas les données mais une estimation de l'effet du PIB sur l'espérance de vie. L'intuition que la rélation soit moins forte au fil du temps tient bien la route pour l'Europe et les deux amériques; pas pour le reste du monde. 
 
+
+
 ## sommaire de la méthode
 
 1. groupez le data frame
