@@ -33,6 +33,7 @@ select(df,everything())
 
 #Sauvegarder dans un objet les délais
 delays <- select(df,contains("delay"))
+#On fait une pause
 
 #Renommer les colonnes du jeu de données
 rename(df,mois=month)
