@@ -102,3 +102,49 @@ base+ scale_color_gradient2(low="blue", mid= "white",high="red", midpoint=1.5)
 # Entre discret et continu: binned scale => plus de gradient continue mais gradiant avec des niveaux spé
 base+ scale_color_binned(type="viridis")
 
+#Changer la taille des points pour qu'il y ait un écart plus grand entre les valeurs max et min 
+
+base 
+
+base + scale_size_area( max_size=12)
+
+#Remplissage
+base<- mpg %>%
+  ggplot(aes(x=manufacturer, color=manufacturer))+
+  geom_bar()
+base
+
+base<- mpg %>%
+  ggplot(aes(x=manufacturer, fill=manufacturer))+
+  geom_bar()
+base
+
+base +scale_fill_viridis_d()
+base +scale_fill_brewer(palette="Set2")
+
+#différence entre changer les couleurs du MAPPING
+#Ou changer les couleurs d'un objet
+#Toutes les barres rouges
+base + geom_bar(fill="red")
+
+base + geom_bar(fill="red", width=1.5)
+
+base + geom_bar(fill="red", width=0.5)
+
+#tout ce qui se passe par aes() et scale() change en fonction de variables
+#Tout ce qui se passedirectement par geom_ () ne change pas
+
+base + theme_classic()
+base + theme_minimal()
+base + theme_void()
+
+library(ggthemes)
+base+ theme_stata()
+
+#Contrôle à la main
+theme()  
+
+#Comment ajouter des titres
+base + labs(title="Mon titre")
+
+base + labs(title="Mon titre",subtitle= "mon sous titre")
