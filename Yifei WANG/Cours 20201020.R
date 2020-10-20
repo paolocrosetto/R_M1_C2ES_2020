@@ -121,6 +121,10 @@ base + theme_stata()
 base + 
   theme()
 
+base + 
+  theme_minimal()+
+  theme(legend.position = "left")
+
 # Comment ajouter des titres
 base + 
   labs(title = "Mon titre", subtitle = "Mon soutitre")
@@ -128,7 +132,7 @@ base +
 # Comment ajouter des lignes
 # geom_abline(), geom_hline(), geom_vline()
 
-
+# Exercices
 
 
 
