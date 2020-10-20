@@ -99,7 +99,9 @@ flights %>%
 
 vols_plus_1000 %>% 
   select(-year) %>% 
-  left_join(planes, by = 'tailnum') -> vols_plus_1000
+  left_join(planes, by = 'tailnum') %>% 
+  summarise(n = n()) %>% 
+  .$n
 
 # diffrentes fçons de donner une réponse
 
@@ -116,4 +118,93 @@ vols_plus_1000 %>%
 vols_plus_1000 %>% 
   ggplot(aes(x = year)) +
   geom_histogram()
+
+## on a appris à faire de join!!!
+
+
+## partie 2 -- PIVOT
+
+## pivot_longer --> prend une base de données "large" et la rend "longue"
+
+# table4a a deux problèemes
+# - la variable "year" est cachée dans le titre d'aures variables
+# - les valuers des cas n'ont pas de nom
+
+t4a_tidy <-table4a %>% 
+  pivot_longer(cols = !country, names_to = "année", values_to = "cas")
+
+
+t4b_tidy <- table4b %>% 
+  pivot_longer(cols = !country, names_to = "année", values_to = "pop")
+
+
+
+## joining to get table1 back again
+t4a_tidy %>% left_join(t4b_tidy)
+
+
+## pivot_longer exercice 2
+
+## données de la banque mondiale
+wbp <- world_bank_pop
+
+wbp %>% 
+  pivot_longer(cols = !country & !indicator, 
+               names_to = "year", 
+               values_to = "value") -> wbp_long
+
+## pivot_wider -> transforme une base de données en "largeur". 
+
+wbp_long %>% 
+  pivot_wider(names_from = year,
+              values_from = value)
+
+
+## exercice 2: avec table2
+# transformer table2 en table1
+
+table2 %>% 
+  pivot_wider(names_from = type, values_from = count)
+
+
+## montrer qu'il s'agit d'opérations inverses
+
+wbp %>% 
+  pivot_longer(cols = !country & !indicator, 
+               names_to = "year", values_to = "val") %>% 
+  pivot_wider(names_from = year, values_from = val)
+
+
+## separate
+
+## séparer une case quand il y a plus qu'une valeur à son intérieur
+
+table3 %>% 
+  separate(col = rate, 
+           into = c("cases", "population", "nimportequoi"), 
+           sep = c(3,8))
+
+## separate exercice 2
+
+wbp %>% 
+  separate(col = indicator, 
+           into = c("sert_a_rien", "territory", "indicator")) %>% 
+  select(-sert_a_rien)
+
+
+## l'inverse de separate c'est unite
+
+# exercice: transformer table5 en table1
+
+table5 %>% 
+  unite(col = year, century, year, sep = "") %>% 
+  separate(rate, into = c("cases", "population"), sep = "/") %>% 
+  mutate(cases = as.double(cases),
+         population = as.integer(population),
+         yearf = as.factor(year))
+
+
+## difference betweencharacter vectors and factors
+chr <- c("a", "a", "b", "c")
+fct <- as.factor(chr)
 

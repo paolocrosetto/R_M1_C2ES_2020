@@ -105,9 +105,7 @@ library(tidyverse)
 ```
 
 
-# quand faire quel type de plot? 
-
-## **barplots**: x discrete, y count / frequency
+# revision des différents types de **barplots**
 
 **Note** utilisez le jeu de données **mpg**
 
@@ -150,7 +148,7 @@ library(tidyverse)
 ```
 
 
-## **line plots**: time-related continuous x, continuous y
+# révision des **line plots**
 
 > utilisez `nycflights13`, le jeu de données `flights`. 1. calculez le nombre de départs par jour par aéroport newyorkais. plottez en line plot l'évolution sur l'année, en mappant la couleur à l'aéroport.
 
@@ -175,26 +173,7 @@ library(nycflights13)
 ```
 
 
-
-## **slope charts**: time-related but discrete x, continuous y
-
-slope charts sont une version de line plots avec peu de points, et où il faut montrer le taux de changement sur des petits intervalles
-
-> utilisez les données `mpg`. 1. calculez la moyenne de consommation en autoroute pour chaque marque pour 1999 et 2008. 3. Créez un slope chart en utilisant `geom_line`. 3. changez le thème pour qu'i soit plus lisible
-
-```{r}
-
-```
-
-> le plot est toujours assez peu lisible. une façon de faire est de ramener à zéro l'année de référence, en éliminant le point de départ. Faites le point 1. de l'exo précédent. Puis, reformattez la base pour avoir une variable pour chaque année. Calculez la différence. Plottez un slope chart qui parte de zéro pour 1999 -- utilisez `geom_segment()`
-
-```{r}
-
-  
-```
-
-
-# Trois variables, deux discrètes, une continue: heatmap
+# Récap: Trois variables, deux discrètes, une continue: heatmap
 
 > utilisez flights. Quels sont les jours avec plus de traffic à NYC sur la totalité des aéroports? visualisez une grille avec jour et mois et coloriez chaque case selon le nombre de vols -- cela se fait avec `geom_tile()`. Rappel: avant il faut calculer le nombre de vols par jour et mois. 
 
@@ -209,17 +188,42 @@ slope charts sont une version de line plots avec peu de points, et où il faut m
 
 ```
 
-# A vous de jouer. 
+# Un exercice plus difficile: reproduire un plot pro
+
+## exo 1: pro heatmap
 
 > essayez de reproduire ce plot (pas important si les couleurs, police, etc ne sont pas les mêmes)
 
 plot: https://pbs.twimg.com/media/EAVOkU7WwAIlX4U?format=png&name=small
 
+les données seront stockés dans `df`
+
 ```{r}
 df <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-07-23/wildlife_impacts.csv")
+
+# df %>% 
+#   # 1. prepare the data
+#   group_by(incident_year, incident_month, operator) %>% 
+#   mutate(incident_month = as.character(incident_month)) %>% 
+#   filter(incident_year >= 2000) %>% 
+#   summarise(n = n()) %>% 
+#   # 2. base plot
+#   ggplot(aes(x = incident_month, y = incident_year, fill = n))+
+#   geom_tile(color = "white")+
+#   facet_wrap(~operator)+
+#   # 3. look & feel
+#   scale_fill_gradient(low = "grey95", high = "#d6347e")+
+#   theme(panel.grid = element_blank(), 
+#         plot.title = element_text(hjust = 0.5),
+#         plot.subtitle = element_text(hjust = 0.5, face = "italic"),
+#         plot.background = element_rect(fill = "grey95"),
+#         panel.background = element_rect(fill = "grey95", color = "grey95"),
+#         strip.background = element_rect(fill = "white", color = "grey95"))+
+#   labs(title = "Airline Bird Strikes", subtitle = "2000 - 2018", x = "Month", y = "Year")
 ```
 
 
+## exo 2: pro barplot
 
 > essayez de reproduire ce plot (pas important si les couleurs, police, etc ne sont pas les mêmes)
 
