@@ -130,8 +130,8 @@ mpg%>%
 ##consommation en ville par constructeur
 ##boxplot
 mpg%>%
-  ggplot(aes(x=manufacturer,y=cty))+
-boxplot()
+  ggplot(aes(manufacturer,cty))+
+  geom_boxplot()
 
 ##violin
 ##mpg
