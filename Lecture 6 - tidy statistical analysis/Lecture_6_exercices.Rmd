@@ -221,7 +221,7 @@ rappel: un point dans ce plot ne répresente pas les données mais une estimatio
 
 ### exercice
 
-> faites une régression de pop sur year pour chaque continent -- cela estime le taux de croissance moyen linéaire sur la période, par continent. Utilisez la méthode `nest` décrite ci-dessus. 
+> faites une régression de pop sur year pour chaque continent -- cela estime le taux de croissance moyen linéaire sur la période, par continent. Utilisez la méthode `group_modify()` décrite ci-dessus. 
 
 ```{r}
 
@@ -318,7 +318,7 @@ Si on ne voulait qu'afficher l'âge moyen par continent et année, il suffit un 
 
 ```
 
-mais si on veut tester la différence apr rapport à 60 avec in test T il faut passer par un `nest()`, comme on a vu pour le `lm` et la `cor`relation:
+mais si on veut tester la différence apr rapport à 60 avec in test T il faut passer par un `group_modify()`, comme on a vu pour le `lm` et la `cor`relation:
 
 ```{r}
 ## code dans une seule pipe
