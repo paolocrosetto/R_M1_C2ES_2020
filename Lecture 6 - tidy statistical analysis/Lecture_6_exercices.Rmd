@@ -187,45 +187,21 @@ Pour répondre à cela il faut faire une régression par an, et après regarder 
 
 Malheureusement, une approche simple et naive (groupez puis faites le lm) ne marche pas. 
 
-```{r}
+```{r, fig.width=12}
+
 
 ```
 
 comment faire?
 
-il faut passer par un `nest`. C'est une fonction qui 'découpe' le `data.frame` suivant `group_by()` et met le morceau de data.frame découpé comme s'il était une variable dans le data.frame d'origine. 
-
-```{r}
-
-```
-
-avec ce 'nested' data.frame on peut appliquer un `lm` pour chaque élément, en utilisant chaque découpe de data.frame comme si elle était une variable. 
+il faut passer par une commande qu'on ne connait pas -- `group_modify`. C'est une fonction qui applique une fonction à chaque groupe. C'est un peu comme un `summarize()`. Avec la différence que `summarize` retourne **une** valeur pour chaque groupe (example: moyenne) alors que `group_modify` accepte toute fonction qui retourne un data.frame. Prenez `group_modify` comme un `summarize` on steroids. 
 
 ```{r}
 
 ```
 
 
-En regardant le nouvel objet crée on se rend compte qu'on a maintenant une nouvelle colonne, "model", qui contient le modèle. En effet il contient le même contenu qu'un appel à `lm`, mait l'appe a été 
-
-1. fait sur une parte des données, et en particulier sur une année/continent, et
-2. il est stocké dans une variable.
-
-Maintenant il faut extraire les informations contenues dans le modèle et les stocker dans une nouvelle variable. On peut faire cela avec, par exemple `tidy()`. 
-
-```{r}
-
-```
-
-Si on regarde l'objet obtenu (`result`) on peut voir qu'une colonne 'result' a été crée, et qu'ele contient un data.frame entire (le résultat d'un appel à `tidy` si les données n'étaient que celles contenues dans la variable `data` pour chaque ligne du tableau).
-
-Il ne nous reste qu'à *extraire* cette information, en utilisant le verbe complément de `nest()`: `unnest()`:
-
-```{r}
-
-```
-
-et voilà. On a obtenu un objet `final` qui contient une estimation *par ligne* -- dans ce cas par année/continent. 
+et voilà. On a obtenu un data.frame qui contient une estimation *par ligne* -- dans ce cas par année/continent. 
 
 on peut maintenant avec aise plotter les résultats et voir si notre idée que la rélation entre PIB et espérance de vie s'estompe avec le temps est soutenue par les données. 
 
@@ -234,6 +210,8 @@ on peut maintenant avec aise plotter les résultats et voir si notre idée que l
 ```
 
 rappel: un point dans ce plot ne répresente pas les données mais une estimation de l'effet du PIB sur l'espérance de vie. L'intuition que la rélation soit moins forte au fil du temps tient bien la route pour l'Europe et les deux amériques; pas pour le reste du monde. 
+
+
 
 ## sommaire de la méthode
 
