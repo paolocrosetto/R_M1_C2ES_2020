@@ -200,6 +200,20 @@ les données seront stockés dans `df`
 
 ```{r}
 df <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-07-23/wildlife_impacts.csv")
+
+
+
+## étape 1: créer les variables d'intérêt
+## existantes month, year, compagnie
+## à créer: nombre d'accidents par month/year/compagnie
+
+
+## étape 2: créer le plot en version brute
+## il faut que toutes les dimensions soient au bon endroit
+
+## étape 3
+## rendre le plot 'beau' -> plus similaire à la cible
+## utiliser scale_ et theme_
 ```
 
 
