@@ -187,23 +187,25 @@ Pour répondre à cela il faut faire une régression par an, et après regarder 
 
 Malheureusement, une approche simple et naive (groupez puis faites le lm) ne marche pas. 
 
-```{r, fig.width=12}
-
+```{r}
 
 ```
 
 comment faire?
 
-il faut passer par une commande qu'on ne connait pas -- `group_modify`. C'est une fonction qui applique une fonction à chaque groupe. C'est un peu comme un `summarize()`. Avec la différence que `summarize` retourne **une** valeur pour chaque groupe (example: moyenne) alors que `group_modify` accepte toute fonction qui retourne un data.frame. Prenez `group_modify` comme un `summarize` on steroids. 
+il faut passer par une foction specialisé par groupe, `group_modify()`. Il s'agit d'une espèce de `summarise()`, parce que `group_modify()` applique une fonction à chaque groupe. Mais alors que `summarise()` prend en argument une variable et ne peut retourner qu'une valuer unique par groupe (par exemple, la moyenne, le max, le min, la numerosité), `group_modify()` prend en argument une base de données et retourne une base de données de sortie par groupe. 
+
+On a donc `variable -> summarise() -> valeur unique` et `grouped_df -> group_modify() -> df`
 
 ```{r}
 
 ```
 
 
-et voilà. On a obtenu un data.frame qui contient une estimation *par ligne* -- dans ce cas par année/continent. 
 
-on peut maintenant avec aise plotter les résultats et voir si notre idée que la rélation entre PIB et espérance de vie s'estompe avec le temps est soutenue par les données. 
+Si on regarde l'objet obtenu on peut voir qu'on obtient un objet qui contient sur chaque ligne un coefficient de l'estiamtion par group -- ici année/continent. 
+
+On peut maintenant avec aise plotter les résultats et voir si notre idée que la rélation entre PIB et espérance de vie s'estompe avec le temps est soutenue par les données. 
 
 ```{r}
 
@@ -211,31 +213,11 @@ on peut maintenant avec aise plotter les résultats et voir si notre idée que l
 
 rappel: un point dans ce plot ne répresente pas les données mais une estimation de l'effet du PIB sur l'espérance de vie. L'intuition que la rélation soit moins forte au fil du temps tient bien la route pour l'Europe et les deux amériques; pas pour le reste du monde. 
 
-
-
 ## sommaire de la méthode
 
 1. groupez le data frame
-2. `nest()`: une colonne est créée qui contient tout le data.frame rélatf à un groupe
-3. appliquer le modèle linéaire en passant par `map()` qui applique une fonction a des données, ligne par ligne
-4. utiliser `tidy()` pour extraire les données du modèle en format data.frame et les stocker dans une colonne;
-5. `unnest()`
-6. les données sont prêtes pour être utilisées de façon *tidy*. 
-
-voilà le code qui saute les passage intermédiaires et qui peut donc être reutilisé:
-
-```{r}
-## code dans une seule pipe
-df %>% 
-  group_by(year, continent)                                     %>% # groupement désiré
-  nest()                                                        %>% # création de la colonne qui contient les découpes de data.fram
-  mutate(model = map(data, ~lm(lifeExp ~ gdpPercap, data = .))) %>% # application du modèle ligne par ligne
-  mutate(results = map(model, tidy))                            %>% # nettoyage des résultats du modèle
-  unnest(results)                                 
-  
-```
-
-les données sont prêtes à être utilisées. 
+2. `group_modify()`: on applique une fonction complexe (comme `lm`) à chaque groupe.
+3. utiliser `tidy()` pour que les résultats du modèle soient en format data.frame; si ce n'est pas le cas, cela ne marchera pas.
 
 ### exercice
 
@@ -268,7 +250,7 @@ notez que `cor()` retounre tout simplement une valeur; `cor_test()` retourne en 
 
 ## Tidyverse, juste corrélation
 
-La syntaxe du tidyverse est assez simple parce qu'elle peut utiliser directement `sumamrise`. Summarise marche avec toute fonction qui prend un vecteur et retourne un nombre. 
+La syntaxe du tidyverse est assez simple parce qu'elle peut utiliser directement `summarise()`. Summarise marche avec toute fonction qui prend un vecteur et retourne un nombre. 
 
 ```{r}
 
@@ -284,15 +266,15 @@ La corrélation est bcp plus forte pour Europe et Océanie.
 
 ## tidyverse, corrélation et test
 
-En revanche si on veut utiliser cor.test pour connaitre la valuer p de notre corrélation, on ne peut pas utiliser directement l'approche naïve -- parce que `summarise` ne sait pas quoi faire avec les nombreuses dimensions de l'objet retourné par la fonction `cor.test()`. L'approche naïve ne marche pas:
+En revanche si on veut utiliser cor.test pour connaitre la valuer p de notre corrélation, on ne peut pas utiliser directement l'approche naïve -- parce que `summarise()` ne sait pas quoi faire avec les nombreuses dimensions de l'objet retourné par la fonction `cor.test()`. L'approche naïve ne marche pas:
 
 ```{r}
 
 ```
 
-et voilà, R râle parce que `summmarise` s'attend à une seule valeur et en reçoit 9 (et chacune d'entre elles est un objet complexe). 
+et voilà, R râle parce que `summmarise()` s'attend à une seule valeur et en reçoit 9 (et chacune d'entre elles est un objet complexe). 
 
-Il faut à nouveau passer par `nest`. Heureusement on a déjà le code, il suffit de changer le `lm` par un `cor.test`:
+Il faut à nouveau passer par `group_modify()`. Il suffit de changer le `lm` par un `cor.test`:
 
 
 ```{r}

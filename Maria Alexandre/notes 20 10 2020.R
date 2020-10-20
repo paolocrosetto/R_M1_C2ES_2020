@@ -148,3 +148,6 @@ theme()
 base + labs(title="Mon titre")
 
 base + labs(title="Mon titre",subtitle= "mon sous titre")
+
+
+#Comment ajouter des lignes
