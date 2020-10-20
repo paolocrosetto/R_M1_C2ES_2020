@@ -1,0 +1,370 @@
+---
+title: "Getting data out of the web with R"
+subtitle: "Intro to R, lecture 7"
+author: "Paolo Crosetto"
+date: "`r Sys.Date()`"
+output:
+  tufte::tufte_html: default
+  tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+  tufte::tufte_book:
+    citation_package: natbib
+    latex_engine: xelatex
+---
+
+```{r setup, include=FALSE, tinytex.verbose = TRUE}
+library(tufte)
+library(tinytex)
+options(tinytex.verbose = TRUE)
+# invalidate cache when the tufte version changes
+knitr::opts_chunk$set(tidy = FALSE, cache.extra = packageVersion('tufte'))
+options(htmltools.dir.version = FALSE)
+library(tidyverse)
+```
+
+# 1. Importer des données externes
+
+Jusque là on a toujours utilisé des données qui étaient présentes sur R (mpg, airquality, iris) ou qu'on pouvait importer par des packages (nycflights, gapminder). Mais de façon générale les données dans le monde réel sont disponibles dans des fichiers et sous des différents formats. 
+
+Pour importer des données dans le tidyverse on utilise une série de fonctions de la famille `read_*()` où on spécifie le type de données qu'on importe. 
+
+Par exemple prenons les données des **TidyTuesdays** que vous trouvez ici: https://github.com/rfordatascience/tidytuesday/blob/master/README.md 
+
+Example: retards de la SNCF
+
+```{r}
+df <- read_csv("../small_trains.csv")
+```
+
+
+# 2. (Quelque chose qui n'a rien à voir)
+
+## (mais qui porte sur les plots)
+## (et fait office de révision de ce qu'on a fait jusque là)
+
+On a vu lors de la première séance qu'il est toujours important de **visualiser** les données pour avoir une idée de leur forme, des relations entre variables, de *pattern* qui pourraient exister, etc. La meilleure pratique est toujours d'essaier de plotter vos données avant de vous lancer dans des analyses plus poussées.^[ces notes utilisent la package *tufte*: si vous ne l'avez pas, install.packages("tufte") devrait faire l'affaire]
+
+Un example étonnant est la *Datasaurus dozen*^[Pour plus d'info sur ce jeu de données: (https://www.autodeskresearch.com/publications/samestats)] -- un ensemble de 12 jeux de données sur deux variables (*x* et *y*) qui ont toutes les mêmes moyennes (de *x* et de *y*), les mêmes variances, et la même correlation entre *x* et *y*, mais chacun une forme très différente une fois visualisés.
+
+On commence par charger les *packages* et les données. Elles sont au format .tsv (tab-separeted values)^[*tidyverse* on connait; *knitr* est pour produire des jolis rapports de stats et des jolis tableaux]
+```{r, message=FALSE}
+
+library(tidyverse)
+library(knitr)
+df <- read_tsv("DatasaurusDozen.tsv")
+```
+
+
+Quelle forme a ce jeu de données? 
+```{r, message=FALSE}
+summary(df)
+```
+Trois variables, *dataset*, *x* et *y*. Dataset est categorielle, combien de datasets?^[distinct() est un filter() qui élimine tous les observations doublons; kable() est une fonction qui prend un tableau et l'affiche joliment. Je vais systématiquement l'appeler à la fin de chaque chaine pour bien visualiser les résultats]
+
+```{r, message=FALSE}
+df %>% 
+  select(dataset) %>% 
+  distinct()
+
+df %>% 
+  group_by(dataset) %>% 
+  tally()  ## tally() est stirctement équivalent à summarise(n == n())
+```
+
+Ceci dit, quelle forme ont ces 13 différents jeux de données? On peut calculer quelques statistiques de base ^[là on veut uniquement la moyeen et la variance -- le code est simple. On introduit la fonction *summarise_at()* qui est comme *summarise()* qu'on connait mais qui applique une liste de fonctions (funs) à une liste de variables (x,y) et qui permet de façon plus compacte de faire ce qu'on ferait avec plusieurs appels à summarise() en séquence]
+
+```{r, message=FALSE}
+df %>% 
+  group_by(dataset) %>% 
+  summarise(mean_x = mean(x), sd_x = sd(x),
+            mean_y = mean(y), sd_y = sd(y),
+            cor(x, y))
+```
+
+Il nous manque tout de même la corrélation entre x et y: ^[là on crée d'abord un nouveau jeux de données où on utilise *cor()* pour calculer la corrélation entre *x* et *y* et après on utilise left_join pour l'ajouter à notre jeu de données]
+```{r, message=FALSE}
+
+```
+
+Là on voit que chaque sous-jeu de données à la même moyenne, la même variance, et presque la même corrélation. S'agit-il donc de données qui sont tout à fait les mêmes? Si on fait des tests, on retrouve bien évidemment la même chose -- un t.test de différence des moyennes donnerait des résultats forts dans le sens d'une absence de différence. ^[je vous laisse cela comme exercice: mais vraiment, en a-t-on besoin? Si moyenne est quasiment la même et la variance est la même, n'importe quel test retournerait un p-value proche de 1. J'en fais un comme exemple. 
+
+```{r, message=FALSE}
+df %>% 
+  ggplot(aes(x = x, y = y))+
+  geom_point()+
+  facet_wrap(~dataset) -> plotd
+```
+
+Pour résumer: 13 jeux de données, même stats, les tests nous les donnent tous égaux... mais le sont-ils vraiment? essayons de les visualiser! ^[facet_wrap() est une sequence monodimensionelle de facets, qui vont a la ligne automatiqeument si plus d'espace]
+
+```{r, message=FALSE, fig.width = 12, fig.height = 10, fig.fullwidth = TRUE}
+
+```
+
+Message à retenir? Simple: 
+
+> Toujours visualiser les données, parce que les statistiques descriptives c'est bien, mais elle cachent souvent plus de ce qu'elles révèlent!
+
+
+
+# 3. Extraire des données du *web*
+
+## Quelques bases "théoriques"
+
+Le web est rempli de données. Il est *fait* pour la plupart de données. De plus, les pages web sont de plus en plus elle mêmes générées par des logiciels: le développeur web conçoit et met en place la 'coquille', l'affichage des informations dans une grille logique, puis prend soin de la mise en page, de l'esthétique, etc; mais il laisse à des moteurs comme PHP ou autres s'occuper de peupler les pages avec leur contenu (soient-ils des vidéos youtube, des images, des contacts, le profil facebook d'une personne, etc...). Extraire des données du web est donc une activité importante parce qu'on y trouve énormément de données, mises à jour avec continuité, sur la plupart des phénomènes de notre temps. 
+
+Malheureusement, ces données sont utilisées par les sites pour afficher de l'information. Par conséquence, même si le format d'origine des données est un format qui est facile d'utiliser pour des statistiques, le format des données tel qu'on le voit sur les écrans a été optimisé pour la visualisation par des êtres humains: les données sont éparpillées sur l'écran et sur différentes pages, il faut cliquer, etc...
+
+Il faut donc trouver des moyens d'extraire l'énorme richesse de données présente sur le web pour nos usages statistiques. 
+
+Comment faire? Il faut commencer par noter que les données 'cachées' sur le web souvent suivent un *pattern* particulier;^[je ferai l'hypothèse dans tout ce document que vous voulez extraire des *données* du web et non pas le contenu multimédia: la date et les commentaires d'une vidéo Youtube et non pas la vidéo elle-même; pour cela il y a d'autres solutions.] si on pense à la date et heure des tweets, par exemple, elles se trouvent toujours au même endroit sur la page, par exemple, et ont toujours le même format. En exploitant ces regularités on peut à notre tour utiliser des logiciels pour collecter (scrap) les données d'un site. 
+
+Il y a quatre choses à faire pour extraire les données d'un site:
+
+1. télécharger les pages web -- ou mieux dit: télécharger leur code source en HTML. Cela en anglais se dit *retrieve*.
+2. trouver une façon de lire leur contenu et de chercher dans ce contenu les données qui nous intéressent: *parse*
+3. itérer ce processus sur plusieurs pages -- par exemple, sur chaque vidéo youtube d'un canal: *crawl*
+4. stocker les données dans un format convenable, eg: `data.frame()` ou bien `tibble()`
+
+Dans la suite on va présenter le fonctionnement de deux packages: `rvest` ^[ce package estpartie du tidyverse, dévéloppé par notre héros Hadley Wickham et se prononce 'harvest'; il est donc compatible avec tout ce qu'on a vu, la pipe ` %>%`, les autres verbes-fonction, ggplot...] et `RCrawler` ^[bien plus puissant mais pas partie du tidyverse]
+
+## Retrieve and parse **one** webpage: `rvest`
+
+On commence par installer le package. Il est partie du tidyverse, mais on ne sait jamais:
+
+```{r, message = FALSE}
+#install.packages("rvest")
+library(rvest)
+```
+
+
+**Premier cas: extraire un tableau déjà formé**
+
+On va travailler avec laliste des états des EE.UU. par population, disponible par exemple [sur wikipedia en anglais simplifié](https://simple.wikipedia.org/wiki/List_of_U.S._states_by_population).
+
+```{r, message=FALSE}
+usa <- read_html("https://simple.wikipedia.org/wiki/List_of_U.S._states_by_population")
+```
+
+et voilà `rvest` a stocké pour nous la page. Il faut à ce point chercher dans la page à l'aide d'un CSS selector. Tous les éléments d'une page web qui ont le même format d'affichage ont le même 'thème' CSS. Il y a donc des outils automatisés qui permettent de sélectionner le CSS path ou son selector sur une page, de façon visuelle à l'aide de la souris. 
+
+Une possibilité est d'utiliser l'inspecteur de site disponible sur chaque navigateur, en appuyant sur CTRL+SHIFT+I. On affiche toute une série d'outil de développeur, y compris la possibilité de sélectionner le path absolut (XPATH) ou le type CSS (CSS selector) d'un élément. 
+
+Une possibilité plus avancée est d'installer Selectorgadget, une extension pour Chrome/Chromium, ici: https://selectorgadget.com/ 
+
+Une fois selectorgadget installé, on peut simplement en cliquant sur les éléments connaitre leur CSS path et ainsi les sélectionner sur notre page téléchargée.
+
+Une fois le XPATH ou le CSS selector pour l'élément qui nous intéresse trouvés, il faut dire à `rvest` de nous sortir tous les éléments de la page qui suivent le pattern voulu. Dans notre cas, on veut trouver le tableau. Celui ci est un div `table`. On sélectionne les parties qu'on veut à l'aide de `html_nodes(pagehtml, "CSS SELECTOR")`
+
+```{r, message=FALSE}
+usa %>% html_nodes("table")
+```
+Il y a donc deux `table`. 
+
+```{r, message=FALSE}
+usa %>% html_nodes("table") -> tables
+tables[[1]]
+```
+
+On va donc l'extraire: ^[Le point qui le précède ne fait que dire à notre pipe `%>%` d'aller chercher vraiment dans la liste.]
+```{r, message=FALSE}
+states <- usa %>% html_nodes("table") %>% .[[1]]
+```
+
+On a maintenant isolé le tableau dont on avait besoin. Comment l'importer en R pour l'utiliser pour nos stats? Simplement (comme tout dans le tidyverse) en utilisant la fonction `html_table()`:
+```{r, message=FALSE}
+read_html("https://simple.wikipedia.org/wiki/List_of_U.S._states_by_population") %>% 
+  html_nodes("table") %>% 
+  .[[1]] %>% 
+  html_table() -> df
+```
+
+on va inspecter un peu notre df
+```{r, message=FALSE}
+head(df) 
+```
+
+Il n'est pas parfait, bien sûr, mais pas loin de ce qu'on veut non plus. Pour réviser, on peut utiliser un peu des outils qu'on a appris pour le mettre dans un état amenable à de l'exploration statistique.
+
+> exercice 
+
+1. sélectionner la population en 2019 par état et en 2010
+2. transformer un caractère en chiffres
+3. élimine les lignes de 'sommaire' qui ne servent à rien
+4. quelle corrélation entre population en 2010 avec celle en 2019
+
+```{r, message=FALSE}
+df %>% 
+  select(Name, 
+         `Population estimate, July 1, 2019[4]`, 
+         `Census population, April 1, 2010[5]`) %>% 
+  rename(state = Name, 
+         pop2019 = `Population estimate, July 1, 2019[4]`, 
+         pop2010 = `Census population, April 1, 2010[5]`) %>% 
+  mutate(pop2019 = str_replace_all(pop2019, ",", ""),
+         pop2010 = str_replace_all(pop2010, ",","")) %>% 
+  mutate(pop2019 = as.numeric(pop2019),
+         pop2010 = as.numeric(pop2010)) %>% 
+  filter(state != "The fifty states",
+         state != "Contiguous United States",
+         state != "Fifty states + District of Columbia",
+         state != "Total U.S. (including District of Columbia and territories)") %>% 
+  ggplot(aes(x = pop2010, y = pop2019))+
+  geom_point()+
+  geom_abline(slope = 1, color = 'red')
+```
+
+**Deuxième cas: extraire de l'info d'un texte**
+
+Et si l'info qu'on cherche est dans un texte et non pas déjà pre-formattée en tableau?
+
+On va travailler, pour éviter de voler des données à n'importe qui, sur ma liste des publications, disponible sur [mon site personnel](https://paolocrosetto.wordpress.com/papers/)
+```{r, message=FALSE}
+pc <- read_html("https://paolocrosetto.wordpress.com/papers/")
+```
+
+à l'aide du CSS selector on s'aperçoit que tout titre d'un papier est dans un tag `strong`. On va donc extraire les titres de tous les publications avec:
+```{r, message = FALSE}
+publis <- pc %>% html_nodes("li strong") %>% html_text()
+```
+
+On utilise la fonction `html_nodes()` pour extraire les titres et la fonction `html_text()` pour extraire le texte de ces titres
+Il y a 56 publications. Cela me parait excessif -- je n'ai pas autant publié. Regardons plus de près:
+
+```{r, message = FALSE}
+head(publis) %>% kable()
+```
+Il y a quelques 'publications' qui ne sont que des titres de section, ou des virgules... pas très bien fait ce site!
+
+Cet exemple vous montre que parfois sortir l'information n'est pas facile parce que le site est fait 'à la main' (c''est mon cas) et donc ne suit pas des normes spécifiques qui créent des patterns exploitables par nos logiciels.
+
+Il est plus facile d'extraire des données des sites 'professionnels'. Par exemple, extraire la liste des blog posts du site de Rstudio. On va chercher le blog de Rstudio ici: https://blog.rstudio.com/
+
+```{r, message= FALSE}
+rstudio <- read_html("https://blog.rstudio.com/")
+```
+
+Après avec l'aide du CSS selector on peut sélectionner par exemple les auteurs. Si on le fait on voit que les dates sont sélectionnées aussi. mais si on clique sur une date on peut déselctionner les dates. Le CSS selector nécessaire pour les auteurs est donc:
+
+```{r, message= FALSE}
+titres <- rstudio %>% html_nodes("h1 a") %>% html_text()
+auteurs <- rstudio %>% html_nodes("span+ span") %>% html_text()
+date <- rstudio %>% html_nodes(".article-list span:nth-child(1)") %>% html_text()
+
+```
+
+Les trois vecteurs ont tous 10 observations, on peut les constraindre dans un data.frame (ou tibble):
+```{r}
+rst <- data.frame(auteurs, titres, date)
+```
+
+Avec des opérations de ce type on peut construire une base de données assez importante, **sur une seule page à la fois, cependant**. 
+
+
+## Crawling: automatiser le processus
+
+Ce processus est long, et devoir le refaire pour chaque page d'un site serait très long. Heureusement il existe un autre type d'outils, les *crawlers*. Ce que les crawlers font est de télécharger toutes les sous-pages d'un site à partir d'une page de départ. Autrement dit: on leur donne une page d'où partir, et le crawler va essayer de télécharger, une après l'autre, toutes les pages 'filles' de cette page, celles qui la succèdent dans la hiérarchie du site. 
+
+Le couplage d'un *crawler*, d'un extracteur et d'un parseur permet d'automatiser l'extraction des données d'un site complet. 
+
+Malheureusement, il n'y a pas d'outil lié au tidyverse qui fait cette opération complexe. L'outil qu'on va utiliser est le package `Rcrawler`. 
+
+```{r, message = FALSE}
+#install.packages(Rcrawler)
+library(Rcrawler)
+```
+
+Rcrawler rend le *crawling* d'un site automatique -- voire trop, parce qu'il télécharge tout le site et cela peut prendre énormément de place. 
+On va essayer d'automatiser la tâche faite surle blog de Rstudio précedamment, en faisant l'extraction des titres, dates, auteurs et abstract de chaque article paru sur le blog et non pas de ceux dans la première page. 
+
+Dans ce cas, tout le blog de rstudio fait des centianes des pages, dont on n'a pas besoin; si on lance Rcrawler sans argument, on se retrouve avec plus de 400 pages. Quoi faire? En regardant sur le site, on voit, en cliquant sur les pages suivantes la première, que chaque URL est formé an ajoutant `\page\NUMPAGE\` à l'URL principal. Heuresement Rcrawler nous permet de filtrer les pages qu'on veut télécharger. La commande est la suivante:
+
+```{r, message = FALSE}
+Rcrawler(Website = "https://blog.rstudio.com/", crawlUrlfilter = "/page/[0-9]{2}" )
+```
+
+Rcrawler a crée une variable INDEX dans votre environnement, qui contient chaque page, et la réponse donnée par le serveur (dans ce cas, réponse 200, c'est à dire OK.) Il a aussi stocké toutes les pages localement dans un dossier, où maintenant chaque page du blog de Rstudio est sauvegardée localement. 
+
+Ce qu'on vient de faire est la partie *crawling*: notre crawler a passé au peigne fin le site et nous a téléchargé toutes les pages. Il n'a pas extrait des données. On a deux façon de poursuivre: utiliser le code de `rvest` décrit ci-dessus en l'applicant à chaque page avec une boucle; ou bien laisser faire RCrawler. La première voie est assez simple (je vous laisse faire en exercice), là je décris la deuxième. 
+
+Rcrawler à une option `ExtractCSSPat = c(LISTE DE PATTERNS)` qui permet d'extraire les champs qu'on veut au passage. On sait quels champs on veut (voir le code ci-dessus). Donc il suffit de le lancer:
+
+```{r, message = FALSE}
+Rcrawler(Website = "https://blog.rstudio.com/", 
+         crawlUrlfilter = "/page/[0-9]{1-2}", 
+         ExtractCSSPat = c("span+ span","h1 a",".article-list span:nth-child(1)"), 
+         MaxDepth = 100, 
+         ManyPerPattern = T, 
+         PatternsNames = c("author","title","date"))
+```
+
+Cette fois ci Rcrawler a crée deux variables dans votre environnement: INDEX et DATA. 
+
+Là on a tout ce qu'il faut; mais malheureusement les données sont dans un format de lecture difficile: Data est une liste et chacun de ses éléments est aussi une liste, qui contient à son tour les données qu'on cherche. Il faut passer d'une liste de listes à un data.frame facile à lire et utiliser. 
+
+On va partir par considérer que chaque élément de la liste peut être aisement transformé en data.frame. Voilà deux examples:
+```{r}
+DATA %>% 
+  tibble(DATA) %>% 
+  mutate(ext = map(DATA, ~data.frame(do.call("cbind", .)))) %>% 
+  unnest(ext) -> rstudio_data
+```
+
+et voilà, on a extrait tous les blog posts du blog de Rstudio. 
+
+On peut meinatenant faire un contage pour voir qui a publié plus de posts, et faire un plot:
+
+```{r}
+rstudio_data %>% 
+  ggplot(aes(x = author))+
+  geom_bar()+
+  coord_flip()
+  
+```
+
+## Un autre example
+
+Cet example je l'ai copié-collé du tutorial de RCrawler -- IMDB ratings:
+
+```{r}
+Rcrawler(Website = "https://www.imdb.com/list/ls027433291/" , 
+         no_cores = 4, 
+         no_conn = 4, 
+         MaxDepth = 1, 
+         dataUrlfilter = "/title/", 
+         crawlUrlfilter ="/title/", 
+         ExtractCSSPat =c("div.title_wrapper>h1", 
+                          "strong span",
+                          "#title-overview-widget time",
+                          ".score_mixed span"),
+         PatternsNames =c("Title",
+                          "Stars",
+                          "Runtime",
+                          "Metascore"), 
+         ManyPerPattern = TRUE,
+         ignoreAllUrlParams = TRUE)
+```
+
+Cette fois-ci la structure de la base de données est plus simple. On peut donc simplement faire
+
+```{r}
+DATA %>% 
+  tibble(DATA) %>% 
+  mutate(ext = map(DATA, ~data.frame(do.call("cbind", .)))) %>% 
+  unnest(ext) -> movies
+
+```
+
+là on peut plotter les étoiles IMDb contre le score Metacritic:
+
+```{r}
+movies %>% 
+  mutate(Stars = as.numeric(Stars),
+         Metascore = as.numeric(Metascore)) %>% 
+  ggplot(aes(x = Stars, y = Metascore))+
+  geom_point()+
+  geom_label(aes(label = Title)) -> plotmovie
+
+```
+
