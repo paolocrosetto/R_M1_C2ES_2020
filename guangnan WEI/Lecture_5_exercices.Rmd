@@ -266,7 +266,7 @@ plot: https://pbs.twimg.com/media/D8QcVu7WsAArvFr?format=jpg&name=small
 
 ```{r}
 df <- read.csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-06-04/ramen_ratings.csv")
-
+      
 
 
 #stratégie 
