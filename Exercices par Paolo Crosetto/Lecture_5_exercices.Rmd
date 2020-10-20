@@ -200,26 +200,6 @@ les données seront stockés dans `df`
 
 ```{r}
 df <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-07-23/wildlife_impacts.csv")
-
-# df %>% 
-#   # 1. prepare the data
-#   group_by(incident_year, incident_month, operator) %>% 
-#   mutate(incident_month = as.character(incident_month)) %>% 
-#   filter(incident_year >= 2000) %>% 
-#   summarise(n = n()) %>% 
-#   # 2. base plot
-#   ggplot(aes(x = incident_month, y = incident_year, fill = n))+
-#   geom_tile(color = "white")+
-#   facet_wrap(~operator)+
-#   # 3. look & feel
-#   scale_fill_gradient(low = "grey95", high = "#d6347e")+
-#   theme(panel.grid = element_blank(), 
-#         plot.title = element_text(hjust = 0.5),
-#         plot.subtitle = element_text(hjust = 0.5, face = "italic"),
-#         plot.background = element_rect(fill = "grey95"),
-#         panel.background = element_rect(fill = "grey95", color = "grey95"),
-#         strip.background = element_rect(fill = "white", color = "grey95"))+
-#   labs(title = "Airline Bird Strikes", subtitle = "2000 - 2018", x = "Month", y = "Year")
 ```
 
 
