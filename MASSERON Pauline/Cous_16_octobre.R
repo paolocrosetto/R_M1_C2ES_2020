@@ -216,3 +216,4 @@ fct <- as.factor(chr)
 levels(fct)
 
 
+
