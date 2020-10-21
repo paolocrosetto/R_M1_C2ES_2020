@@ -36,3 +36,4 @@ select(df,arr_delay,dep_delay,everything())
 
 #sauvegarder dans un objet les délais 
 delays<- select(df,contains("delay"))
+
