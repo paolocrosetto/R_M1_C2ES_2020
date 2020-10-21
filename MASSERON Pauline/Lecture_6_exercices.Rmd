@@ -60,8 +60,9 @@ coef(firstreg)
 > faites une régression de Ozone sur Wind en utilisant Base R et affichez son `summary()`
 
 ```{r}
-lm(Ozone ~ Wind, data = airquality) %>% 
- summary()
+lm(Ozone ~ Wind, data =  airquality) %>% 
+  summary()
+
 ```
 
 ## Broom
@@ -80,9 +81,8 @@ lm(Ozone ~ Wind, data = airquality) %>%
 voilà le output de `tidy`:
 
 ```{r}
-
 lm(Ozone ~ Wind, data = airquality) %>% 
-  tidy()
+tidy() -> reg.tidy
 
 ```
 
@@ -91,28 +91,20 @@ lm(Ozone ~ Wind, data = airquality) %>%
 ```{r}
 lm(Ozone ~ Wind, data = airquality) %>% 
   tidy() %>% 
-  ggplot(aes(y = term, x = estimate))+
-  geom_point()+
-  geom_errorbarh(aes(xmin = estimate - std.error, xmax = estimate + std.error), height = 0.1) +
-  theme_minimal()
+  ggplot(aes(x = estimate, y = term)) + geom_point() + 
+  geom_errorbarh(aes(xmin = estimate-std.error, xmax = estimate+std.error, height = 0.1))
+
 ```
 
 ## exercice
 
-Regréssion de Ozone sur Wind et Temp (airquality) + plot des coefficients
+Régression de Ozone sur Wind et Temps + plot des coefficients
 
 ```{r}
-# stratégie
-
-# 1. faire le lm()
-# 2. le passer par tidy()
-# 3. faire le plot
-
 lm(Ozone ~ Wind + Temp, data = airquality) %>% 
   tidy() %>% 
-  ggplot(aes(y = term, x = estimate))+
-  geom_point(size = 5, pch = 21)
-
+  ggplot(aes(x = estimate,y = term)) + geom_point(size = 5)
+  
 ```
 
 
@@ -125,10 +117,11 @@ augment ajoute les valuers estimées à notre data.frame. Cela nous permet, par 
 ```{r}
 lm(Ozone ~ Temp, data = airquality) %>% 
   augment() %>% 
-  ggplot(aes(x = Temp, y = Ozone))+
-  geom_point()+
-  geom_line(aes(x = Temp, y = .fitted), color = "green")+
+  ggplot(aes(x = Temp, y = Ozone)) + 
+  geom_point() + 
+  geom_line(aes(x = Temp, y = .fitted), color = "green") +
   theme_minimal()
+
 ```
 
 ### 2. on ajoute les points estimés 
@@ -138,10 +131,11 @@ lm(Ozone ~ Temp, data = airquality) %>%
 ```{r}
 lm(Ozone ~ Temp, data = airquality) %>% 
   augment() %>% 
-  ggplot(aes(x = Temp, y = Ozone))+
-  geom_point()+
-  geom_point(aes(x = Temp, y = .fitted), color = "green")+
+  ggplot(aes(x = Temp, y = Ozone)) + 
+  geom_point() + 
+  geom_point(aes(x = Temp, y = .fitted), color = "green") +
   theme_minimal()
+
 ```
 
 Vu qu'ils suivent une ligne droite, on peut aisément les plotter comme une `geom_line()`
@@ -149,10 +143,11 @@ Vu qu'ils suivent une ligne droite, on peut aisément les plotter comme une `geo
 ```{r}
 lm(Ozone ~ Temp, data = airquality) %>% 
   augment() %>% 
-  ggplot(aes(x = Temp, y = Ozone))+
-  geom_point()+
-  geom_line(aes(x = Temp, y = .fitted), color = "green")+
+  ggplot(aes(x = Temp, y = Ozone)) + 
+  geom_point() + 
+  geom_line(aes(x = Temp, y = .fitted), color = "green") +
   theme_minimal()
+
 ```
 
 Pour mieux visualiser les résidus on lie chaque point réel à sa prédiction par un `geom_segment()`
@@ -160,10 +155,10 @@ Pour mieux visualiser les résidus on lie chaque point réel à sa prédiction p
 ```{r}
 lm(Ozone ~ Temp, data = airquality) %>% 
   augment() %>% 
-  ggplot(aes(x = Temp, y = Ozone))+
-  geom_point()+
-  geom_line(aes(x = Temp, y = .fitted), color = "green")+
-  geom_segment(aes(x = Temp, xend = Temp, y = .fitted, yend = Ozone))+
+  ggplot(aes(x = Temp, y = Ozone)) + 
+  geom_point() + 
+  geom_line(aes(x = Temp,  y = .fitted), color = "green") +
+  geom_segment(aes(x = Temp, xend = Temp, y = .fitted, yend = Ozone)) +
   theme_minimal()
 ```
 
@@ -187,6 +182,7 @@ lm(Ozone ~ Temp, data = airquality) %>%
 
 
 
+
 ## La puissance du tidyverse: plusieurs régressions à la fois, par groupe
 
 Avec le tidyverse on peut lancer plusieurs régressions à la fois, et en visualiser les résultats avec un seul ggplot. On va travailler avec la base de données `gapminder`.
@@ -205,7 +201,7 @@ On va commencer par explorer les données. Comment l'espérance de vie a-t-elle 
 
 ```{r}
 df %>% 
-  ggplot(aes(x = year, y = lifeExp, group = country))+
+  ggplot(aes(x = year, y = lifeExp, group = country)) + 
   geom_line() -> spaghetti
 ```
 
@@ -215,11 +211,10 @@ df %>%
 spaghetti +
   facet_wrap(~continent) +
   aes(color = continent) +
-  theme_minimal()+
-  scale_color_viridis_d()
+  
 ```
 
-L'espérance de vie à l'air d'avoir augmenté un peu partout. **Mais pourquoi?** s'agit-il d'un effet de richesse -- plus on est riches, plus long on vit?
+L'espérance de vie à l'air d'avoir augmenté un peu partout. Mais pourquoi? s'agit-il d'un effet de richesse -- plus on est riches, plus long on vit?
 
 On va faire une régression pour cela. On sait comment faire:
 
@@ -233,11 +228,9 @@ cela à l'air très significatif. On va faire un plot en utilisant `augment` pou
 ```{r}
 lm(lifeExp ~ gdpPercap, data = df) %>% 
   augment() %>% 
-  ggplot(aes(x = gdpPercap, y = lifeExp))+
-  geom_point()+
-  geom_line(aes(x = gdpPercap, y = .fitted), color = "green")+
-  coord_trans(x = "log10", y = "log10")
-
+  ggplot(aes(x = gdpPercap, y = lifeExp)) +
+  geom_point() +
+  geom_line(aes(x = gdpPercap, y = .fitted), color = "red")
 ```
 
 pourquoi le fit est si mauvais? parce que les données contiennent une observation par pays **par an** et dans ce plot on ne tient pas en compte cela. 
@@ -266,7 +259,7 @@ On a donc `variable -> summarise() -> valeur unique` et `grouped_df -> group_mod
 ```{r}
 df %>% 
   group_by(continent, year) %>% 
-  group_modify(~ lm(lifeExp ~ gdpPercap, data = .) %>%  tidy) -> reg_result
+  group_modify(~lm(lifeExp ~ gdpPercap, data = .) %>% tidy()) -> reg_result
 ```
 
 
@@ -276,14 +269,12 @@ Si on regarde l'objet obtenu on peut voir qu'on obtient un objet qui contient su
 On peut maintenant avec aise plotter les résultats et voir si notre idée que la rélation entre PIB et espérance de vie s'estompe avec le temps est soutenue par les données. 
 
 ```{r}
-
 reg_result %>% 
   filter(term != "(Intercept)") %>% 
-  ggplot(aes(x = year, y = estimate, color = continent))+
-  geom_point()+
-  facet_wrap(~continent)+
-  geom_hline(yintercept = 0, color = "red")
-
+  ggplot(aes(x = year, y = estimate, color = continent)) +
+  geom_point() +
+  facet_wrap(~continent) +
+  geom_hline(yintercept = 0, color = "red") 
 ```
 
 rappel: un point dans ce plot ne répresente pas les données mais une estimation de l'effet du PIB sur l'espérance de vie. L'intuition que la rélation soit moins forte au fil du temps tient bien la route pour l'Europe et les deux amériques; pas pour le reste du monde. 
