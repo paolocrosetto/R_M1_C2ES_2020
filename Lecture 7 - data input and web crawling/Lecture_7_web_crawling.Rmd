@@ -87,98 +87,173 @@ On commence par installer le package. Il est partie du tidyverse, mais on ne sai
 library(rvest)
 ```
 
+`rvest` travaille en trois étapes
 
-**Premier cas: extraire un tableau déjà formé**
+1. *read*: lecture et importation de la page html
+2. *select*: sélection du matériel qu'il nous faut à l'intérieur de la page
+3. *parse*: extraction du matériel et stockage dans R.
 
-On va travailler avec laliste des états des EE.UU. par population, disponible par exemple [sur wikipedia en anglais simplifié](https://simple.wikipedia.org/wiki/List_of_U.S._states_by_population).
+
+### **Premier cas: extraire un tableau déjà formé**
+
+#### *read*
+
+example: liste des états des EE.UU. par population, disponible par exemple [sur wikipedia en anglais simplifié](https://simple.wikipedia.org/wiki/List_of_U.S._states_by_population).
 
 ```{r, message=FALSE}
 usa <- read_html("https://simple.wikipedia.org/wiki/List_of_U.S._states_by_population")
 ```
 
-et voilà `rvest` a stocké pour nous la page. Il faut à ce point chercher dans la page à l'aide d'un CSS selector. Tous les éléments d'une page web qui ont le même format d'affichage ont le même 'thème' CSS. Il y a donc des outils automatisés qui permettent de sélectionner le CSS path ou son selector sur une page, de façon visuelle à l'aide de la souris. 
+`rvest` a stocké pour nous la page. 
 
-Une possibilité est d'utiliser l'inspecteur de site disponible sur chaque navigateur, en appuyant sur CTRL+SHIFT+I. On affiche toute une série d'outil de développeur, y compris la possibilité de sélectionner le path absolut (XPATH) ou le type CSS (CSS selector) d'un élément. 
+#### *select*
 
-Une possibilité plus avancée est d'installer Selectorgadget, une extension pour Chrome/Chromium, ici: https://selectorgadget.com/ 
+Comment extraire de l'info? 
+
+Il faut à ce point chercher dans la page à l'aide d'un CSS selector. Tous les éléments d'une page web qui ont le même format d'affichage ont le même 'thème' CSS. Il y a donc des outils automatisés qui permettent de sélectionner le CSS path ou son selector sur une page, de façon visuelle à l'aide de la souris. 
+
+**Nous allons utiliser  Selectorgadget, une extension pour Chrome/Chromium, ici: https://selectorgadget.com/ **
+
+Si vous ne voulez pas utiliser Selectorgadget, chaque navigateur a des outils développeur (normalement CTRL+SHIFT+I)
 
 Une fois selectorgadget installé, on peut simplement en cliquant sur les éléments connaitre leur CSS path et ainsi les sélectionner sur notre page téléchargée.
 
 Une fois le XPATH ou le CSS selector pour l'élément qui nous intéresse trouvés, il faut dire à `rvest` de nous sortir tous les éléments de la page qui suivent le pattern voulu. Dans notre cas, on veut trouver le tableau. Celui ci est un div `table`. On sélectionne les parties qu'on veut à l'aide de `html_nodes(pagehtml, "CSS SELECTOR")`
 
 ```{r, message=FALSE}
-usa %>% html_nodes("table")
-```
-Il y a donc deux `table`. 
-
-```{r, message=FALSE}
-usa %>% html_nodes("table") -> tables
-tables[[1]]
+usa %>% html_nodes(".wikitable")
 ```
 
-On va donc l'extraire: ^[Le point qui le précède ne fait que dire à notre pipe `%>%` d'aller chercher vraiment dans la liste.]
+
+On va donc l'extraire:
 ```{r, message=FALSE}
-states <- usa %>% html_nodes("table") %>% .[[1]]
+states <- usa %>% html_node(".wikitable")
 ```
 
-On a maintenant isolé le tableau dont on avait besoin. Comment l'importer en R pour l'utiliser pour nos stats? Simplement (comme tout dans le tidyverse) en utilisant la fonction `html_table()`:
+#### *parse*
+
+On a maintenant isolé le tableau dont on avait besoin. Comment l'importer en R pour l'utiliser pour nos stats? Deux étapes:
+
+1. sortir le tableau de la liste où il est caché;
+2. utiliser la fonction `html_table()`:
+
 ```{r, message=FALSE}
-read_html("https://simple.wikipedia.org/wiki/List_of_U.S._states_by_population") %>% 
-  html_nodes("table") %>% 
-  .[[1]] %>% 
-  html_table() -> df
+states %>% 
+  html_table() %>% 
+  as_tibble() -> df
 ```
 
 on va inspecter un peu notre df
 ```{r, message=FALSE}
-head(df) 
+df
 ```
 
-Il n'est pas parfait, bien sûr, mais pas loin de ce qu'on veut non plus. Pour réviser, on peut utiliser un peu des outils qu'on a appris pour le mettre dans un état amenable à de l'exploration statistique.
+Il n'est pas parfait, bien sûr, mais pas loin de ce qu'on veut non plus. 
 
-> exercice 
 
-1. sélectionner la population en 2019 par état et en 2010
-2. transformer un caractère en chiffres
-3. éliminer les lignes de 'sommaire' qui ne servent à rien
-4. quelle corrélation entre population en 2010 avec celle en 2019?
+
+> exercice: révision du tidyverse: barplot de la croissance de la population par état
+
+**Attention**: 
+- toutes les données sont des chaines de caractères!!
+- il y a des lignes agrégées dont nous n'avons pas besoin (`table(df$State)` pour les voir)
+
 
 ```{r, message=FALSE}
-df %>% 
-  select(State, 
-         `Population estimate, July 1, 2019[2]`, 
-         `Census population, April 1, 2010[3]`) %>% 
-  rename(state = State, 
-         pop2019 = `Population estimate, July 1, 2019[2]`, 
-         pop2010 = `Census population, April 1, 2010[3]`) %>% 
-  mutate(pop2019 = str_replace_all(pop2019, ",", ""),
-         pop2010 = str_replace_all(pop2010, ",","")) %>% 
-  mutate(pop2019 = as.numeric(pop2019),
-         pop2010 = as.numeric(pop2010)) %>% 
-  filter(state != "The fifty states",
-         state != "Contiguous United States",
-         state != "Fifty states + District of Columbia",
-         state != "Total U.S. (including District of Columbia and territories)") %>% 
-  ggplot(aes(x = pop2010, y = pop2019))+
-  geom_point()+
-  geom_abline(slope = 1, color = 'red')
+
 ```
 
-**Deuxième cas: extraire de l'info d'un texte**
+
+> rvest table exercice: extraire les données d'un tableau sur wikipedia
+
+- Extraire les données du tableau https://en.wikipedia.org/wiki/List_of_African_countries_by_GDP_(PPP)_per_capita
+- quels sont les états plus agricoles? faire un barplot de la part de l'agriculture dans le GDP par pays (attention: les données sont en caractère!)
+
+```{r}
+
+```
+
+
+
+> un exemple plus complexe: les spectateurs de Game of Thrones
+
+Obectif: reproduire le graphique des spectateurs de GoT par saison.
+
+La page web contenant les données est ici: https://en.wikipedia.org/wiki/Game_of_Thrones#Viewership
+
+```{r}
+#extract the data
+got <- read_html("https://en.wikipedia.org/wiki/Game_of_Thrones#Viewership") %>% 
+  html_nodes(".wikitable") %>% 
+  .[[3]] %>% 
+  html_table(fill = T)
+
+#have a look at the data: the var names are horrible
+# need to clean them! package <janitor>
+library(janitor)
+got %>% 
+  clean_names() %>%                  # nettoyage des noms des variables
+  filter(season != "Season") %>%     # première ligne inutile
+  select(-season) %>%                # vairable 'saison' vide et dupliquée
+  rename(season = season_2, 
+         episode_number_1 = episode_number) %>%  # changement de nom des variables
+  # reshape to longer pour avoir des données 'tidy'
+  pivot_longer(cols = !season & !average, names_to = "episode", values_to = "viewers") %>% 
+  # "episode" is a horrible variable, separate it then clean
+  separate(episode, into = c("dropme", "dropme2", "episode")) %>% 
+  select(-starts_with("drop")) %>% 
+  # cleaning the NA episodes
+  filter(viewers != "N/A") %>% 
+  # creating a vairable for the episode in general
+  mutate(cumulative = seq_along(episode)) %>% 
+  # ops! viewers is a character!! average aussi !!
+  mutate(viewers = as.numeric(viewers),
+         average = as.numeric(average)) -> got_clean
+
+# data are finally OK!
+# plotting
+got_clean %>% 
+  ggplot(aes(x = as.factor(cumulative), y = viewers, fill = season))+
+  geom_col(color = "white")+
+  scale_fill_viridis_d()+
+  theme_minimal()+
+  theme(legend.position = "none",
+        panel.grid.major.x = element_blank(),
+        plot.title.position = "plot",
+        axis.text.x = element_text(angle = 90))+
+  geom_line(aes(y = average, group = season), color = "red", linetype = "dashed")+
+  labs(x = "episode", y = "million viewers", title = "Game of Thrones viewers by episode and season")
+```
+
+
+### **Deuxième cas: extraire de l'info d'un texte**
 
 Et si l'info qu'on cherche est dans un texte et non pas déjà pre-formattée en tableau?
 
+#### Sites 'faits à la main': pas cool.
+
 On va travailler, pour éviter de voler des données à n'importe qui, sur ma liste des publications, disponible sur [mon site personnel](https://paolocrosetto.wordpress.com/papers/)
+
+Les étapes de *read* et de *select* sont les mêms que pour les tableaux:
+
 ```{r, message=FALSE}
 pc <- read_html("https://paolocrosetto.wordpress.com/papers/")
 ```
 
-à l'aide du CSS selector on s'aperçoit que tout titre d'un papier est dans un tag `strong`. On va donc extraire les titres de tous les publications avec:
+à l'aide du CSS selector on s'aperçoit que tout titre d'un papier est dans un tag `strong`.
+
+On va donc extraire les titres de tous les publications.
+
+`rvest` utilise pour le texte la fonction `html_text`:
+
 ```{r, message = FALSE}
 publis <- pc %>% html_nodes("li strong") %>% html_text()
 ```
 
-On utilise la fonction `html_nodes()` pour extraire les titres et la fonction `html_text()` pour extraire le texte de ces titres
+On utilise la fonction `html_nodes()` pour *select*ionner les titres et la fonction `html_text()` pour en *parse*r le texte.
+
+Les données sont stockés dans un vecteur.
+
 Il y a 51 publications. Cela me parait excessif -- je n'ai pas autant publié. Regardons plus de près:
 
 ```{r, message = FALSE}
@@ -186,15 +261,21 @@ head(publis) %>% kable()
 ```
 Il y a quelques 'publications' qui ne sont que des titres de section, ou des virgules... pas très bien fait ce site!
 
-Cet exemple vous montre que parfois sortir l'information n'est pas facile parce que le site est fait 'à la main' (c''est mon cas) et donc ne suit pas des normes spécifiques qui créent des patterns exploitables par nos logiciels.
+Cet exemple vous montre que parfois sortir l'information n'est pas facile parce que le site est fait 'à la main' (c'est mon cas) et donc ne suit pas des normes spécifiques qui créent des patterns exploitables par nos logiciels.
 
-Il est plus facile d'extraire des données des sites 'professionnels'. Par exemple, extraire la liste des blog posts du site de Rstudio. On va chercher le blog de Rstudio ici: https://blog.rstudio.com/
+#### Sites faits de façon professionnelle: plus facile.
+
+Il est plus facile d'extraire des données des sites 'professionnels'. 
+
+Par exemple, extraire la liste des blog posts du site de Rstudio. On va chercher le blog de Rstudio ici: https://blog.rstudio.com/
 
 ```{r, message= FALSE}
 rstudio <- read_html("https://blog.rstudio.com/")
 ```
 
-Après avec l'aide du CSS selector on peut sélectionner par exemple les auteurs. Si on le fait on voit que les dates sont sélectionnées aussi. mais si on clique sur une date on peut déselctionner les dates. Le CSS selector nécessaire pour les auteurs est donc:
+Après avec l'aide du CSS selector on peut sélectionner par exemple les auteurs. Si on le fait on voit que les dates sont sélectionnées aussi. mais si on clique sur une date on peut déselctionner les dates. 
+
+Ici on sélectionne les CSS selectors pour les titres, auteurs et dates:
 
 ```{r, message= FALSE}
 titres <- rstudio %>% html_nodes("h1 a") %>% html_text()
@@ -204,11 +285,24 @@ date <- rstudio %>% html_nodes(".article-list span:nth-child(1)") %>% html_text(
 ```
 
 Les trois vecteurs ont tous 10 observations, on peut les constraindre dans un data.frame (ou tibble):
+
 ```{r}
-rst <- data.frame(auteurs, titres, date)
+rst <- tibble(auteurs, titres, date)
 ```
 
-Avec des opérations de ce type on peut construire une base de données assez importante, **sur une seule page à la fois, cependant**. 
+Avec des opérations de ce type on peut construire une base de données assez importante, **sur une seule page à la fois**. 
+
+> exercice: extraire les titres, années, et nombre d'étoiles des 250 meilleurs films selon IMDB
+
+- importer https://www.imdb.com/chart/top/ 
+- lire les infos et en faire une base de données
+- faire un histogramme des années les plus répresentées
+
+```{r}
+
+```
+
+
 
 
 ## Crawling: automatiser le processus
@@ -224,8 +318,8 @@ Malheureusement, il n'y a pas d'outil lié au tidyverse qui fait cette opératio
 library(Rcrawler)
 ```
 
-Rcrawler rend le *crawling* d'un site automatique -- voire trop, parce qu'il télécharge tout le site et cela peut prendre énormément de place. 
-On va essayer d'automatiser la tâche faite surle blog de Rstudio précedamment, en faisant l'extraction des titres, dates, auteurs et abstract de chaque article paru sur le blog et non pas de ceux dans la première page. 
+Rcrawler rend le *crawling* d'un site automatique -- voire trop, parce qu'il télécharge tout le site et cela peut prendre énormément de place et de temps. 
+On va essayer d'automatiser la tâche faite sur le blog de Rstudio précedamment, en faisant l'extraction des titres, dates, auteurs et abstract de chaque article paru sur le blog et non pas de ceux dans la première page uniquement. 
 
 Dans ce cas, tout le blog de rstudio fait des centianes des pages, dont on n'a pas besoin; si on lance Rcrawler sans argument, on se retrouve avec plus de 400 pages. Quoi faire? En regardant sur le site, on voit, en cliquant sur les pages suivantes la première, que chaque URL est formé an ajoutant `\page\NUMPAGE\` à l'URL principal. Heuresement Rcrawler nous permet de filtrer les pages qu'on veut télécharger. La commande est la suivante:
 
@@ -250,7 +344,7 @@ Rcrawler(Website = "https://blog.rstudio.com/",
 
 Cette fois ci Rcrawler a crée deux variables dans votre environnement: INDEX et DATA. 
 
-Là on a tout ce qu'il faut; mais malheureusement les données sont dans un format de lecture difficile: Data est une liste et chacun de ses éléments est aussi une liste, qui contient à son tour les données qu'on cherche. Il faut passer d'une liste de listes à un data.frame facile à lire et utiliser. 
+Là on a tout ce qu'il faut; mais malheureusement les données sont dans un format de lecture difficile: DATA est une liste et chacun de ses éléments est aussi une liste, qui contient à son tour les données qu'on cherche. Il faut passer d'une liste de listes à un data.frame facile à lire et utiliser. 
 
 On va partir par considérer que chaque élément de la liste peut être aisement transformé en data.frame. Voilà deux examples:
 ```{r}
@@ -273,46 +367,29 @@ rstudio_data %>%
 
 ## Un autre example
 
-Cet example je l'ai copié-collé du tutorial de RCrawler -- IMDB ratings:
+> exercice: Rcrawler
+
+- Télécharger les pages des jeux sur newgrounds: https://www.newgrounds.com/games
+- Pour chaque jeu, télécharger:
+  - le nombre de 'views' 
+  - le nombre de 'votes' 
+  - le 'score' 
+  - l'auteur 
+
 
 ```{r}
-Rcrawler(Website = "https://www.imdb.com/list/ls027433291/" , 
-         no_cores = 4, 
-         no_conn = 4, 
-         MaxDepth = 1, 
-         dataUrlfilter = "/title/", 
-         crawlUrlfilter ="/title/", 
-         ExtractCSSPat =c("div.title_wrapper>h1", 
-                          "strong span",
-                          "#title-overview-widget time",
-                          ".score_mixed span"),
-         PatternsNames =c("Title",
-                          "Stars",
-                          "Runtime",
-                          "Metascore"), 
-         ManyPerPattern = TRUE,
-         ignoreAllUrlParams = TRUE)
+
+
 ```
 
-Cette fois-ci la structure de la base de données est plus simple. On peut donc simplement faire
+Puis transformer DATA en tibble:
 
 ```{r}
 DATA %>% 
   tibble() %>% 
   mutate(ext = map(DATA, ~data.frame(do.call("cbind", .)))) %>% 
-  unnest(ext) -> movies
+  unnest(ext) -> games
 
 ```
 
-là on peut plotter les étoiles IMDb contre le score Metacritic:
-
-```{r}
-movies %>% 
-  mutate(Stars = as.numeric(Stars),
-         Metascore = as.numeric(Metascore)) %>% 
-  ggplot(aes(x = Stars, y = Metascore))+
-  geom_point()+
-  geom_label(aes(label = Title)) -> plotmovie
-
-```
-
+Quel est parmi ces jeu le plus vu? 
