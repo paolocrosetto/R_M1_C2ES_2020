@@ -9,6 +9,10 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 
+
+
+
+
 ```
 
 
@@ -217,6 +221,54 @@ plot: https://pbs.twimg.com/media/EAVOkU7WwAIlX4U?format=png&name=small
 
 ```{r}
 df <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-07-23/wildlife_impacts.csv")
+
+## etape 1 : creer les variables d'interet
+## existentes month , year,  compagnie
+## à creer : nombre d'accidents par month /year/ compagnie
+
+
+
+df %>% 
+  mutate(incident_month = as.factor(incident_month)) %>% 
+  group_by(incident_year, incident_month, operator) %>% 
+  summarise(n= n()) -> base
+
+
+  
+
+#etape 2 : creer le plot en version brut
+## il faut que toutes le sdimensions soient au bon endroit
+
+base %>% 
+  ggplot(aes(x = incident_month, y = incident_year, 
+             fill = n))+
+  facet_wrap(~operator)+
+  geom_tile(color = "white") -> plot_base
+
+## etape 3
+## rendre le plot beau <- plus similaire à la cible
+## utiliser scale_ et theme_
+
+plot_base +
+  coord_cartesian(ylim =c (2000, 2018))+
+  scale_fill_gradient(low = "white", 
+                      high = "#ee3d8e")+
+  theme_minimal()+
+  theme(panel.background =element_rect(fill = "grey90"),
+        plot.background = element_rect(fill = "grey90"), 
+  plot.title = element_text(hjust = 0.5))+
+  labs(title = "Airlines Bird Trikes",
+       x = "Month",
+       y = "Year")
+  
+
+## Stratégie
+
+#etape 1 : données (summarise, mutate...)
+
+# etape 2 : graphique brut (ggplot, facet, ...)
+
+# étape 3 : 
 ```
 
 

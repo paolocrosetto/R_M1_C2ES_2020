@@ -122,7 +122,8 @@ base + geom_bar(fill = "red")
 ## tout ce qui passe par aes() et scale() change par variable
 ## tout ce qui passe directement aux geom ne change pas
 
-base + theme_minimal()
+base + theme_minimal()+
+  theme(legend.position = "left")
 base + theme_classic()
 base + theme_void()
 
