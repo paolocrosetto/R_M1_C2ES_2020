@@ -352,9 +352,9 @@ La corrélation est bcp plus forte pour Europe et Océanie.
 En revanche si on veut utiliser cor.test pour connaitre la valuer p de notre corrélation, on ne peut pas utiliser directement l'approche naïve -- parce que `summarise()` ne sait pas quoi faire avec les nombreuses dimensions de l'objet retourné par la fonction `cor.test()`. L'approche naïve ne marche pas:
 
 ```{r}
-df %>% 
-  group_by(continent) %>% 
-  summarise( cor = cor.test(.$lifeExp, .$gdpPercap))
+# df %>% 
+#   group_by(continent) %>% 
+  # summarise( cor = cor.test(.$lifeExp, .$gdpPercap))
 ```
 
 et voilà, R râle parce que `summmarise()` s'attend à une seule valeur et en reçoit 9 (et chacune d'entre elles est un objet complexe). 
