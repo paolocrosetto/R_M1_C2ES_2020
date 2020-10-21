@@ -16,6 +16,7 @@ output:
 ```{r setup, include=FALSE, tinytex.verbose = TRUE}
 library(tufte)
 library(tinytex)
+library(kableExtra)
 options(tinytex.verbose = TRUE)
 # invalidate cache when the tufte version changes
 knitr::opts_chunk$set(tidy = FALSE, cache.extra = packageVersion('tufte'))
@@ -23,92 +24,7 @@ options(htmltools.dir.version = FALSE)
 library(tidyverse)
 ```
 
-# 1. Importer des données externes
-
-Jusque là on a toujours utilisé des données qui étaient présentes sur R (mpg, airquality, iris) ou qu'on pouvait importer par des packages (nycflights, gapminder). Mais de façon générale les données dans le monde réel sont disponibles dans des fichiers et sous des différents formats. 
-
-Pour importer des données dans le tidyverse on utilise une série de fonctions de la famille `read_*()` où on spécifie le type de données qu'on importe. 
-
-Par exemple prenons les données des **TidyTuesdays** que vous trouvez ici: https://github.com/rfordatascience/tidytuesday/blob/master/README.md 
-
-Example: retards de la SNCF
-
-```{r}
-df <- read_csv("../small_trains.csv")
-```
-
-
-# 2. (Quelque chose qui n'a rien à voir)
-
-## (mais qui porte sur les plots)
-## (et fait office de révision de ce qu'on a fait jusque là)
-
-On a vu lors de la première séance qu'il est toujours important de **visualiser** les données pour avoir une idée de leur forme, des relations entre variables, de *pattern* qui pourraient exister, etc. La meilleure pratique est toujours d'essaier de plotter vos données avant de vous lancer dans des analyses plus poussées.^[ces notes utilisent la package *tufte*: si vous ne l'avez pas, install.packages("tufte") devrait faire l'affaire]
-
-Un example étonnant est la *Datasaurus dozen*^[Pour plus d'info sur ce jeu de données: (https://www.autodeskresearch.com/publications/samestats)] -- un ensemble de 12 jeux de données sur deux variables (*x* et *y*) qui ont toutes les mêmes moyennes (de *x* et de *y*), les mêmes variances, et la même correlation entre *x* et *y*, mais chacun une forme très différente une fois visualisés.
-
-On commence par charger les *packages* et les données. Elles sont au format .tsv (tab-separeted values)^[*tidyverse* on connait; *knitr* est pour produire des jolis rapports de stats et des jolis tableaux]
-```{r, message=FALSE}
-
-library(tidyverse)
-library(knitr)
-df <- read_tsv("DatasaurusDozen.tsv")
-```
-
-
-Quelle forme a ce jeu de données? 
-```{r, message=FALSE}
-summary(df)
-```
-Trois variables, *dataset*, *x* et *y*. Dataset est categorielle, combien de datasets?^[distinct() est un filter() qui élimine tous les observations doublons; kable() est une fonction qui prend un tableau et l'affiche joliment. Je vais systématiquement l'appeler à la fin de chaque chaine pour bien visualiser les résultats]
-
-```{r, message=FALSE}
-df %>% 
-  select(dataset) %>% 
-  distinct()
-
-df %>% 
-  group_by(dataset) %>% 
-  tally()  ## tally() est stirctement équivalent à summarise(n == n())
-```
-
-Ceci dit, quelle forme ont ces 13 différents jeux de données? On peut calculer quelques statistiques de base ^[là on veut uniquement la moyeen et la variance -- le code est simple. On introduit la fonction *summarise_at()* qui est comme *summarise()* qu'on connait mais qui applique une liste de fonctions (funs) à une liste de variables (x,y) et qui permet de façon plus compacte de faire ce qu'on ferait avec plusieurs appels à summarise() en séquence]
-
-```{r, message=FALSE}
-df %>% 
-  group_by(dataset) %>% 
-  summarise(mean_x = mean(x), sd_x = sd(x),
-            mean_y = mean(y), sd_y = sd(y),
-            cor(x, y))
-```
-
-Il nous manque tout de même la corrélation entre x et y: ^[là on crée d'abord un nouveau jeux de données où on utilise *cor()* pour calculer la corrélation entre *x* et *y* et après on utilise left_join pour l'ajouter à notre jeu de données]
-```{r, message=FALSE}
-
-```
-
-Là on voit que chaque sous-jeu de données à la même moyenne, la même variance, et presque la même corrélation. S'agit-il donc de données qui sont tout à fait les mêmes? Si on fait des tests, on retrouve bien évidemment la même chose -- un t.test de différence des moyennes donnerait des résultats forts dans le sens d'une absence de différence. ^[je vous laisse cela comme exercice: mais vraiment, en a-t-on besoin? Si moyenne est quasiment la même et la variance est la même, n'importe quel test retournerait un p-value proche de 1. J'en fais un comme exemple. 
-
-```{r, message=FALSE}
-df %>% 
-  ggplot(aes(x = x, y = y))+
-  geom_point()+
-  facet_wrap(~dataset) -> plotd
-```
-
-Pour résumer: 13 jeux de données, même stats, les tests nous les donnent tous égaux... mais le sont-ils vraiment? essayons de les visualiser! ^[facet_wrap() est une sequence monodimensionelle de facets, qui vont a la ligne automatiqeument si plus d'espace]
-
-```{r, message=FALSE, fig.width = 12, fig.height = 10, fig.fullwidth = TRUE}
-
-```
-
-Message à retenir? Simple: 
-
-> Toujours visualiser les données, parce que les statistiques descriptives c'est bien, mais elle cachent souvent plus de ce qu'elles révèlent!
-
-
-
-# 3. Extraire des données du *web*
+# 1. Extraire des données du *web*
 
 ## Quelques bases "théoriques"
 
@@ -191,17 +107,17 @@ Il n'est pas parfait, bien sûr, mais pas loin de ce qu'on veut non plus. Pour r
 
 1. sélectionner la population en 2019 par état et en 2010
 2. transformer un caractère en chiffres
-3. élimine les lignes de 'sommaire' qui ne servent à rien
-4. quelle corrélation entre population en 2010 avec celle en 2019
+3. éliminer les lignes de 'sommaire' qui ne servent à rien
+4. quelle corrélation entre population en 2010 avec celle en 2019?
 
 ```{r, message=FALSE}
 df %>% 
-  select(Name, 
-         `Population estimate, July 1, 2019[4]`, 
-         `Census population, April 1, 2010[5]`) %>% 
-  rename(state = Name, 
-         pop2019 = `Population estimate, July 1, 2019[4]`, 
-         pop2010 = `Census population, April 1, 2010[5]`) %>% 
+  select(State, 
+         `Population estimate, July 1, 2019[2]`, 
+         `Census population, April 1, 2010[3]`) %>% 
+  rename(state = State, 
+         pop2019 = `Population estimate, July 1, 2019[2]`, 
+         pop2010 = `Census population, April 1, 2010[3]`) %>% 
   mutate(pop2019 = str_replace_all(pop2019, ",", ""),
          pop2010 = str_replace_all(pop2010, ",","")) %>% 
   mutate(pop2019 = as.numeric(pop2019),
@@ -230,7 +146,7 @@ publis <- pc %>% html_nodes("li strong") %>% html_text()
 ```
 
 On utilise la fonction `html_nodes()` pour extraire les titres et la fonction `html_text()` pour extraire le texte de ces titres
-Il y a 56 publications. Cela me parait excessif -- je n'ai pas autant publié. Regardons plus de près:
+Il y a 51 publications. Cela me parait excessif -- je n'ai pas autant publié. Regardons plus de près:
 
 ```{r, message = FALSE}
 head(publis) %>% kable()
@@ -281,7 +197,7 @@ On va essayer d'automatiser la tâche faite surle blog de Rstudio précedamment,
 Dans ce cas, tout le blog de rstudio fait des centianes des pages, dont on n'a pas besoin; si on lance Rcrawler sans argument, on se retrouve avec plus de 400 pages. Quoi faire? En regardant sur le site, on voit, en cliquant sur les pages suivantes la première, que chaque URL est formé an ajoutant `\page\NUMPAGE\` à l'URL principal. Heuresement Rcrawler nous permet de filtrer les pages qu'on veut télécharger. La commande est la suivante:
 
 ```{r, message = FALSE}
-Rcrawler(Website = "https://blog.rstudio.com/", crawlUrlfilter = "/page/[0-9]{2}" )
+Rcrawler(Website = "https://blog.rstudio.com/", crawlUrlfilter = "/page/[0-9]{1-2}" )
 ```
 
 Rcrawler a crée une variable INDEX dans votre environnement, qui contient chaque page, et la réponse donnée par le serveur (dans ce cas, réponse 200, c'est à dire OK.) Il a aussi stocké toutes les pages localement dans un dossier, où maintenant chaque page du blog de Rstudio est sauvegardée localement. 
@@ -305,8 +221,7 @@ Là on a tout ce qu'il faut; mais malheureusement les données sont dans un form
 
 On va partir par considérer que chaque élément de la liste peut être aisement transformé en data.frame. Voilà deux examples:
 ```{r}
-DATA %>% 
-  tibble(DATA) %>% 
+tibble(DATA) %>% 
   mutate(ext = map(DATA, ~data.frame(do.call("cbind", .)))) %>% 
   unnest(ext) -> rstudio_data
 ```
@@ -350,7 +265,7 @@ Cette fois-ci la structure de la base de données est plus simple. On peut donc 
 
 ```{r}
 DATA %>% 
-  tibble(DATA) %>% 
+  tibble() %>% 
   mutate(ext = map(DATA, ~data.frame(do.call("cbind", .)))) %>% 
   unnest(ext) -> movies
 
