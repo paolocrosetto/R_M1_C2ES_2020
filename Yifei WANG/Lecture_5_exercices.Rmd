@@ -1,0 +1,281 @@
+---
+title: "Exercices Lecture 5"
+author: "Paolo Crosetto"
+date: "9/12/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+
+```
+
+
+# Un graphique simple pour commencer et reviser
+
+> en utilisant le jeu de données `iris` créez un scatter plot de Sepal.Length contre Sepal.Width. Sauvegardez ce plot comme plot1
+
+```{r ex1}
+
+```
+
+> maintenat, ajoutez la couleur par espèce, sauvegardez dans plot_color
+
+```{r}
+
+```
+
+> divisez le plot colorié en trois facets de façon horizontale
+
+```{r}
+
+```
+
+> ajoutez un smooth standard à chacun des sousplots
+
+```{r}
+
+```
+
+> et maintenant, un smooth linéaire. sauvegardez ça comme `plot_base`
+
+```{r}
+
+```
+
+
+
+
+# changer le *look and feel* avec les fonctions `theme_*`
+
+
+> produisez 5 plots en utilisant les 5 parmi les thèmes par défaut de ggplot
+
+
+```{r plot1}
+  
+```
+
+
+```{r plot2}
+  
+```
+
+```{r plot3}
+
+  
+```
+
+```{r plot4}
+
+  
+```
+
+```{r plot5}
+
+```
+
+
+# changer les couleurs, les axes, les symboles avec les fonctions `scale_*_*`
+
+> utilisez plot_color. Changez les couleurs de trois groupes selon votre plaisir
+
+```{r}
+
+```
+
+
+> utilisez plot_color. Mappez Species à des symboles (*shape*)
+
+```{r}
+
+```
+
+> avec le plot utilisant différents symboles, changez ce symboles
+
+```{r}
+
+```
+
+> changez les labels des axes et du plot en général -- `labs()`
+
+```{r}
+
+```
+
+
+# revision des différents types de **barplots**
+
+**Note** utilisez le jeu de données **mpg**
+
+> plottez un barplot des *class* dans mpg; sauvegardez comme 'bar'
+
+```{r}
+
+```
+
+
+> utilisez 'bar'. coloriez le barplot selon la variable `drv`
+
+```{r}
+
+```
+
+> mettez les barres les unes à côté des autres  -- position_dodge
+
+```{r}
+
+```
+
+> mettez les barres les unes sur les autres -- position_stack
+
+```{r}
+
+```
+
+
+> mettez les barres les unes sur les autres et faites les sommer à 100% -- position_fill
+
+```{r}
+
+```
+
+> tournez le graphique de 90 degrés -- coord_flip
+
+```{r}
+
+```
+
+
+# révision des **line plots**
+
+> utilisez `nycflights13`, le jeu de données `flights`. 1. calculez le nombre de départs par jour par aéroport newyorkais. plottez en line plot l'évolution sur l'année, en mappant la couleur à l'aéroport.
+
+
+```{r}
+library(nycflights13)
+
+  
+```
+
+> beaucoup trop d'info. groupez par mois et faites la meme chose 
+
+```{r}
+
+```
+
+
+> recap sur les fonctions `scale_x_y`: mappez le type de ligne à 'origin' et changez le type de ligne pour JFK à "solid"
+
+```{r}
+
+```
+
+
+# Récap: Trois variables, deux discrètes, une continue: heatmap
+
+> utilisez flights. Quels sont les jours avec plus de traffic à NYC sur la totalité des aéroports? visualisez une grille avec jour et mois et coloriez chaque case selon le nombre de vols -- cela se fait avec `geom_tile()`. Rappel: avant il faut calculer le nombre de vols par jour et mois. 
+
+```{r}
+
+  
+```
+
+> même plot, mais cette fois ci par aéroport d'origine. 
+
+```{r}
+
+```
+
+# Un exercice plus difficile: reproduire un plot pro
+
+## exo 1: pro heatmap
+
+> essayez de reproduire ce plot (pas important si les couleurs, police, etc ne sont pas les mêmes)
+
+plot: https://pbs.twimg.com/media/EAVOkU7WwAIlX4U?format=png&name=small
+
+les données seront stockés dans `df`
+
+```{r}
+df <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-07-23/wildlife_impacts.csv")
+
+# Étape 1 :
+# Créer les variables intérêts
+# Existance month, year, compagnie
+# À créer : nombre d'accidents par month/year/compagnie
+df %>%
+  group_by(incident_year, incident_month, operator) %>%
+  summarise(n=n()) %>% 
+  mutate(incident_month = as.factor(incident_month))-> base
+
+
+# Étape 2 :
+# Créer le plot en version brute
+# Il faut que toutes les dimensions soit au bon endroit
+base %>%
+  ggplot(aes(x=incident_month, y=incident_year, fill=n)) +
+  facet_wrap(~operator) +
+  geom_tile(color="white") -> plot_base
+
+# Étape 3 :
+# Rendre le plot "beau" _ plus similaire à la cible
+# Utiliser scale_ et theme
+plot_base +
+  coord_cartesian(ylim = c(2000, 2018), xlim = c(1, 12)) +
+  scale_fill_gradient(low = "white", high = "#ee3d8e")+
+  theme_minimal() +
+  theme(panel.background = element_rect(fill = "grey90"),
+        plot.background = element_rect(fill = "grey90" ),
+        plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5),
+        plot.caption = element_text(hjust = 0.5)) +
+  labs(title = "Arilines Bird Strikes", 
+       subtitle = "2000 - 2018", 
+       caption = "Data:FAA Wildlife Strike Database. By: @LarissaKostiw",
+       x="Month", 
+       y="Year") 
+
+```
+
+
+## exo 2: pro barplot
+
+
+> essayez de reproduire ce plot (pas important si les couleurs, police, etc ne sont pas les mêmes)
+
+plot: https://pbs.twimg.com/media/D8QcVu7WsAArvFr?format=jpg&name=small 
+
+```{r}
+df <- read.csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-06-04/ramen_ratings.csv")
+
+# Strategie 
+# Étape 1 :
+# Donnees(summarise(), mutate....)
+df %>%
+  group_by(stars, country) %>%
+  summarise(n=n()) %>%
+  arrange(desc(n)) %>%
+  filter(between(row_number(), 1, 11)) -> base
+
+# Étape 2 :
+# Graphique brut(ggplot(), facet, geom....)
+base %>%
+  ggplot(aes(country)) + 
+  geom_bar(color=n, fill=n) +
+  geom_hline() -> base_plot
+
+# Étape 3 :
+# Graphique final (scale, theme)
+base_plot +
+  scale_color_viridis_d() +
+  theme_stata() +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5),
+        legend.position = "top") +
+  labs(title = "Number of Ramen Rated by Country of Origin", 
+       subtitle = "The top 10 countries producing ramen and their rathings distributions", 
+       caption = "Source-www.theramenrater.com") 
+```
+
