@@ -242,6 +242,7 @@ plot_base +
 
 ## exo 2: pro barplot
 
+
 > essayez de reproduire ce plot (pas important si les couleurs, police, etc ne sont pas les mêmes)
 
 plot: https://pbs.twimg.com/media/D8QcVu7WsAArvFr?format=jpg&name=small 
@@ -252,11 +253,29 @@ df <- read.csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/ma
 # Strategie 
 # Étape 1 :
 # Donnees(summarise(), mutate....)
+df %>%
+  group_by(stars, country) %>%
+  summarise(n=n()) %>%
+  arrange(desc(n)) %>%
+  filter(between(row_number(), 1, 11)) -> base
 
 # Étape 2 :
 # Graphique brut(ggplot(), facet, geom....)
+base %>%
+  ggplot(aes(country)) + 
+  geom_bar(color=n, fill=n) +
+  geom_hline() -> base_plot
 
 # Étape 3 :
 # Graphique final (scale, theme)
+base_plot +
+  scale_color_viridis_d() +
+  theme_stata() +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5),
+        legend.position = "top") +
+  labs(title = "Number of Ramen Rated by Country of Origin", 
+       subtitle = "The top 10 countries producing ramen and their rathings distributions", 
+       caption = "Source-www.theramenrater.com") 
 ```
 
