@@ -502,18 +502,10 @@ df &lt;- gapminder</code></pre>
 <p>Pour répondre à cela il faut faire une régression par an, et après regarder (plotter) les coefficients et leurs intervaux de confiance pour voir si l’effet est toujours bien vivant ou il s’affaiblit. De plus, le faire par continent aiderait. Peut-on faire cela?</p>
 <p>Malheureusement, une approche simple et naive (groupez puis faites le lm) ne marche pas.</p>
 <p>comment faire?</p>
-<p>il faut passer par un <code>nest</code>. C’est une fonction qui ‘découpe’ le <code>data.frame</code> suivant <code>group_by()</code> et met le morceau de data.frame découpé comme s’il était une variable dans le data.frame d’origine.</p>
-<p>avec ce ‘nested’ data.frame on peut appliquer un <code>lm</code> pour chaque élément, en utilisant chaque découpe de data.frame comme si elle était une variable.</p>
-<p>En regardant le nouvel objet crée on se rend compte qu’on a maintenant une nouvelle colonne, “model”, qui contient le modèle. En effet il contient le même contenu qu’un appel à <code>lm</code>, mait l’appe a été</p>
-<ol style="list-style-type: decimal">
-<li>fait sur une parte des données, et en particulier sur une année/continent, et</li>
-<li>il est stocké dans une variable.</li>
-</ol>
-<p>Maintenant il faut extraire les informations contenues dans le modèle et les stocker dans une nouvelle variable. On peut faire cela avec, par exemple <code>tidy()</code>.</p>
-<p>Si on regarde l’objet obtenu (<code>result</code>) on peut voir qu’une colonne ‘result’ a été crée, et qu’ele contient un data.frame entire (le résultat d’un appel à <code>tidy</code> si les données n’étaient que celles contenues dans la variable <code>data</code> pour chaque ligne du tableau).</p>
-<p>Il ne nous reste qu’à <em>extraire</em> cette information, en utilisant le verbe complément de <code>nest()</code>: <code>unnest()</code>:</p>
-<p>et voilà. On a obtenu un objet <code>final</code> qui contient une estimation <em>par ligne</em> – dans ce cas par année/continent.</p>
-<p>on peut maintenant avec aise plotter les résultats et voir si notre idée que la rélation entre PIB et espérance de vie s’estompe avec le temps est soutenue par les données.</p>
+<p>il faut passer par une foction specialisé par groupe, <code>group_modify()</code>. Il s’agit d’une espèce de <code>summarise()</code>, parce que <code>group_modify()</code> applique une fonction à chaque groupe. Mais alors que <code>summarise()</code> prend en argument une variable et ne peut retourner qu’une valuer unique par groupe (par exemple, la moyenne, le max, le min, la numerosité), <code>group_modify()</code> prend en argument une base de données et retourne une base de données de sortie par groupe.</p>
+<p>On a donc <code>variable -&gt; summarise() -&gt; valeur unique</code> et <code>grouped_df -&gt; group_modify() -&gt; df</code></p>
+<p>Si on regarde l’objet obtenu on peut voir qu’on obtient un objet qui contient sur chaque ligne un coefficient de l’estiamtion par group – ici année/continent.</p>
+<p>On peut maintenant avec aise plotter les résultats et voir si notre idée que la rélation entre PIB et espérance de vie s’estompe avec le temps est soutenue par les données.</p>
 <p>rappel: un point dans ce plot ne répresente pas les données mais une estimation de l’effet du PIB sur l’espérance de vie. L’intuition que la rélation soit moins forte au fil du temps tient bien la route pour l’Europe et les deux amériques; pas pour le reste du monde.</p>
 </div>
 </div>
@@ -521,36 +513,9 @@ df &lt;- gapminder</code></pre>
 <h2>sommaire de la méthode</h2>
 <ol style="list-style-type: decimal">
 <li>groupez le data frame</li>
-<li><code>nest()</code>: une colonne est créée qui contient tout le data.frame rélatf à un groupe</li>
-<li>appliquer le modèle linéaire en passant par <code>map()</code> qui applique une fonction a des données, ligne par ligne</li>
-<li>utiliser <code>tidy()</code> pour extraire les données du modèle en format data.frame et les stocker dans une colonne;</li>
-<li><code>unnest()</code></li>
-<li>les données sont prêtes pour être utilisées de façon <em>tidy</em>.</li>
+<li><code>group_modify()</code>: on applique une fonction complexe (comme <code>lm</code>) à chaque groupe.</li>
+<li>utiliser <code>tidy()</code> pour que les résultats du modèle soient en format data.frame; si ce n’est pas le cas, cela ne marchera pas.</li>
 </ol>
-<p>voilà le code qui saute les passage intermédiaires et qui peut donc être reutilisé:</p>
-<pre class="r"><code>## code dans une seule pipe
-df %&gt;% 
-  group_by(year, continent)                                     %&gt;% # groupement désiré
-  nest()                                                        %&gt;% # création de la colonne qui contient les découpes de data.fram
-  mutate(model = map(data, ~lm(lifeExp ~ gdpPercap, data = .))) %&gt;% # application du modèle ligne par ligne
-  mutate(results = map(model, tidy))                            %&gt;% # nettoyage des résultats du modèle
-  unnest(results)                                 </code></pre>
-<pre><code>## # A tibble: 120 x 9
-## # Groups:   continent, year [60]
-##    continent  year data      model  term   estimate std.error statistic  p.value
-##    &lt;fct&gt;     &lt;int&gt; &lt;list&gt;    &lt;list&gt; &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-##  1 Asia       1952 &lt;tibble … &lt;lm&gt;   (Inte…  4.58e+1 1.67          27.4  2.59e-23
-##  2 Asia       1952 &lt;tibble … &lt;lm&gt;   gdpPe…  1.08e-4 0.0000874      1.24 2.24e- 1
-##  3 Asia       1957 &lt;tibble … &lt;lm&gt;   (Inte…  4.87e+1 1.74          28.0  1.44e-23
-##  4 Asia       1957 &lt;tibble … &lt;lm&gt;   gdpPe…  1.03e-4 0.0000868      1.19 2.45e- 1
-##  5 Asia       1962 &lt;tibble … &lt;lm&gt;   (Inte…  5.08e+1 1.79          28.3  9.92e-24
-##  6 Asia       1962 &lt;tibble … &lt;lm&gt;   gdpPe…  1.41e-4 0.000104       1.35 1.87e- 1
-##  7 Asia       1967 &lt;tibble … &lt;lm&gt;   (Inte…  5.35e+1 1.78          30.0  1.72e-24
-##  8 Asia       1967 &lt;tibble … &lt;lm&gt;   gdpPe…  1.98e-4 0.000118       1.68 1.04e- 1
-##  9 Asia       1972 &lt;tibble … &lt;lm&gt;   (Inte…  5.60e+1 1.79          31.4  4.65e-25
-## 10 Asia       1972 &lt;tibble … &lt;lm&gt;   gdpPe…  1.56e-4 0.0000871      1.79 8.30e- 2
-## # … with 110 more rows</code></pre>
-<p>les données sont prêtes à être utilisées.</p>
 <div id="exercice-2" class="section level3">
 <h3>exercice</h3>
 <blockquote>
@@ -570,15 +535,15 @@ df %&gt;%
 </div>
 <div id="tidyverse-juste-corrélation" class="section level2">
 <h2>Tidyverse, juste corrélation</h2>
-<p>La syntaxe du tidyverse est assez simple parce qu’elle peut utiliser directement <code>sumamrise</code>. Summarise marche avec toute fonction qui prend un vecteur et retourne un nombre.</p>
+<p>La syntaxe du tidyverse est assez simple parce qu’elle peut utiliser directement <code>summarise()</code>. Summarise marche avec toute fonction qui prend un vecteur et retourne un nombre.</p>
 <p>Du fait que <code>cor()</code> ne retourne qu’une seule valuer, on peut appliquer directement le <code>group_by()</code> et tout va bien; par exemple corrélation par continent:</p>
 <p>La corrélation est bcp plus forte pour Europe et Océanie.</p>
 </div>
 <div id="tidyverse-corrélation-et-test" class="section level2">
 <h2>tidyverse, corrélation et test</h2>
-<p>En revanche si on veut utiliser cor.test pour connaitre la valuer p de notre corrélation, on ne peut pas utiliser directement l’approche naïve – parce que <code>summarise</code> ne sait pas quoi faire avec les nombreuses dimensions de l’objet retourné par la fonction <code>cor.test()</code>. L’approche naïve ne marche pas:</p>
-<p>et voilà, R râle parce que <code>summmarise</code> s’attend à une seule valeur et en reçoit 9 (et chacune d’entre elles est un objet complexe).</p>
-<p>Il faut à nouveau passer par <code>nest</code>. Heureusement on a déjà le code, il suffit de changer le <code>lm</code> par un <code>cor.test</code>:</p>
+<p>En revanche si on veut utiliser cor.test pour connaitre la valuer p de notre corrélation, on ne peut pas utiliser directement l’approche naïve – parce que <code>summarise()</code> ne sait pas quoi faire avec les nombreuses dimensions de l’objet retourné par la fonction <code>cor.test()</code>. L’approche naïve ne marche pas:</p>
+<p>et voilà, R râle parce que <code>summmarise()</code> s’attend à une seule valeur et en reçoit 9 (et chacune d’entre elles est un objet complexe).</p>
+<p>Il faut à nouveau passer par <code>group_modify()</code>. Il suffit de changer le <code>lm</code> par un <code>cor.test</code>:</p>
 <p>et voilà, on a les estimations (elles sont les mêmes que toute à l’heure) mais aussi les valuers p et les intervals de confiance.</p>
 <div id="exercice-3" class="section level3">
 <h3>Exercice</h3>
