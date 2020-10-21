@@ -373,7 +373,7 @@ et voilà, on a les estimations (elles sont les mêmes que toute à l'heure) mai
 
 ### Exercice
 
-> calculez l'interval de confiance de la corrélation entre lifeExp et gdpPercap pour chaque continent pour chaque année. [Plottez les résultats pour la France, le Japon et la Bolivie au fil du temps]. 
+> calculez l'interval de confiance de la corrélation entre lifeExp et gdpPercap pour chaque pays. Plottez les résultats pour la France, le Japon et la Bolivie au fil du temps. 
 
 ```{r}
 # stratégie de solution
@@ -382,13 +382,25 @@ et voilà, on a les estimations (elles sont les mêmes que toute à l'heure) mai
 # 3. filtrer les pays qu'il nous faut
 # 4. fair e le plot des intervaux de confiance
 df %>% 
-  group_by(continent, year) %>% 
-  filter(is.na(lifeExp) == FALSE,
-         is.na(gdpPercap) == FALSE) %>% 
-  group_modify(~cor(.$lifeExp, .$gdpPercap) %>% tidy) %>% 
-  ggplot(aes(year, x, color = continent))+
+  # 1. group
+  group_by(country) %>% 
+  # 2. test par groupe
+  group_modify(~cor.test(.$lifeExp, .$gdpPercap) %>% tidy) %>% 
+  # 3. filter
+  filter(country %in% c("France", "Japan", "Bolivia")) %>% 
+  # 4. plot
+  # dimension mapping
+  ggplot(aes(country, estimate, color = country))+
+  # geoms
   geom_point()+
-  facet_wrap(~continent)
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.1) +
+  # appearance
+  theme_minimal()+
+  scale_color_viridis_d(name = "")+
+  theme(legend.position = "none")+
+  labs(x = "", y = "correlation coefficient")+
+  # transpose
+  coord_flip()
 ```
 
 
@@ -404,9 +416,7 @@ On va tester deux quesitons:
 ## Base R
 
 ```{r}
-t.test(df$lifeExp < 60)
-
-mean(df$lifeExp)
+t.test(df$lifeExp, mu = 60, alternative = "greater")
   
 ```
 
