@@ -4,23 +4,11 @@ subtitle: "Intro to R, lecture 7"
 author: "Paolo Crosetto"
 date: "`r Sys.Date()`"
 output:
-  tufte::tufte_html: default
-  tufte::tufte_handout:
-    citation_package: natbib
-    latex_engine: xelatex
-  tufte::tufte_book:
-    citation_package: natbib
-    latex_engine: xelatex
+  html_document: default
 ---
 
 ```{r setup, include=FALSE, tinytex.verbose = TRUE}
-library(tufte)
-library(tinytex)
 library(kableExtra)
-options(tinytex.verbose = TRUE)
-# invalidate cache when the tufte version changes
-knitr::opts_chunk$set(tidy = FALSE, cache.extra = packageVersion('tufte'))
-options(htmltools.dir.version = FALSE)
 library(tidyverse)
 ```
 
@@ -336,9 +324,28 @@ Avec des opérations de ce type on peut construire une base de données assez im
 
 - importer https://www.imdb.com/chart/top/ 
 - lire les infos et en faire une base de données
+- on veut le titre, l'année et le nombre d'étoiles par film (il y en a 250)
 - faire un histogramme des années les plus répresentées
 
 ```{r}
+
+# 1. lire la page web
+imdb <- read_html("https://www.imdb.com/chart/top/")
+#2. pour chaque élement chercher le node et applquer html_text
+
+# titres
+title <- imdb %>% html_nodes(".titleColumn a") %>% html_text()
+
+# date
+date <- imdb %>% html_nodes(".secondaryInfo") %>% html_text()
+
+# étoiles
+stars <- imdb %>% html_nodes(".imdbRating") %>% html_text()
+
+#3. coller les vecteurs ensemble avec "tibble()"
+imdb_data <- tibble(title, date, stars)
+
+## à faire: nettoyage + histogram
 
 ```
 
@@ -354,7 +361,7 @@ Le couplage d'un *crawler*, d'un extracteur et d'un parseur permet d'automatiser
 Malheureusement, il n'y a pas d'outil lié au tidyverse qui fait cette opération complexe. L'outil qu'on va utiliser est le package `Rcrawler`. 
 
 ```{r, message = FALSE}
-#install.packages(Rcrawler)
+install.packages("Rcrawler")
 library(Rcrawler)
 ```
 
@@ -419,7 +426,11 @@ rstudio_data %>%
 
 ```{r}
 
-
+Rcrawler(Website = "https://www.newgrounds.com/games",
+         crawlUrlfilter = "/portal/view/",
+         dataUrlfilter = "/portal/view/",
+         ExtractCSSPat = c("#embed_header .rated-e", "#sidestats > .sidestats:nth-child(1) dd:nth-child(2)", "dd:nth-child(8)"),
+         PatternsNames = c("title", "views", "stars"))
 ```
 
 Puis transformer DATA en tibble:
@@ -433,3 +444,10 @@ DATA %>%
 ```
 
 Quel est parmi ces jeu le plus vu? 
+
+```{r}
+games %>% 
+  mutate(views = as.numeric(views)) %>% 
+  arrange(-views)
+```
+
