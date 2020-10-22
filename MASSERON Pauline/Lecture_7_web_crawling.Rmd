@@ -160,7 +160,17 @@ Il n'est pas parfait, bien sûr, mais pas loin de ce qu'on veut non plus.
 
 
 ```{r, message=FALSE}
-
+df %>% 
+  select(State, `Percent change, 2010–2019[note 1]`) %>% 
+  rename(state = State, growth = `Percent change, 2010–2019[note 1]`) %>% 
+  # éliminer le signe %
+  separate(growth, into = c("growth", "signe_perc"), sep = -1) %>% 
+  # growth est un character !!
+  mutate(growth = as.numeric(growth)) %>% 
+  # barplot
+  ggplot(aes(x = reorder(state,growth), y = growth)) +
+  geom_col() +
+  coord_flip()
 ```
 
 
@@ -170,6 +180,19 @@ Il n'est pas parfait, bien sûr, mais pas loin de ce qu'on veut non plus.
 - quels sont les états plus agricoles? faire un barplot de la part de l'agriculture dans le GDP par pays (attention: les données sont en caractère!)
 
 ```{r}
+africa <- read_html("https://en.wikipedia.org/wiki/List_of_African_countries_by_GDP_(PPP)_per_capita") %>% 
+  html_node(".wikitable") %>% 
+  html_table() 
+
+africa %>% 
+  select(Nation, 'GDP from agriculture (%)') %>% 
+  rename(nation = Nation, gdp_agri = 'GDP from agriculture (%)') %>% 
+  mutate(gdp_agri = as.numeric(gdp_agri)) %>% 
+  ggplot(aes(x = reorder(nation,gdp_agri), y = gdp_agri)) +
+  geom_col() +
+  coord_flip()
+                                
+
 
 ```
 
