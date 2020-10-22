@@ -425,7 +425,7 @@ rstudio_data %>%
 
 ```
 
-Puis transformer DATA en tibble:
+Puis transformer DATA en tibble: a
 
 ```{r}
 DATA %>% 
