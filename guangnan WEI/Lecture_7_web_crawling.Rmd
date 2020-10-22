@@ -177,8 +177,8 @@ read_html("https://en.wikipedia.org/wiki/List_of_African_countries_by_GDP_(PPP)_
 
 ##plot
 africa%>%
-  select(Nation,'GDP from agriculture(%)')%>%
-  rename(state=Nation,ag='GDP from agriculture(%)')%>%
+  select(Nation,`GDP from agriculture (%)`)%>%
+  rename(state=Nation,ag=`GDP from agriculture(%)`)%>%
   mutate(ag=as.numeric())->africa_clean
   
   
