@@ -59,7 +59,7 @@ Quelques sites fournissent un API -- des fonctions spécialisés pour accéder d
 Si votre source a une api -- *go for it!*
 
 
-## Comment faire? scraping -- exploiter les **patterns**.
+## Comment faire? scraping -- expoiter les **patterns**.
 
 La plupart des sites n'a pas d'API. Dommage. On va devoir gratter. 
 
@@ -84,7 +84,6 @@ Dans la suite on va présenter le fonctionnement de deux packages:
 On commence par installer le package. Il est partie du tidyverse, mais on ne sait jamais:
 
 ```{r, message = FALSE}
-#install.packages("rvest")
 library(rvest)
 ```
 
@@ -122,7 +121,7 @@ Une fois selectorgadget installé, on peut simplement en cliquant sur les élém
 Une fois le XPATH ou le CSS selector pour l'élément qui nous intéresse trouvés, il faut dire à `rvest` de nous sortir tous les éléments de la page qui suivent le pattern voulu. Dans notre cas, on veut trouver le tableau. Celui ci est un div `table`. On sélectionne les parties qu'on veut à l'aide de `html_nodes(pagehtml, "CSS SELECTOR")`
 
 ```{r, message=FALSE}
-usa %>% html_node(".wikitable")
+usa %>% html_nodes(".wikitable")
 ```
 
 
@@ -146,14 +145,6 @@ states %>%
 
 on va inspecter un peu notre df
 ```{r, message=FALSE}
-
-## recap
-
-# lire la page
-# read_html(URL)
-# html_node(s) -> une fois sélectionnés les nodes avec un CSS selector
-# html_table()  -> imorter dans R en data frame
-
 df
 ```
 
@@ -169,17 +160,8 @@ Il n'est pas parfait, bien sûr, mais pas loin de ce qu'on veut non plus.
 
 
 ```{r, message=FALSE}
-df %>% 
-  select(State, `Percent change, 2010–2019[note 1]`) %>% 
-  rename(state = State, growth = `Percent change, 2010–2019[note 1]`) %>% 
-  # eliminer le signe %
-  separate(growth, into = c("growth", "signe_perc"), sep = -1) %>% 
-  # growth est un charactère!!!
-  mutate(growth = as.numeric(growth)) %>% 
-  ## barplot
-  ggplot(aes(x = reorder(state,growth), y = growth))+
-  geom_col()+
-  coord_flip()
+
+
 ```
 
 
@@ -189,31 +171,27 @@ df %>%
 - quels sont les états plus agricoles? faire un barplot de la part de l'agriculture dans le GDP par pays (attention: les données sont en caractère!)
 
 ```{r}
+read_html("https://en.wikipedia.org/wiki/List_of_African_countries_by_GDP_(PPP)_per_capita")%>%
+  html_node(".wikitable")%>%
+  html_table()->africa
 
-# partie 1: on scrape les données
-
-# étape 1: lire la page web
-read_html("https://en.wikipedia.org/wiki/List_of_African_countries_by_GDP_(PPP)_per_capita") %>% 
-  # étape 2; cherhcer les odes qu'il nous faut
-  html_node(".wikitable") %>% 
-  # étape 3: transformer en df avec html_table
-  html_table() -> africa
-
-## partie 2: on nettoye les données
-
-africa %>% 
-  select(Nation, `GDP from agriculture (%)`) %>% 
-  rename(state = Nation, ag = `GDP from agriculture (%)`) %>% 
-  mutate(ag = as.numeric(ag)) -> africa_clean
-
-## partie 3: le graphique
-africa_clean %>% 
-  ggplot(aes(y = reorder(state, ag), x = ag))+
+##plot
+africa%>%
+  select(Nation,'GDP from agriculture(%)')%>%
+  rename(state=Nation,ag='GDP from agriculture(%)')%>%
+  mutate(ag=as.numeric())->africa_clean
+  
+  
+africa_clean%>%
+  ggplot(aes(y=reorder(state,ag),x=ag))+
   geom_col()+
   theme_bw()
 
 
+
 ```
+
+
 
 > un exemple plus complexe: les spectateurs de Game of Thrones
 
