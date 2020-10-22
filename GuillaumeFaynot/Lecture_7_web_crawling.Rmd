@@ -59,7 +59,7 @@ Quelques sites fournissent un API -- des fonctions spécialisés pour accéder d
 Si votre source a une api -- *go for it!*
 
 
-## Comment faire? scraping -- expoiter les **patterns**. 
+## Comment faire? scraping -- expoiter les **patterns**.
 
 La plupart des sites n'a pas d'API. Dommage. On va devoir gratter. 
 
@@ -145,11 +145,13 @@ states %>%
 
 on va inspecter un peu notre df
 ```{r, message=FALSE}
-# RECAP 
-# lire la page 
+# RECAP
+# Lire la page
 # read_html(URL)
 # html_node()
-# html
+# html_
+
+
 df
 ```
 
@@ -168,14 +170,15 @@ Il n'est pas parfait, bien sûr, mais pas loin de ce qu'on veut non plus.
 df %>% 
   select(State, `Percent change, 2010–2019[note 1]`) %>% 
   rename(state = State, growth = `Percent change, 2010–2019[note 1]`) %>% 
-  # eliminer le signe % 
-  separate(growth, into = c("growth", "signe_perc"), sep = -1) %>% 
-  # growth est un character !!
+  #Eliminer le signe %
+  separate(growth, into = c("growth","sign_perc"), sep = -1) %>% 
+  #Growth est un caractère
   mutate(growth = as.numeric(growth)) %>% 
-  ## barplot 
-  ggplot(aes(x = reorder(state, growth), y = growth)) +
-  geom_col() + 
+  # barplot
+  ggplot(aes(x = reorder(state,growth), y = growth))+
+  geom_col()+
   coord_flip()
+
 ```
 
 
@@ -187,21 +190,20 @@ df %>%
 ```{r}
 africa <- read_html("https://en.wikipedia.org/wiki/List_of_African_countries_by_GDP_(PPP)_per_capita")
 africa %>% html_nodes(".wikitable")
-states2 <- africa %>% html_node(".wikitable")
-states2 %>% 
+pays <- africa %>% html_node(".wikitable")
+pays %>% 
   html_table() %>% 
   as_tibble() -> df2
+
 df2 %>% 
   select(Nation, `GDP from agriculture (%)`) %>% 
-  rename(pays = Nation, gdpAgri = `GDP from agriculture (%)`) %>%
-  # mutate 
+  rename(pays = Nation, gdpAgri = `GDP from agriculture (%)`) %>% 
+  #gdpAgri est un caractère
   mutate(gdpAgri = as.numeric(gdpAgri)) %>% 
-    ## barplot 
-  ggplot(aes(x = reorder(pays, gdpAgri), y = gdpAgri)) +
-  geom_col() + 
+  # barplot
+  ggplot(aes(x = reorder(pays,gdpAgri), y = gdpAgri))+
+  geom_col()+
   coord_flip()
-
-
 
 ```
 
@@ -331,21 +333,22 @@ Avec des opérations de ce type on peut construire une base de données assez im
 - faire un histogramme des années les plus répresentées
 
 ```{r}
-# 1. Lire la page web 
+#1. lire la page web
 imdb <- read_html("https://www.imdb.com/chart/top/")
-# 2. Pour chaque élement chercher le node et appliquer html_text 
+#2. pour chaque élement chercher le node et appliquer html_text
+title <- imdb %>% html_nodes(".titleColumn a") %>% html_text()
 
-title <- imdb %>%  html_nodes(".titleColumn a") %>%  html_text()
+date <- imdb %>%  html_nodes(".secondaryInfo") %>% html_text()
 
-date <- imdb %>%  html_nodes(".secondaryInfo") %>%  html_text()
+stars <- imdb %>%  html_nodes(".imdbRating") %>% html_text()
 
-stars <- imdb %>%  html_nodes(".imdbRating") %>%  html_text()
 
-# 3. Coller les vecteurs ensemble avec "tibble()" 
-
-imdb_data <- tibble(title, date, stars)
+#3. Coller les vecteurs ensemble avec "tibble()" 
+imdb_data <- tibble(title,date,stars)
 view(imdb_data)
 ```
+
+
 
 
 ## Crawling: automatiser le processus
@@ -367,6 +370,7 @@ On va essayer d'automatiser la tâche faite sur le blog de Rstudio précedamment
 Dans ce cas, tout le blog de rstudio fait des centianes des pages, dont on n'a pas besoin; si on lance Rcrawler sans argument, on se retrouve avec plus de 400 pages. Quoi faire? En regardant sur le site, on voit, en cliquant sur les pages suivantes la première, que chaque URL est formé an ajoutant `\page\NUMPAGE\` à l'URL principal. Heuresement Rcrawler nous permet de filtrer les pages qu'on veut télécharger. La commande est la suivante:
 
 ```{r, message = FALSE}
+#Cette fonction permet de télécharger les pages demandées grâce à crawlUrlfilter
 Rcrawler(Website = "https://blog.rstudio.com/", crawlUrlfilter = "/page/[0-9]{1-2}" )
 ```
 
@@ -425,7 +429,7 @@ rstudio_data %>%
 
 ```
 
-Puis transformer DATA en tibble: aa
+Puis transformer DATA en tibble:
 
 ```{r}
 DATA %>% 
