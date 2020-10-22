@@ -322,6 +322,22 @@ Avec des opérations de ce type on peut construire une base de données assez im
 - faire un histogramme des années les plus répresentées
 
 ```{r}
+#lire la page web
+imdb <- read_html("https://www.imdb.com/chart/top/")
+
+#titre
+title <- imdb %>% html_nodes(".titleColumn a") %>% html_text()
+
+#date
+date <- imbd %>% html_nodes(".secondaryInfo") %>% html_text()
+  
+#étoiles
+stars <- imdb %>% html_nodes(".imdbRating") %>% html_text()
+
+#coller les vecteurs ensemble
+imdb_data <- tibble(title, date, stars)
+View(imdb_data)
+
 
 ```
 
@@ -401,7 +417,8 @@ rstudio_data %>%
 
 
 ```{r}
-
+Rcrawler(Website = "https://www.newgrounds.com/games", 
+         crawlUrlfilter = "/portal/view/", dataUrlfilter = "/portal/view/")
 
 ```
 
