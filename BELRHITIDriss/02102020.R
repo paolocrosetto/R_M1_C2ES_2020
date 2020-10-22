@@ -308,3 +308,131 @@ babynames %>%
   filter(sex =="F", name=="Mary" | name =="Anna")%>%
   ggplot(aes(x=year,y=n))+
   geom_line(aes(group=name, color=name))
+
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(broom)
+
+firstreg <- lm(Ozone ~ Solar.R + Wind + Temp, data = airquality)
+plot(firstreg) #graphique
+coef(firstreg) #sort le vecteur coef
+
+reg.wind <- lm(Ozone ~ Wind, data = airquality)%>%
+  tidy() %>%#on transforme base R en base tidy avec le package broom et la fonction
+  ggplot(aes(y=term,x=estimate))+
+  geom_point()+
+  geom_errorbarh(aes(xmin=estimate-std.error,xmax=estimate+std.error), height = 0.1)+
+  theme_minimal()#qui va avec
+
+
+reg.windtemp <- lm(Ozone ~ Wind + Temp, data = airquality)
+
+tidy.windtemp<-tidy(reg.windtemp)
+
+plot(reg.windtemp)
+
+lm(Ozone ~ Temp, data=airquality) %>%
+  augment()%>%
+  ggplot(aes(x=Temp, y=Ozone))+
+  geom_point()+
+  geom_line(aes(x=Temp,y=.fitted),color="green")+
+  theme_minimal()
+
+#gapminder pr comparaison plusieurs reg
+
+library(gapminder)
+
+gap%>%
+  ggplot(aes(x=year, y=lifeExp, group = country))+
+  geom_line() -> spaghetti
+
+spaghetti+
+  facet_wrap(~continent)+
+  aes(color=continent)
+
+lm(lifeExp ~ gdpPercap, data=gap)%>%
+  tidy()
+
+lm(lifeExp ~ gdpPercap, data=gap)%>%
+ augment()%>%
+  ggplot(aes(x=gdpPercap,y=lifeExp))+
+  geom_point()+
+  geom_line(aes(x=))#A completer
+
+gap%>%
+  group_by(continent,year)%>%
+  summarize(n=n())#naif ne fonctionne pas, il faut utiliser group modify
+
+gap%>%
+  group_by(continent,year)%>%
+  group_modify(~lm(lifeExp~gdpPercap,data=.)%>%tidy)->regresult.gap
+
+regresult.gap%>%
+  filter(term!="(Intercept)")%>%
+  ggplot(aes(x=year,y=estimate,color=continent))+
+  geom_point()+
+  facet_wrap(~continent)+
+  geom_hline(yintercept=0, color="red")
+
+gap%>%
+  group_by(continent)%>%
+  group_modify(~lm(pop~year,data=.)%>%tidy)->reg2result.gap
+
+#une correlation se fait simplement avec cor()
+
+cor(gap$lifeExp, gap$gdpPercap)
+
+#pour tester la significativité on utilise cor.test()
+
+cor.test(gap$lifeExp, gap$gdpPercap)%>%
+  tidy() 
+
+#passer par le tidyverse permet de faire des choses + puissante
+#mais pas forcément utile si l on veut faire une unique corrélation
+
+gap%>%
+  summarize(corr=cor(.$lifeExp,.$gdpPercap))
+
+gap%>%
+  group_by(continent)%>%
+  group_modify(~cor(.$lifeExp,.$gdpPercap)%>%tidy())
+
+#Exercice
+
+gap%>%
+  group_by(continent,year)%>%
+  filter(is.na(lifeExp)==FALSE,is.na(gdpPercap)==FALSE)%>%
+  group_modify(~cor(.$lifeExp,.$gdpPercap)%>%tidy())->cor.gap
+
+cor.gap%>%
+  ggplot(aes(x=year,y=x, color=continent))+
+  geom_point()+
+  facet_wrap(~continent)
+
+t.test(gap$lifeExp > 60)
+
+gap%>%
+  group_by(continent,year)%>%
+  summarize(mean.lifeexp=mean(lifeExp))
+
+#t test sur chaque continent pour chaque année
+
+gap%>%
+  group_by(continent,year)%>%
+  group_modify(~t.test(.$lifeExp)%>%tidy) %>%
+  ggplot(aes(x=year,y=estimate,color=continent))+
+  facet_wrap(~continent)+
+  geom_point()+
+  geom_hline(yintercept=60, color="red")+
+  geom_errorbar(aes(xmin=year,xmax=year,ymin=conf.low,ymax=conf.high))
+
+#Exercice
+
+gap%>%
+  group_by(continent,year)%>%
+  group_modify(~t.test(.$gdpPercap, mu=2000)%>%tidy) %>%
+  ggplot(aes(x=year,y=estimate,color=continent))+
+  facet_wrap(~continent)+
+  geom_point()+
+  geom_hline(yintercept=2000, color="red")
+  #geom_errorbar(aes(xmin=year,xmax=year,ymin=conf.low,ymax=conf.high))

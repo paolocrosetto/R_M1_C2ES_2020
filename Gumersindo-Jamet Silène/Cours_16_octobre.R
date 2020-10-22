@@ -176,9 +176,15 @@ wbp %>%
 # exercice transformer table5 en table1
 
 table5 %>% 
-  unite (col = year, century, year, sep ="")
-  separte ( rate, into = c("cases", "population"), sep = "/")
-  
+  unite (col = year, century, year, sep ="") %>% 
+  separate (rate, into = c("cases", "population"), sep = "/") %>% 
+  mutate (cases = as.double(cases),
+          popuplation = as.integer(population),
+          yearf = as.factor(year))
+
+chr <- c("a" , "a" , "b" , "c")
+fct <- as.factor(chr)
+levels (fct)
 
 
 
