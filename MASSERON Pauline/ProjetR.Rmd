@@ -1,0 +1,124 @@
+---
+title: "ProjetR"
+author: "Pauline"
+date: "22/10/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#install.packages("tidytuesdayR")
+library(tidytuesdayR)
+library(tidyverse)
+```
+
+
+
+########################
+PALMER PENGUINS 
+########################
+
+
+
+#1: Get the data
+
+```{r}
+
+tuesdata <- tidytuesdayR::tt_load('2020-07-28')
+tuesdata <- tidytuesdayR::tt_load(2020, week = 31)
+
+penguins <- tuesdata$penguins
+
+penguins
+
+```
+
+
+
+#2: Présentation des données 
+
+On s'intérresse à trois espèces de pingouins entre 2007 et 2009. On observe plusieurs variables comme le sexe, le poids, la longueur et la profondeur du bec, la longueur des ailes ou encore l'île sur laquelle l'animal a été ressencé. 
+
+
+```{r}
+# Affiche la base de données
+
+View(penguins)
+```
+
+```{r}
+#Quelques statistiques descriptives 
+
+summary(penguins)
+```
+
+```{r}
+#Caractériqtiques sur l'espèce de pingouins "Adelie"
+
+adelie <- penguins %>% filter(.$species == "Adelie")
+
+summary(adelie)
+```
+
+```{r}
+#Caractériqtiques sur l'espèce de pingouins "Gentoo"
+
+gentoo <- penguins %>% filter(.$species == "Gentoo")
+
+summary(gentoo)
+```
+
+```{r}
+#Caractériqtiques sur l'espèce de pingouins "Chinstrap"
+
+chinstrap <- penguins %>% filter(.$species == "Chinstrap")
+
+summary(chinstrap)
+```
+
+
+
+#3: Questions 
+
+En moyenne, pour l'espèce "Adelie", les pingouins mâles sont plus gros que les pingouins femelle ?
+#A REVOIR POUR LES MOYENNES EN BARRES HORIZONTALES !!!!!!!
+```{r}
+adelie %>% 
+  filter(sex == "female") %>% 
+  summarise(mean_body_female = mean(body_mass_g))
+
+adelie %>% 
+  filter(sex == "male") %>% 
+  summarise(mean_body_male = mean(body_mass_g))
+  
+
+penguins %>% 
+  filter(.$species == "Adelie", sex != "N/A") %>% 
+  ggplot(aes(x = sex, y = body_mass_g)) +
+  geom_point()+
+  geom_line(aes(y = 3368, group = "female"), col = "purple")+
+  geom_line(aes(y = 4043, group = "male"), col = "green")+
+  labs(x = "sexe", y = "poids en gramme", title = "Le poids des pingouins adelie en fonction du sexe")
+```
+
+
+Les pingouins mâles sont-ils plus gros que les pingouins femelles ?
+
+```{r}
+penguins %>% 
+  filter(sex != "N/A") %>% 
+  ggplot(aes(x = sex, y = body_mass_g)) + 
+  geom_path() +
+  facet_wrap(~species)+
+  aes(color = sex)+
+  labs(x = "sexe", y = "poids en gramme", title = "Le poids des pingouins selon leur espèce en fonction du sexe")
+```
+
+
+Quel est l'espèce qui a le plus long bec ?
+
+```{r}
+
+```
+

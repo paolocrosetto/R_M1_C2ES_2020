@@ -4,11 +4,23 @@ subtitle: "Intro to R, lecture 7"
 author: "Paolo Crosetto"
 date: "`r Sys.Date()`"
 output:
-  html_document: default
+  tufte::tufte_html: default
+  tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+  tufte::tufte_book:
+    citation_package: natbib
+    latex_engine: xelatex
 ---
 
 ```{r setup, include=FALSE, tinytex.verbose = TRUE}
+library(tufte)
+library(tinytex)
 library(kableExtra)
+options(tinytex.verbose = TRUE)
+# invalidate cache when the tufte version changes
+knitr::opts_chunk$set(tidy = FALSE, cache.extra = packageVersion('tufte'))
+options(htmltools.dir.version = FALSE)
 library(tidyverse)
 ```
 
@@ -47,7 +59,7 @@ Quelques sites fournissent un API -- des fonctions spécialisés pour accéder d
 Si votre source a une api -- *go for it!*
 
 
-## Comment faire? scraping -- exploiter les **patterns**.
+## Comment faire? scraping -- expoiter les **patterns**.
 
 La plupart des sites n'a pas d'API. Dommage. On va devoir gratter. 
 
@@ -72,7 +84,6 @@ Dans la suite on va présenter le fonctionnement de deux packages:
 On commence par installer le package. Il est partie du tidyverse, mais on ne sait jamais:
 
 ```{r, message = FALSE}
-#install.packages("rvest")
 library(rvest)
 ```
 
@@ -110,7 +121,7 @@ Une fois selectorgadget installé, on peut simplement en cliquant sur les élém
 Une fois le XPATH ou le CSS selector pour l'élément qui nous intéresse trouvés, il faut dire à `rvest` de nous sortir tous les éléments de la page qui suivent le pattern voulu. Dans notre cas, on veut trouver le tableau. Celui ci est un div `table`. On sélectionne les parties qu'on veut à l'aide de `html_nodes(pagehtml, "CSS SELECTOR")`
 
 ```{r, message=FALSE}
-usa %>% html_node(".wikitable")
+usa %>% html_nodes(".wikitable")
 ```
 
 
@@ -134,13 +145,12 @@ states %>%
 
 on va inspecter un peu notre df
 ```{r, message=FALSE}
-
-## recap
-
-# lire la page
+# RECAP
+# Lire la page
 # read_html(URL)
-# html_node(s) -> une fois sélectionnés les nodes avec un CSS selector
-# html_table()  -> imorter dans R en data frame
+# html_node()
+# html_
+
 
 df
 ```
@@ -160,14 +170,15 @@ Il n'est pas parfait, bien sûr, mais pas loin de ce qu'on veut non plus.
 df %>% 
   select(State, `Percent change, 2010–2019[note 1]`) %>% 
   rename(state = State, growth = `Percent change, 2010–2019[note 1]`) %>% 
-  # eliminer le signe %
-  separate(growth, into = c("growth", "signe_perc"), sep = -1) %>% 
-  # growth est un charactère!!!
+  #Eliminer le signe %
+  separate(growth, into = c("growth","sign_perc"), sep = -1) %>% 
+  #Growth est un caractère
   mutate(growth = as.numeric(growth)) %>% 
-  ## barplot
+  # barplot
   ggplot(aes(x = reorder(state,growth), y = growth))+
   geom_col()+
   coord_flip()
+
 ```
 
 
@@ -177,31 +188,26 @@ df %>%
 - quels sont les états plus agricoles? faire un barplot de la part de l'agriculture dans le GDP par pays (attention: les données sont en caractère!)
 
 ```{r}
+africa <- read_html("https://en.wikipedia.org/wiki/List_of_African_countries_by_GDP_(PPP)_per_capita")
+africa %>% html_nodes(".wikitable")
+pays <- africa %>% html_node(".wikitable")
+pays %>% 
+  html_table() %>% 
+  as_tibble() -> df2
 
-# partie 1: on scrape les données
-
-# étape 1: lire la page web
-read_html("https://en.wikipedia.org/wiki/List_of_African_countries_by_GDP_(PPP)_per_capita") %>% 
-  # étape 2; cherhcer les odes qu'il nous faut
-  html_node(".wikitable") %>% 
-  # étape 3: transformer en df avec html_table
-  html_table() -> africa
-
-## partie 2: on nettoye les données
-
-africa %>% 
+df2 %>% 
   select(Nation, `GDP from agriculture (%)`) %>% 
-  rename(state = Nation, ag = `GDP from agriculture (%)`) %>% 
-  mutate(ag = as.numeric(ag)) -> africa_clean
-
-## partie 3: le graphique
-africa_clean %>% 
-  ggplot(aes(y = reorder(state, ag), x = ag))+
+  rename(pays = Nation, gdpAgri = `GDP from agriculture (%)`) %>% 
+  #gdpAgri est un caractère
+  mutate(gdpAgri = as.numeric(gdpAgri)) %>% 
+  # barplot
+  ggplot(aes(x = reorder(pays,gdpAgri), y = gdpAgri))+
   geom_col()+
-  theme_bw()
-
+  coord_flip()
 
 ```
+
+
 
 > un exemple plus complexe: les spectateurs de Game of Thrones
 
@@ -324,51 +330,25 @@ Avec des opérations de ce type on peut construire une base de données assez im
 
 - importer https://www.imdb.com/chart/top/ 
 - lire les infos et en faire une base de données
-- on veut le titre, l'année et le nombre d'étoiles par film (il y en a 250)
 - faire un histogramme des années les plus répresentées
 
 ```{r}
-
-# 1. lire la page web
+#1. lire la page web
 imdb <- read_html("https://www.imdb.com/chart/top/")
-#2. pour chaque élement chercher le node et applquer html_text
-
-# titres
+#2. pour chaque élement chercher le node et appliquer html_text
 title <- imdb %>% html_nodes(".titleColumn a") %>% html_text()
 
-# date
-date <- imdb %>% html_nodes(".secondaryInfo") %>% html_text()
+date <- imdb %>%  html_nodes(".secondaryInfo") %>% html_text()
 
-# étoiles
-stars <- imdb %>% html_nodes(".imdbRating") %>% html_text()
+stars <- imdb %>%  html_nodes(".imdbRating") %>% html_text()
 
-#3. coller les vecteurs ensemble avec "tibble()"
-imdb_data <- tibble(title, date, stars)
 
-#4. nettoyage des données
-imdb_data %>% 
-  separate(stars, into = c("drop","stars","drop2"), sep = "\n") %>%  #separate the useless part out of "stars"
-  separate(date, into = c("drop3", "date", "drop4")) %>%             # separate useless parts of "date"
-  select(-starts_with("drop")) %>%                                   # cleaning unneeded variables
-  mutate(date = as.numeric(date),
-         stars = as.numeric(date)) -> imdb_data                      # change chr to num
-
-#5. plot : histogram of date
-imdb_data %>% 
-  ggplot(aes(date))+
-  geom_histogram(binwidth = 10, color = "white")+   
-  # plot here is done; but we add below some customization to make it better
-  scale_x_continuous(breaks = seq(1920, 2020, 10))+   # x axis by decade
-  labs(x = "", 
-       y = "Number of movies",
-       title = "IMDB Top 250 movies of all times",
-       subtitle = "Distribution by decade")+          # titles and labels
-  theme_minimal()+
-  theme(panel.grid.major.x = element_blank(),
-        panel.grid.minor.x = element_blank(),
-        panel.grid.minor.y = element_blank())         # cleaner grid lines
-
+#3. Coller les vecteurs ensemble avec "tibble()" 
+imdb_data <- tibble(title,date,stars)
+view(imdb_data)
 ```
+
+
 
 
 ## Crawling: automatiser le processus
@@ -380,7 +360,7 @@ Le couplage d'un *crawler*, d'un extracteur et d'un parseur permet d'automatiser
 Malheureusement, il n'y a pas d'outil lié au tidyverse qui fait cette opération complexe. L'outil qu'on va utiliser est le package `Rcrawler`. 
 
 ```{r, message = FALSE}
-install.packages("Rcrawler")
+#install.packages(Rcrawler)
 library(Rcrawler)
 ```
 
@@ -390,6 +370,7 @@ On va essayer d'automatiser la tâche faite sur le blog de Rstudio précedamment
 Dans ce cas, tout le blog de rstudio fait des centianes des pages, dont on n'a pas besoin; si on lance Rcrawler sans argument, on se retrouve avec plus de 400 pages. Quoi faire? En regardant sur le site, on voit, en cliquant sur les pages suivantes la première, que chaque URL est formé an ajoutant `\page\NUMPAGE\` à l'URL principal. Heuresement Rcrawler nous permet de filtrer les pages qu'on veut télécharger. La commande est la suivante:
 
 ```{r, message = FALSE}
+#Cette fonction permet de télécharger les pages demandées grâce à crawlUrlfilter
 Rcrawler(Website = "https://blog.rstudio.com/", crawlUrlfilter = "/page/[0-9]{1-2}" )
 ```
 
@@ -445,11 +426,7 @@ rstudio_data %>%
 
 ```{r}
 
-Rcrawler(Website = "https://www.newgrounds.com/games",
-         crawlUrlfilter = "/portal/view/",
-         dataUrlfilter = "/portal/view/",
-         ExtractCSSPat = c("#embed_header .rated-e", "#sidestats > .sidestats:nth-child(1) dd:nth-child(2)", "dd:nth-child(8)"),
-         PatternsNames = c("title", "views", "stars"))
+
 ```
 
 Puis transformer DATA en tibble:
@@ -463,10 +440,3 @@ DATA %>%
 ```
 
 Quel est parmi ces jeu le plus vu? 
-
-```{r}
-games %>% 
-  mutate(views = as.numeric(views)) %>% 
-  arrange(-views)
-```
-
