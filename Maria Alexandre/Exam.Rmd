@@ -1,0 +1,93 @@
+---
+Author: "Alexandre Maria" 
+title: "Exam Maria Alexandre"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## GitHub Documents
+
+This is an R Markdown format used for publishing markdown documents to GitHub. When you click the **Knit** button all R code chunks are run and a markdown file (.md) suitable for publishing to GitHub is generated.
+
+## Including Code
+
+You can include R code in the document as follows:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## Introduction
+
+  Les inégalités entre les Hommes et les Femmes sont omniprésentes à la surface du globe. En effet cette différence de traitement semble être universelle, persistante à travers les âges et bien sûr en défaveur des Femmes. En France, au Sénégal, au Brésil, en Chine, au Liban …sur tous le globe , les femmes sont les premières touchées par des inégalités est surtout au niveau du marché de travail à cause d’un système économique qui est traditionnellement sexiste et qui n'est pas très juste.Nous allons étudié l'ampleur des inégalités Homme-Femme liées au monde professionnel et en particulier aux Etats-Unis d'Amérique. Nous allons nous focaliser sur 3 aspects principaux c'est-à-dire le salaire, l'emploi et les postes relatifs aux femmes américaines. 
+
+
+```{r jobs_gender, earnings_female, employed_gender, echo=FALSE}
+jobs_gender <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-03-05/jobs_gender.csv")
+earnings_female <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-03-05/earnings_female.csv") 
+employed_gender <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-03-05/employed_gender.csv") 
+
+```
+
+## Salaire des Femmes
+
+  Sur le marché du travail, de nombreuses inégalités séparent les Hommes des Femmes, de même qualifications tel que le salaire. Nous remarquons qu'aux Etats-Unis d'Amérique sur la période 1979-2011 le salaire des Femmes, tout âge confondu, n'a jamais égalé celui des Hommes pour une même fonction. En effet nous remarquons dans le graphique suivant, représentant le salaire des femmes (en % du salaire des Hommes), que ce dernier n'a jamais atteint 100 % du salaire des Hommes. 
+Bien que, de fait, une inégalité salariale en défaveur des femmes structure la société américaine on rémarque qu'il y a une évolution du salaire des Femmes sur la période 1979-2011. Une réduction des inégalités salariales entre Hommes-Femmes s'est bien effectuée. En 1979, le salaire des Femmes représentait 62.3 % du salaire des Hommes alors qu'en 2011 le salaire des Femmes représentait 82.2 % du salaire des Hommes soit une augentation de 19.9 points.
+
+
+```{r}
+library(tidyverse)
+
+
+
+earnings_female %>%
+  filter(group=="Total, 16 years and older") %>%
+  ggplot( aes(x=Year, y=percent))+
+  geom_line(color="#4AA4DE", size=1) +
+  coord_cartesian(xlim = c(1978,2012), y = c(60,100))+
+  geom_hline(aes(yintercept=100), color="#1F65CC", size=1)+
+  geom_hline(aes(yintercept=max(percent)), color="#1F65CC", size=1, linetype='dotted')+
+  geom_hline(aes(yintercept=min(percent)), color="#1F65CC", size=1, linetype='dotted')+
+  labs(title = "Evolution du salaire des femmes américaines entre 1979-2011 selon lesclasse d'âge")+
+  theme_grey()+
+  xlab("Year")+
+  ylab("Women's salary (% Men's salary)")
+  
+
+
+
+
+```
+
+
+
+
+
+
+```{r}
+earnings_female %>%
+  filter(group!="Total, 16 years and older")%>% 
+  ggplot(aes(x=Year, y=percent), color=group)+
+  geom_line(aes(color=group), size=2)+
+  scale_color_viridis_d()+
+  labs(title = "Evolution du salaire des femmes américaines entre 1979-2011 selon les classes d'âge", )+
+  theme_grey()+
+  xlab("Year")+ 
+  ylab("Women' salary (% Men's salary)")
+
+```
+
+
+
