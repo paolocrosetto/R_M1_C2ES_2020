@@ -2,36 +2,14 @@
 Author: "Alexandre Maria" 
 title: "Exam Maria Alexandre"
 output: github_document
+editor_options: 
+  chunk_output_type: inline
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
-## GitHub Documents
-
-This is an R Markdown format used for publishing markdown documents to GitHub. When you click the **Knit** button all R code chunks are run and a markdown file (.md) suitable for publishing to GitHub is generated.
-
-## Including Code
-
-You can include R code in the document as follows:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 ## Introduction
 
-  Les inégalités entre les Hommes et les Femmes sont omniprésentes à la surface du globe. En effet cette différence de traitement semble être universelle, persistante à travers les âges et bien sûr en défaveur des Femmes. En France, au Sénégal, au Brésil, en Chine, au Liban …sur tous le globe , les femmes sont les premières touchées par des inégalités est surtout au niveau du marché de travail à cause d’un système économique qui est traditionnellement sexiste et qui n'est pas très juste.Nous allons étudié l'ampleur des inégalités Homme-Femme liées au monde professionnel et en particulier aux Etats-Unis d'Amérique. Nous allons nous focaliser sur 3 aspects principaux c'est-à-dire le salaire, l'emploi et les postes relatifs aux femmes américaines. 
+  Les inégalités entre les Hommes et les Femmes sont omniprésentes à la surface du globe. En effet cette différence de traitement semble être universelle, persistante à travers les âges et bien sûr en défaveur des Femmes. En France, au Sénégal, au Brésil, en Chine, au Liban, sur tous le globe , les femmes sont les premières touchées par des inégalités est surtout au niveau du marché de travail à cause d’un système économique qui est traditionnellement sexiste et qui n'est pas très juste.Nous allons étudié l'ampleur des inégalités Homme-Femme liées au monde professionnel et en particulier aux Etats-Unis d'Amérique. Nous allons nous focaliser sur 3 aspects principaux c'est-à-dire le salaire, l'emploi et les postes relatifs aux femmes américaines. 
 
 
 ```{r jobs_gender, earnings_female, employed_gender, echo=FALSE}
@@ -159,4 +137,42 @@ df2<- select(employed_gender, "year", "part_time_female", "part_time_male")
   xlab("Year")+ 
   ylab("Percent of total employed people working full/part time" ) 
 ```
-## Salaire des Femmes par rapport à leur homologue masculin
+## Les postes accordées aux Femmes 
+
+
+
+
+```{r}
+jg<-select(jobs_gender,year, major_category, percent_female)
+jg%>%
+  filter(percent_female>90)%>%
+  ggplot(aes(x=year))+
+  geom_bar(aes(color= major_category), size=1)+
+  facet_wrap(~major_category)+
+  scale_color_viridis_d()+
+  labs(title = "Evolution du salaire des femmes américaines entre 1979-2011 selon les classes d'âge")+
+  theme_grey()+
+  xlab("year")+ 
+  ylab("Percent of women for specific occupation")
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
