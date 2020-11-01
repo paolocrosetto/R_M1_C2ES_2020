@@ -41,7 +41,7 @@ employed_gender <- readr::read_csv("https://raw.githubusercontent.com/rfordatasc
 
 ```
 
-## Salaire des Femmes
+## Salaire des Femmes par rapport à leur homologue masculin
 
   Sur le marché du travail, de nombreuses inégalités séparent les Hommes des Femmes, de même qualifications tel que le salaire. Nous remarquons qu'aux Etats-Unis d'Amérique sur la période 1979-2011 le salaire des Femmes, tout âge confondu, n'a jamais égalé celui des Hommes pour une même fonction. En effet nous remarquons dans le graphique suivant, représentant le salaire des femmes (en % du salaire des Hommes), que ce dernier n'a jamais atteint 100 % du salaire des Hommes. 
 Bien que, de fait, une inégalité salariale en défaveur des femmes structure la société américaine on rémarque qu'il y a une évolution du salaire des Femmes sur la période 1979-2011. Une réduction des inégalités salariales entre Hommes-Femmes s'est bien effectuée. En 1979, le salaire des Femmes représentait 62.3 % du salaire des Hommes alors qu'en 2011 le salaire des Femmes représentait 82.2 % du salaire des Hommes soit une augentation de 19.9 points.
@@ -71,6 +71,8 @@ earnings_female %>%
 
 ```
 
+Sachant l'affirmation précédente concernant le salaire on peut se demander si cette tendance de réduction des inégalités salariales, pour tout âge confondu, se maintient pour chaque classes d'âge et si la variable classe d'âge influe sur les inégalités salariales.
+
 
 
 
@@ -82,12 +84,79 @@ earnings_female %>%
   ggplot(aes(x=Year, y=percent), color=group)+
   geom_line(aes(color=group), size=2)+
   scale_color_viridis_d()+
-  labs(title = "Evolution du salaire des femmes américaines entre 1979-2011 selon les classes d'âge", )+
+  labs(title = "Evolution du salaire des femmes américaines entre 1979-2011 selon les classes d'âge")+
   theme_grey()+
   xlab("Year")+ 
   ylab("Women' salary (% Men's salary)")
 
 ```
+## L'EMPLOI DES FEMMES PAR RAPPORT A LEUR HOMOLOGUE MASCULIN
 
 
 
+
+
+
+```{r}
+library(tidyverse)
+df<-select(employed_gender, "year", "total_part_time", "total_full_time")
+df%>%
+  ggplot(aes(x=year)) +
+  geom_bar(aes(y=total_full_time), stat="identity", position="dodge", fill="black") +
+  geom_bar(position="dodge")+
+  geom_bar(aes(y=total_part_time), stat="identity", position="dodge", fill="yellow")+
+  labs(title = "Part d'emploi à temps plein et à temps partiel dans le monde du travail américain, sexes confondu ", subtitle = "Période : 1968-2016")+
+  theme_grey()+
+  xlab("Year")+ 
+  ylab("Percent of total employed people working full/part time" )
+ 
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+library(tidyverse)
+df1<-select(employed_gender, "year", "full_time_female", "full_time_male")
+df1%>%
+  ggplot(aes(x=year)) +
+  geom_bar(aes(y=full_time_male), stat="identity", position="dodge", fill="blue") +
+  geom_bar(position="dodge")+
+  geom_bar(aes(y=full_time_female), stat="identity", position="dodge", fill="red")+
+  labs(title = "Part d'Hommes et de Femmes occupant un emploi à temps plein  dans le monde du travail américain, ", subtitle = "Période : 1968-2016")+
+  theme_grey()+
+  xlab("Year")+ 
+  ylab("Percent of total employed people working full/part time" ) 
+
+ 
+
+
+ 
+```
+
+
+
+
+
+```{r}
+df2<- select(employed_gender, "year", "part_time_female", "part_time_male")
+ df2%>%
+  ggplot(aes(x=year)) +
+  geom_bar(aes(y=part_time_female), stat="identity", position="dodge", fill="red") +
+  geom_bar(position="dodge")+
+  geom_bar(aes(y=part_time_male), stat="identity", position="dodge", fill="blue")+
+  labs(title = "Part d'Hommes et de Femmes occupant un emploi à temps partiel dans le monde du travail américain,  ", subtitle = "Période : 1968-2016")+
+  theme_grey()+
+  xlab("Year")+ 
+  ylab("Percent of total employed people working full/part time" ) 
+```
+## Salaire des Femmes par rapport à leur homologue masculin
