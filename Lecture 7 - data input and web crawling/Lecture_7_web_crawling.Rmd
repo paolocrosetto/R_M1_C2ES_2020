@@ -345,11 +345,30 @@ stars <- imdb %>% html_nodes(".imdbRating") %>% html_text()
 #3. coller les vecteurs ensemble avec "tibble()"
 imdb_data <- tibble(title, date, stars)
 
-## à faire: nettoyage + histogram
+#4. nettoyage des données
+imdb_data %>% 
+  separate(stars, into = c("drop","stars","drop2"), sep = "\n") %>%  #separate the useless part out of "stars"
+  separate(date, into = c("drop3", "date", "drop4")) %>%             # separate useless parts of "date"
+  select(-starts_with("drop")) %>%                                   # cleaning unneeded variables
+  mutate(date = as.numeric(date),
+         stars = as.numeric(date)) -> imdb_data                      # change chr to num
+
+#5. plot : histogram of date
+imdb_data %>% 
+  ggplot(aes(date))+
+  geom_histogram(binwidth = 10, color = "white")+   
+  # plot here is done; but we add below some customization to make it better
+  scale_x_continuous(breaks = seq(1920, 2020, 10))+   # x axis by decade
+  labs(x = "", 
+       y = "Number of movies",
+       title = "IMDB Top 250 movies of all times",
+       subtitle = "Distribution by decade")+          # titles and labels
+  theme_minimal()+
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.minor.y = element_blank())         # cleaner grid lines
 
 ```
-
-
 
 
 ## Crawling: automatiser le processus
