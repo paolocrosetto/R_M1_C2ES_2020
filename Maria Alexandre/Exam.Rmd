@@ -197,7 +197,6 @@ jg1%>%
   ggplot(aes(x=year, y=percent_female))+
   geom_line()+
   facet_wrap(~occupation)+
-  scale_color_viridis_d()+
   labs(title = "Emplois occupés à plus de 90 % par des Femmes américaines",subtitle= "Période : 2013-2016, tout âge confondus")+
   theme_grey()+
   xlab("year")+ 
