@@ -41,7 +41,7 @@ arrange(df, month, day, dep_delay)
 # sélectionner des colonnes
 select(df, month, day, dep_delay)
 
-#de-sélectionner des colonnes
+#desélectionner des colonnes
 select(df, -month, -year)
 
 #aide à la sélection
@@ -86,7 +86,7 @@ df %>%
 df %>% 
   select(air_time, distance) %>% 
   mutate(distance_km = distance*1.6, time_h = air_time/60) %>% 
-  mutate(speed_km_h = distance_km/time_h)
+  mutate(speed_km_h = distance_km/time_h)->df_speed
 
 # summarise (summarize)
 # #moyenne de la vitesse des avion
@@ -94,6 +94,7 @@ df_speed %>%
   summarise(mean = mean(speed_km_h, na.rm = TRUE))
 
 # meme chose du début
+
 df %>% 
   select(air_time, distance) %>% 
   mutate(distance_km = distance*1.6, time_h = air_time/60) %>% 
