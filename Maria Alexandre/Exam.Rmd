@@ -1,0 +1,178 @@
+---
+Author: "Alexandre Maria" 
+title: "Exam Maria Alexandre"
+output: github_document
+editor_options: 
+  chunk_output_type: inline
+---
+
+
+## Introduction
+
+  Les inégalités entre les Hommes et les Femmes sont omniprésentes à la surface du globe. En effet cette différence de traitement semble être universelle, persistante à travers les âges et bien sûr en défaveur des Femmes. En France, au Sénégal, au Brésil, en Chine, au Liban, sur tous le globe , les femmes sont les premières touchées par des inégalités est surtout au niveau du marché de travail à cause d’un système économique qui est traditionnellement sexiste et qui n'est pas très juste.Nous allons étudié l'ampleur des inégalités Homme-Femme liées au monde professionnel et en particulier aux Etats-Unis d'Amérique. Nous allons nous focaliser sur 3 aspects principaux c'est-à-dire le salaire, l'emploi et les postes relatifs aux femmes américaines. 
+
+
+```{r jobs_gender, earnings_female, employed_gender, echo=FALSE}
+jobs_gender <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-03-05/jobs_gender.csv")
+earnings_female <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-03-05/earnings_female.csv") 
+employed_gender <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-03-05/employed_gender.csv") 
+
+```
+
+## Salaire des Femmes par rapport à leur homologue masculin
+
+  Sur le marché du travail, de nombreuses inégalités séparent les Hommes des Femmes, de même qualifications tel que le salaire. Nous remarquons qu'aux Etats-Unis d'Amérique sur la période 1979-2011 le salaire des Femmes, tout âge confondu, n'a jamais égalé celui des Hommes pour une même fonction. En effet nous remarquons dans le graphique suivant, représentant le salaire des femmes (en % du salaire des Hommes), que ce dernier n'a jamais atteint 100 % du salaire des Hommes. 
+Bien que, de fait, une inégalité salariale en défaveur des femmes structure la société américaine on rémarque qu'il y a une évolution du salaire des Femmes sur la période 1979-2011. Une réduction des inégalités salariales entre Hommes-Femmes s'est bien effectuée. En 1979, le salaire des Femmes représentait 62.3 % du salaire des Hommes alors qu'en 2011 le salaire des Femmes représentait 82.2 % du salaire des Hommes soit une augentation de 19.9 points.
+
+
+```{r}
+library(tidyverse)
+
+
+
+earnings_female %>%
+  filter(group=="Total, 16 years and older") %>%
+  ggplot( aes(x=Year, y=percent))+
+  geom_line(color="#4AA4DE", size=1) +
+  coord_cartesian(xlim = c(1978,2012), y = c(60,100))+
+  geom_hline(aes(yintercept=100), color="#1F65CC", size=1)+
+  geom_hline(aes(yintercept=max(percent)), color="#1F65CC", size=1, linetype='dotted')+
+  geom_hline(aes(yintercept=min(percent)), color="#1F65CC", size=1, linetype='dotted')+
+  labs(title = "Evolution du salaire des femmes américaines entre 1979-2011 selon lesclasse d'âge")+
+  theme_grey()+
+  xlab("Year")+
+  ylab("Women's salary (% Men's salary)")
+  
+
+
+
+
+```
+
+Sachant l'affirmation précédente concernant le salaire on peut se demander si cette tendance de réduction des inégalités salariales, pour tout âge confondu, se maintient pour chaque classes d'âge et si la variable classe d'âge influe sur les inégalités salariales.
+
+
+
+
+
+
+```{r}
+earnings_female %>%
+  filter(group!="Total, 16 years and older")%>% 
+  ggplot(aes(x=Year, y=percent), color=group)+
+  geom_line(aes(color=group), size=2)+
+  scale_color_viridis_d()+
+  labs(title = "Evolution du salaire des femmes américaines entre 1979-2011 selon les classes d'âge")+
+  theme_grey()+
+  xlab("Year")+ 
+  ylab("Women' salary (% Men's salary)")
+
+```
+## L'EMPLOI DES FEMMES PAR RAPPORT A LEUR HOMOLOGUE MASCULIN
+
+
+
+
+
+
+```{r}
+library(tidyverse)
+df<-select(employed_gender, "year", "total_part_time", "total_full_time")
+df%>%
+  ggplot(aes(x=year)) +
+  geom_bar(aes(y=total_full_time), stat="identity", position="dodge", fill="black") +
+  geom_bar(position="dodge")+
+  geom_bar(aes(y=total_part_time), stat="identity", position="dodge", fill="yellow")+
+  labs(title = "Part d'emploi à temps plein et à temps partiel dans le monde du travail américain, sexes confondu ", subtitle = "Période : 1968-2016")+
+  theme_grey()+
+  xlab("Year")+ 
+  ylab("Percent of total employed people working full/part time" )
+ 
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+library(tidyverse)
+df1<-select(employed_gender, "year", "full_time_female", "full_time_male")
+df1%>%
+  ggplot(aes(x=year)) +
+  geom_bar(aes(y=full_time_male), stat="identity", position="dodge", fill="blue") +
+  geom_bar(position="dodge")+
+  geom_bar(aes(y=full_time_female), stat="identity", position="dodge", fill="red")+
+  labs(title = "Part d'Hommes et de Femmes occupant un emploi à temps plein  dans le monde du travail américain, ", subtitle = "Période : 1968-2016")+
+  theme_grey()+
+  xlab("Year")+ 
+  ylab("Percent of total employed people working full/part time" ) 
+
+ 
+
+
+ 
+```
+
+
+
+
+
+```{r}
+df2<- select(employed_gender, "year", "part_time_female", "part_time_male")
+ df2%>%
+  ggplot(aes(x=year)) +
+  geom_bar(aes(y=part_time_female), stat="identity", position="dodge", fill="red") +
+  geom_bar(position="dodge")+
+  geom_bar(aes(y=part_time_male), stat="identity", position="dodge", fill="blue")+
+  labs(title = "Part d'Hommes et de Femmes occupant un emploi à temps partiel dans le monde du travail américain,  ", subtitle = "Période : 1968-2016")+
+  theme_grey()+
+  xlab("Year")+ 
+  ylab("Percent of total employed people working full/part time" ) 
+```
+## Les postes accordées aux Femmes 
+
+
+
+
+```{r}
+jg<-select(jobs_gender,year, major_category, percent_female)
+jg%>%
+  filter(percent_female>90)%>%
+  ggplot(aes(x=year))+
+  geom_bar(aes(color= major_category), size=1)+
+  facet_wrap(~major_category)+
+  scale_color_viridis_d()+
+  labs(title = "Evolution du salaire des femmes américaines entre 1979-2011 selon les classes d'âge")+
+  theme_grey()+
+  xlab("year")+ 
+  ylab("Percent of women for specific occupation")
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
