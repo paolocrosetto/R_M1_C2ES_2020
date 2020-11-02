@@ -1,0 +1,111 @@
+---
+title: "Exam_MASSERON"
+author: "Pauline"
+date: "02/11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#install.packages("tidytuesdayR")
+library(tidytuesdayR)
+library(tidyverse)
+```
+
+
+########################
+PALMER PENGUINS 
+########################
+
+
+
+#1. Introduction
+
+```{r}
+#Télécharger la base de données
+
+tuesdata <- tidytuesdayR::tt_load('2020-07-28')
+tuesdata <- tidytuesdayR::tt_load(2020, week = 31)
+
+penguins <- tuesdata$penguins
+
+penguins
+```
+
+Ce jeu de données sur trois espèces de pingouins contient des mesures de taille, de poids ou encore le sexe pour trois espèces de manchots observées sur trois îles de l'archipel Palmer, en Antarctique sur une période d'étude de trois ans (2007-2009).
+
+```{r}
+#Quelques statistiques descriptives 
+
+summary(penguins)
+```
+
+
+
+#2. Présentation des données 
+
+La longueur de la nageoire du manchot et la masse corporelle montrent une association positive pour chacune des 3 espèces :
+```{r}
+
+ggplot(data = penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point(aes(color = species, 
+                 shape = species),
+             size = 2) +
+  scale_color_manual(values = c("darkorange","darkorchid","cyan4"))
+
+```
+
+La longueur et la profondeur du bec de pingouin montrent également des modèles intéressants. Si on ignore les espèces, on pourrait penser qu'il y a une corrélation négative entre ces deux variables :
+```{r}
+
+ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
+  geom_point(size = 2) +
+  geom_smooth(method = "lm", se = FALSE)
+
+```
+
+Cependant, si on regarde les corrélations au sein des espèces, la longueur et la profondeur du bec sont en fait corrélées positivement :
+```{r}
+
+ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
+  geom_point(aes(color = species, 
+                 shape = species),
+             size = 2) + 
+  geom_smooth(method = "lm", se = FALSE, aes(color = species)) +
+  scale_color_manual(values = c("darkorange","darkorchid","cyan4"))
+
+```
+
+Enfin, on peut obtenir une séparation assez claire entre les trois espèces en regardant la longueur des nageoires par rapport à la longueur du bec:
+```{r}
+
+ggplot(penguins, aes(x = flipper_length_mm, y = bill_length_mm, colour = species, shape = species)) +
+  geom_point() +
+  scale_colour_manual(values = c("darkorange","purple","cyan4"))
+
+```
+
+
+
+#3: Questions 
+
+Les pingouins mâles sont-ils plus gros que les pingouins femelles ?
+```{r}
+
+penguins %>% 
+  filter(sex != "N/A") %>% 
+  ggplot(aes(x = sex, y = body_mass_g)) + 
+  geom_path() +
+  facet_wrap(~species)+
+  aes(color = sex)+
+  labs(x = "sexe", y = "poids en gramme", title = "Le poids des pingouins selon leur espèce en fonction du sexe")
+
+```
+
+
+
+
+
+
+
