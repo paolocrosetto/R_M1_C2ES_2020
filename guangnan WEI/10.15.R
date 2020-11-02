@@ -24,6 +24,7 @@ mpg%>%
 p<-mpg%>% 
   ggplot(aes(x=cty,y=hwy))+
   geom_point()
+p
 
 #ajouter de la couleur
 p+geom_point(aes(col=class,size=cyl,shape=manufacturer))
@@ -37,7 +38,7 @@ ggplot(mpg, aes(x=cty,y=hwy))+
 library(nycflights13)
 df<-flights
 
-##rel entre retard au départ ou l'arrivée
+##relation entre retard au départ ou l'arrivée
 df%>%
   ggplot(aes(x=dep_delay,y=arr_delay))+
   geom_point()
@@ -56,13 +57,16 @@ df%>%
   ggplot(aes(x=dep_delay,y=arr_delay))+
   geom_point(aes(col=carrier))->plot2
 
+plot2
 
 # use facet
 #2 dimension 2 facets
 
 plot2+
-  facet_grid(carrier~origin) ##syntaxe ligne -colonne
+  facet_grid(carrier~origin) ###按两个参数分面 （参数1按行方式进行分面，参数2按列方式分面?)
 
+plot2+
+  facet_grid(origin~carrier)
 #################################@
 plot2+
   facet_grid(~carrier)
@@ -111,6 +115,7 @@ flights%>%
 flights%>%
   ggplot(aes(x=dep_time))+
   geom_histogram()->hist1
+hist1
 
 flights%>%
   ggplot(aes(x=dep_time))+
@@ -226,7 +231,7 @@ mpg%>%
 #version 1: une seule variable-> geom_bar
 flights%>%
   ggplot(aes(carrier))+
-  geom_bar() # compte lers observations
+  geom_bar() # compte leurs observations
 
 #version 2: avec deusx variables -> geom_col
 flights%>%
