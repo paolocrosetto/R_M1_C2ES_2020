@@ -143,24 +143,74 @@ df2<- select(employed_gender, "year", "part_time_female", "part_time_male")
 
 
 ```{r}
-jg<-select(jobs_gender,year, major_category, percent_female)
+jg<- select(jobs_gender, year, occupation, minor_category, percent_female)
 jg%>%
   filter(percent_female>90)%>%
-  ggplot(aes(x=year))+
-  geom_bar(aes(color= major_category), size=1)+
-  facet_wrap(~major_category)+
-  scale_color_viridis_d()+
-  labs(title = "Evolution du salaire des femmes américaines entre 1979-2011 selon les classes d'âge")+
-  theme_grey()+
-  xlab("year")+ 
-  ylab("Percent of women for specific occupation")
-
+  arrange(occupation)-> jg1
+jg1
 ```
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+```{r}
+
+
+jg1%>%
+  ggplot(aes(x=year, y=percent_female))+
+  geom_line()+
+  facet_wrap(~occupation)+
+  scale_color_viridis_d()+
+  labs(title = "Emplois occupés à plus de 90 % par des Femmes américaines entre 2013-2016, tout âge confondus")+
+  theme_grey()+
+  xlab("year")+ 
+  ylab("Percent of women for specific occupation")
+  
+
+
+```
+
+
+
+```{r}
+jg<- select(jobs_gender, year, occupation, minor_category, percent_female)
+jg%>%
+  filter(percent_female<10)%>%
+  arrange(occupation)-> jg2
+jg2
+```
+```
+
+
+
+
+
+
+
+
+
+```{r}
+jg2%>%
+  ggplot(aes(x=year, y=percent_female))+
+  geom_line()+
+  facet_wrap(~occupation)+
+  scale_color_viridis_d()+
+  labs(title = "Emplois occupés à moins de 10 % par des Femmes américaines entre 2013-2016, tout âge confondus")+
+  theme_grey()+
+  xlab("year")+ 
+  ylab("Percent of women for specific occupation")
+  
+```
 
 
 
