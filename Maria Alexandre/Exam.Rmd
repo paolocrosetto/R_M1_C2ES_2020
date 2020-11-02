@@ -1,10 +1,10 @@
 ---
-Author: "Alexandre Maria" 
-title: "Exam Maria Alexandre"
+title: " Etude de la place de la Femme dans le monde de travail américain - DATABASE: "Women in the workforce" "
+subtitle: "Maria Alexandre"
 output: github_document
-editor_options: 
-  chunk_output_type: inline
+chunk_output_type: inline
 ---
+
 
 
 ## Introduction
@@ -12,7 +12,9 @@ editor_options:
   Les inégalités entre les Hommes et les Femmes sont omniprésentes à la surface du globe. En effet cette différence de traitement semble être universelle, persistante à travers les âges et bien sûr en défaveur des Femmes. En France, au Sénégal, au Brésil, en Chine, au Liban, sur tous le globe , les femmes sont les premières touchées par des inégalités est surtout au niveau du marché de travail à cause d’un système économique qui est traditionnellement sexiste et qui n'est pas très juste.Nous allons étudié l'ampleur des inégalités Homme-Femme liées au monde professionnel et en particulier aux Etats-Unis d'Amérique. Nous allons nous focaliser sur 3 aspects principaux c'est-à-dire le salaire, l'emploi et les postes relatifs aux femmes américaines. 
 
 
-```{r jobs_gender, earnings_female, employed_gender, echo=FALSE}
+```{r  echo=FALSE, message= FALSE}
+library(knitr)
+library(yaml)
 jobs_gender <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-03-05/jobs_gender.csv")
 earnings_female <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-03-05/earnings_female.csv") 
 employed_gender <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-03-05/employed_gender.csv") 
@@ -25,7 +27,7 @@ employed_gender <- readr::read_csv("https://raw.githubusercontent.com/rfordatasc
 Bien que, de fait, une inégalité salariale en défaveur des femmes structure la société américaine on rémarque qu'il y a une évolution du salaire des Femmes sur la période 1979-2011. Une réduction des inégalités salariales entre Hommes-Femmes s'est bien effectuée. En 1979, le salaire des Femmes représentait 62.3 % du salaire des Hommes alors qu'en 2011 le salaire des Femmes représentait 82.2 % du salaire des Hommes soit une augentation de 19.9 points.
 
 
-```{r}
+```{r echo=FALSE, message=FALSE}
 library(tidyverse)
 
 
@@ -38,7 +40,7 @@ earnings_female %>%
   geom_hline(aes(yintercept=100), color="#1F65CC", size=1)+
   geom_hline(aes(yintercept=max(percent)), color="#1F65CC", size=1, linetype='dotted')+
   geom_hline(aes(yintercept=min(percent)), color="#1F65CC", size=1, linetype='dotted')+
-  labs(title = "Evolution du salaire des femmes américaines entre 1979-2011 selon lesclasse d'âge")+
+  labs(title = "Evolution du salaire des Femmes américaines entre 1979-2011", subtitle="selon les classes d'âge")+
   theme_grey()+
   xlab("Year")+
   ylab("Women's salary (% Men's salary)")
@@ -49,33 +51,43 @@ earnings_female %>%
 
 ```
 
-Sachant l'affirmation précédente concernant le salaire on peut se demander si cette tendance de réduction des inégalités salariales, pour tout âge confondu, se maintient pour chaque classes d'âge et si la variable classe d'âge influe sur les inégalités salariales.
+Sachant l'affirmation précédente concernant le salaire on peut se demander :
+* Si cette tendance de réduction des inégalités salariales, pour tout âge confondu, se maintient pour chaque classes d'âge.
+* Si la variable classe d'âge influe sur les inégalités salariales.
+
+
+#### LA TENDANCE DE REDUCTION DES INEGALITES SALARIALES SE MAINTIENT-ELLE POUR CHAQUE CLASSES D'ÂGE ?
+Le phénoméne de réduction des inégalités salariales est effectif, sur le long terme, pour toutes les classes d'âge malgré que le salaire pour chaque classes d'âge, à court terme, peut connaître d'importantes variations, fluctuations. En effet, prenons l'exemple de la classe d'âge 25-34 ans, en 1979 le salaire des Femmes correspondait à 68 % du salaire des Hommes alors qu'en 2011 le salaire des Femmes correspondait à 92.5 % du salaire des Hommes; Soit une augmentation de 24.5 points.
+
+#### LA VARIABLE CLASSE D'ÂGE INFLUE T-ELLE SUR LES INEGALITES SALARIALES ?
+La variable classe influe les inégalités salariales dans le monde du travail américain. De ce fait, deux dynamiques se dessinent en fonction des classes âges. En effet nous avons 2 situations possibles:
+* De 16 à 34 ans : La réduction des inégalités salariales fut intense et a propulsé le salaire des Femmes autour des 90% du salaire des Hommes en 2011.
+* De 35 à 65 ans et plus : La réduction des inégalités salariales fut moins intense ou du moins les inégalités salariales étaient plus fortes pour ces classes en 1979. De ce fait en 2011 le salaire des Femmes environne les 77.5% du salaire des Hommes.
 
 
 
 
-
-
-```{r}
+```{r echo=FALSE}
 earnings_female %>%
   filter(group!="Total, 16 years and older")%>% 
   ggplot(aes(x=Year, y=percent), color=group)+
   geom_line(aes(color=group), size=2)+
   scale_color_viridis_d()+
-  labs(title = "Evolution du salaire des femmes américaines entre 1979-2011 selon les classes d'âge")+
+  labs(title = "Evolution du salaire des Femmes américaines entre 1979-2011", subtitle = "selon les classes d'âge")+
   theme_grey()+
   xlab("Year")+ 
   ylab("Women' salary (% Men's salary)")
 
 ```
+
+
+
+
+
 ## L'EMPLOI DES FEMMES PAR RAPPORT A LEUR HOMOLOGUE MASCULIN
 
 
-
-
-
-
-```{r}
+```{r echo=FALSE}
 library(tidyverse)
 df<-select(employed_gender, "year", "total_part_time", "total_full_time")
 df%>%
@@ -83,7 +95,7 @@ df%>%
   geom_bar(aes(y=total_full_time), stat="identity", position="dodge", fill="black") +
   geom_bar(position="dodge")+
   geom_bar(aes(y=total_part_time), stat="identity", position="dodge", fill="yellow")+
-  labs(title = "Part d'emploi à temps plein et à temps partiel dans le monde du travail américain, sexes confondu ", subtitle = "Période : 1968-2016")+
+  labs(title = "Part d'emploi à temps plein/partiel dans le monde du travail américain", subtitle = "Sexes confondus, Période : 1968-2016")+
   theme_grey()+
   xlab("Year")+ 
   ylab("Percent of total employed people working full/part time" )
@@ -102,7 +114,7 @@ df%>%
 
 
 
-```{r}
+```{r echo=FALSE}
 library(tidyverse)
 df1<-select(employed_gender, "year", "full_time_female", "full_time_male")
 df1%>%
@@ -110,7 +122,7 @@ df1%>%
   geom_bar(aes(y=full_time_male), stat="identity", position="dodge", fill="blue") +
   geom_bar(position="dodge")+
   geom_bar(aes(y=full_time_female), stat="identity", position="dodge", fill="red")+
-  labs(title = "Part d'Hommes et de Femmes occupant un emploi à temps plein  dans le monde du travail américain, ", subtitle = "Période : 1968-2016")+
+  labs(title = "Part d'Hommes/Femmes occupant un emploi à temps plein ", subtitle = "Monde du travail américain, Période : 1968-2016")+
   theme_grey()+
   xlab("Year")+ 
   ylab("Percent of total employed people working full/part time" ) 
@@ -125,29 +137,32 @@ df1%>%
 
 
 
-```{r}
+```{r echo=FALSE}
 df2<- select(employed_gender, "year", "part_time_female", "part_time_male")
  df2%>%
   ggplot(aes(x=year)) +
   geom_bar(aes(y=part_time_female), stat="identity", position="dodge", fill="red") +
   geom_bar(position="dodge")+
   geom_bar(aes(y=part_time_male), stat="identity", position="dodge", fill="blue")+
-  labs(title = "Part d'Hommes et de Femmes occupant un emploi à temps partiel dans le monde du travail américain,  ", subtitle = "Période : 1968-2016")+
+  labs(title = "Part d'Hommes/Femmes occupant un emploi à temps partiel ", subtitle = "Monde du travail américain, Période : 1968-2016")+
   theme_grey()+
   xlab("Year")+ 
   ylab("Percent of total employed people working full/part time" ) 
 ```
-## Les postes accordées aux Femmes 
+
+
+
+## LES POSTES ACCORDES AUX FEMMES 
 
 
 
 
-```{r}
+```{r echo=FALSE, message=FALSE}
 jg<- select(jobs_gender, year, occupation, minor_category, percent_female)
 jg%>%
   filter(percent_female>90)%>%
   arrange(occupation)-> jg1
-jg1
+
 ```
 
 
@@ -163,7 +178,7 @@ jg1
 
 
 
-```{r}
+```{r echo=FALSE, message=FALSE}
 
 
 jg1%>%
@@ -171,7 +186,7 @@ jg1%>%
   geom_line()+
   facet_wrap(~occupation)+
   scale_color_viridis_d()+
-  labs(title = "Emplois occupés à plus de 90 % par des Femmes américaines entre 2013-2016, tout âge confondus")+
+  labs(title = "Emplois occupés à plus de 90 % par des Femmes américaines",subtitle= "Période : 2013-2016, tout âge confondus")+
   theme_grey()+
   xlab("year")+ 
   ylab("Percent of women for specific occupation")
@@ -182,42 +197,13 @@ jg1%>%
 
 
 
-```{r}
-jg<- select(jobs_gender, year, occupation, minor_category, percent_female)
+```{r echo=FALSE, message=FALSE}
+jg<- select(jobs_gender, year, minor_category, major_category, percent_female)
 jg%>%
   filter(percent_female<10)%>%
-  arrange(occupation)-> jg2
-jg2
+  arrange(major_category)-> jg2
+
 ```
-```
-
-
-
-
-
-
-
-
-
-```{r}
-jg2%>%
-  ggplot(aes(x=year, y=percent_female))+
-  geom_line()+
-  facet_wrap(~occupation)+
-  scale_color_viridis_d()+
-  labs(title = "Emplois occupés à moins de 10 % par des Femmes américaines entre 2013-2016, tout âge confondus")+
-  theme_grey()+
-  xlab("year")+ 
-  ylab("Percent of women for specific occupation")
-  
-```
-
-
-
-
-
-
-
 
 
 
