@@ -33,12 +33,20 @@ penguins <- tuesdata$penguins
 penguins
 ```
 
-Ce jeu de données sur trois espèces de pingouins contient des mesures de taille, de poids ou encore le sexe pour trois espèces de manchots observées sur trois îles de l'archipel Palmer, en Antarctique sur une période d'étude de trois ans (2007-2009).
+Ce jeu de données contient des mesures de taille, de poids ou encore le sexe pour trois espèces de manchots observées sur trois îles de l'archipel Palmer, en Antarctique sur une période d'étude de trois ans (2007-2009).
 
 ```{r}
 #Quelques statistiques descriptives 
 
 summary(penguins)
+
+```
+
+```{r}
+#Nombre de manchot par espèce
+
+penguins %>% count ( species )
+
 ```
 
 
@@ -48,7 +56,7 @@ summary(penguins)
 La longueur de la nageoire du manchot et la masse corporelle montrent une association positive pour chacune des 3 espèces :
 ```{r}
 
-ggplot(data = penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
+ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
   geom_point(aes(color = species, 
                  shape = species),
              size = 2) +
