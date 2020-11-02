@@ -52,16 +52,18 @@ ggplot(data = penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
   geom_point(aes(color = species, 
                  shape = species),
              size = 2) +
-  scale_color_manual(values = c("darkorange","darkorchid","cyan4"))
+  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
+  labs(x = "Longueur de la nageoire en mm", y = "Poids en gr", title = "Corrélation entre la longueur de la nageoire du manchot et sa masse corporelle")
 
 ```
 
-La longueur et la profondeur du bec de pingouin montrent également des modèles intéressants. Si on ignore les espèces, on pourrait penser qu'il y a une corrélation négative entre ces deux variables :
+La longueur et la profondeur du bec de manchot montrent également des modèles intéressants. Si on ignore les espèces, on pourrait penser qu'il y a une corrélation négative entre ces deux variables :
 ```{r}
 
 ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
   geom_point(size = 2) +
-  geom_smooth(method = "lm", se = FALSE)
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Longueur du bec en mm", y = "Profondeur du bec en mm", title = "Corrélation entre la longueur et la profondeur du bec")
 
 ```
 
@@ -73,7 +75,8 @@ ggplot(data = penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
                  shape = species),
              size = 2) + 
   geom_smooth(method = "lm", se = FALSE, aes(color = species)) +
-  scale_color_manual(values = c("darkorange","darkorchid","cyan4"))
+  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
+  labs(x = "Longueur du bec en mm", y = "Profondeur du bec en mm", title = "Corrélation entre la longueur et la profondeur du bec selon l'espèce")
 
 ```
 
@@ -82,7 +85,8 @@ Enfin, on peut obtenir une séparation assez claire entre les trois espèces en 
 
 ggplot(penguins, aes(x = flipper_length_mm, y = bill_length_mm, colour = species, shape = species)) +
   geom_point() +
-  scale_colour_manual(values = c("darkorange","purple","cyan4"))
+  scale_colour_manual(values = c("darkorange","purple","cyan4")) +
+  labs(x = "Longueur des nageoires en mm", y = "Longueur du bec en mm", title = "La longueur des nageoires par rapport à la longueur du bec selon chaque espèce")
 
 ```
 
