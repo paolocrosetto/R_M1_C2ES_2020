@@ -1,0 +1,73 @@
+---
+title: "Rapport statistique"
+author: "YIFEI WANG (M1 MIASHS-C2ES)"
+date: "2020-10-29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# install.packages("tidytuesdayR")
+library(tidytuesdayR)
+library(tidyverse)
+library(ggridges)
+## import data
+tuesdata <- tidytuesdayR::tt_load('2020-07-07')
+tuesdata <- tidytuesdayR::tt_load(2020, week = 28)
+coffee <- tuesdata$coffee_ratings
+```
+
+***
+
+### **--- Description des données**
+
+### **--- Objectifs**
+
+### **--- Analyser des données**
+
+#### *Question 1:*
+
+
+```{r, echo=FALSE}
+coffee %>% 
+  filter(!is.na(country_of_origin)) %>%
+  group_by(country_of_origin) %>% 
+  summarise(n = n(), average_cupper_points = mean(cupper_points)) %>%
+  filter(n / sum(n) > 0.01)  %>% 
+  ggplot(aes(
+    x = cupper_points,
+    y = fct_reorder(country_of_origin, average_cupper_points),
+    fill = average_cupper_points)) + 
+  ggridges::geom_density_ridges() +
+  xlim(5, 10) +
+  scale_fill_gradient(low = "#A8805C", high = "#5F3622") +
+  ggtitle("Coffee quality by country of origin") +
+  xlab("cupper points") +
+  ylab(NULL) +
+  theme_minimal(base_size = 16, base_family = "Montserrat") +
+  theme(legend.position = "none")
+```
+
+#### *Question 2:*
+
+
+```{r, echo=FALSE}
+
+```
+
+#### *Question 3:*
+
+
+```{r, echo=FALSE}
+
+```
+
+#### *Question 4:*
+
+
+```{r, echo=FALSE}
+
+```
+
+
+### **--- Conclusion**
