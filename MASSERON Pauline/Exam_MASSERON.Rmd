@@ -9,9 +9,6 @@ output: html_document
 
 ## Introduction
 
-![](penguins.png)
-Les manchots de l'archipel Palmer. Illustration de @allison_horst .
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
@@ -26,8 +23,12 @@ penguins
 ```
 
 
-Ce jeu de données contient des mesures de taille, de poids ou encore le sexe pour trois espèces de manchots observées sur trois îles de l'archipel Palmer, en Antarctique sur une période d'étude de trois ans (2007-2009).
+Ce jeu de données contient des mesures de taille, de poids ou encore le sexe pour trois espèces de manchots observées sur trois îles de l'archipel Palmer, en Antarctique.
 
+![](penguins.png)
+Les manchots de l'archipel Palmer. Illustration de @allison_horst .
+
+Ces données ont été recueillies de 2007 à 2009 par le Dr Kristen Gorman avec le programme de recherche écologique à long terme de la station Palmer , qui fait partie du réseau américain de recherche écologique à long terme .
 
 ```{r}
 #Quelques statistiques descriptives 
@@ -92,6 +93,8 @@ penguins %>%
 ```
 
 #Explorer les nuages de points
+Ces données ont quatre variables continues, ce qui rend possible de représenter des nuages de point.
+
 La longueur de la nageoire du manchot et la masse corporelle montrent une association positive pour chacune des 3 espèces :
 ```{r}
 penguins %>% 
