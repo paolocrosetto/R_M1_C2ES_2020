@@ -10,6 +10,7 @@ output: html_document
 ## Introduction
 
 ![](penguins.png)
+Les manchots de l'archipel Palmer. Illustration de @allison_horst .
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -48,17 +49,68 @@ penguins %>%
 
 ```
 
+Regardons également le nombre de mâles et de femelles par espèce de manchot :
+```{r}
+
+penguins %>% 
+  filter(sex != "N/A") %>% 
+  ggplot(aes(x = sex, fill = species)) +
+  geom_bar(alpha = 0.8) +
+  geom_text(stat = "count", aes(label = (..count..)), hjust = -0.1, size = 5) +
+  scale_fill_manual(values = c("darkorange","purple","cyan4")) +
+  facet_wrap (~species, ncol  =  1 ) +
+  coord_flip() +
+  labs(y = "Sexe ", title = "Répartition des mâles et femelles par espèce")
+
+```
 
 
-## Présentation des données 
 
+## Présentation de la base de données 
+
+#Explorer les distributions :
+Analysons la longueur du bec par espèce :
+```{r}
+
+penguins %>% 
+  ggplot(aes(x = species, y = bill_length_mm)) +
+  geom_jitter(aes(col = species), width = 0.1, alpha = 0.7, show.legend = FALSE) +
+  scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
+  labs(x = "Espèce", y = "Longueur du bec en mm", title = "La longueur du bec par espèce")
+
+```
+
+Ou encore la longueur des nageoires par espèce :
+```{r}
+
+penguins %>% 
+  ggplot(aes(x = flipper_length_mm))+
+  geom_histogram(aes(fill = species), alpha = 0.5, position = "identity") +
+  scale_fill_manual(values = c("darkorange","darkorchid","cyan4")) +
+  labs(x = "Longueur des nageoires en mm", title = "La longueur des nageoires par espèce")
+
+```
+
+#Explorer les nuages de points
 La longueur de la nageoire du manchot et la masse corporelle montrent une association positive pour chacune des 3 espèces :
 ```{r}
 penguins %>% 
   ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +
   geom_point(aes(color = species, shape = species), size = 2) +
   scale_color_manual(values = c("darkorange","darkorchid","cyan4")) +
-  labs(x = "Longueur de la nageoire en mm", y = "Poids en gr", title = "Corrélation entre la longueur de la nageoire du manchot et sa masse corporelle")
+  labs(x = "Longueur de la nageoire en mm", y = "Poids en gr", title = "La longueur de la nageoire pingouin en fonction de la masse corporelle")
+
+```
+
+On peut ajouter la distinction du genre :
+```{r}
+
+penguins %>% 
+  ggplot(aes(x = flipper_length_mm , y = body_mass_g)) +
+  geom_point(aes(color = sex)) +
+  scale_color_manual (values = c("darkorange" ,"cyan4")) +
+  facet_wrap (~ species) +
+  labs(x = "Longueur de la nageoire en mm", y = "Poids en gr", title = "La longueur de la nageoire pingouin en fonction de la masse corporelle selon l'espèce et le sexe")
 
 ```
 
@@ -106,7 +158,7 @@ penguins %>%
   geom_boxplot() +
   facet_wrap(~species)+
   aes(color = sex)+
-  scale_colour_manual(values = c("deeppink", "turquoise4")) +
+  scale_color_manual (values = c("darkorange" ,"cyan4")) +
   labs(x = "sexe", y = "poids en gramme", title = "Le poids des pingouins selon leur espèce en fonction du sexe")
 
 ```
@@ -118,6 +170,8 @@ penguins %>%
 penguins %>% 
   ggplot(aes(x = species, fill = species)) +
   geom_bar() +
+  geom_text(stat = "count", aes(label = (..count..)), vjust = -1, size = 5) +
+  coord_cartesian(ylim = c(0,140))+
   facet_wrap(~island) +
   scale_fill_manual(values = c("darkorange","purple","cyan4")) +
   labs(x = "L'espèce du manchot", title = "Répartition des manchots selon leur espèce")
