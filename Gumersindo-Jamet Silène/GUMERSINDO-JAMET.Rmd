@@ -31,10 +31,11 @@ La base de donnée *us_births_2000-2014.csv* contient des données sur les naiss
 
 us_births %>% 
   group_by(year) %>% 
-  ggplot( aes(x=month, y= births, color= year))+
-  geom_line () +
+  filter(month == 12) %>% 
+  ggplot( aes(x = year, y= births))+
+  geom_col () +
    labs(title="Évolution des naissances de 2000 à 2014",
-     x="Mois",
+     x="Annee",
      y="Nombre de naissance")
 ```
 
@@ -43,9 +44,9 @@ us_births %>%
 ```{r}
 us_births %>% 
   group_by(day_of_week, births) %>% 
-  ggplot(aes(x= births , y= month, fill= day_of_week))+
+  ggplot(aes(y= births , x= day_of_week, fill= day_of_week))+
   scale_fill_viridis_c()+
-  geom_line()+
+  geom_col()+
   labs(title="Répartition des naissances en fonction des jours de la semaine",
        x="Jour de la semaine",
        y="Nombre de naissance")
