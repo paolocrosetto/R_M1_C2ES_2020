@@ -9,6 +9,8 @@ output: html_document
 
 ## Introduction
 
+![](penguins.png)
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
@@ -17,9 +19,7 @@ library(tidytuesdayR)
 library(tidyverse)
 
 #Télécharger la base de données
-tuesdata <- tidytuesdayR::tt_load('2020-07-28')
-tuesdata <- tidytuesdayR::tt_load(2020, week = 31)
-penguins <- tuesdata$penguins
+penguins <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-07-28/penguins.csv')
 
 penguins
 ```
@@ -135,6 +135,7 @@ penguins %>%
   labs(x = "Ile", y = "Poids en gr", title = "Poids des manchots Adelie selon l'île")
 
 ```
+
 
 
 
