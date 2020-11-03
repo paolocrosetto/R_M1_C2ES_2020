@@ -35,14 +35,14 @@ summary(penguins)
 
 ```
 
+Cette base de données contient 344 observations. Regardons la répartition du nombre de manchot par espèce :
 ```{r}
-#Nombre de manchot par espèce
-penguins %>% count (species)
 
-#Graphiquement
 penguins %>% 
   ggplot(aes(x = species, fill = species)) +
   geom_bar() +
+  geom_text(stat = "count", aes(label = (..count..)), vjust = -1, size = 5) +
+  coord_cartesian(ylim = c(0,180))+
   scale_fill_manual(values = c("darkorange","purple","cyan4")) +
   labs(x = "L'espèce du manchot", title = "Nombre de manchot par espèce")
 
