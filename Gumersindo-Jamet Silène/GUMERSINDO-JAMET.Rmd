@@ -1,0 +1,80 @@
+---
+title: "Projet R"
+author: "Silène Gumersindo-Jamet"
+date: "11/3/2020"
+output: html_document
+---
+
+```{r}
+#install.packages("tidytuesdayR")
+library(tidytuesdayR)
+library(tidyverse)
+```
+### 1. Introduction
+```{r}
+us_births <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2018/2018-10-02/us_births_2000-2014.csv')
+
+View(us_births)
+
+```
+
+La base de donnée *us_births_2000-2014.csv* contient des données sur les naissances aux États-Unis pour les années 2000 à 2014, fournies par la Social Security Administration. La base donnée contient 5479 données et est composé de 5 variables:      
+  - *year* qui correspond à l'année de naissance     
+  - *month* qui correspond au mois de naissance     
+  - *date_of_month* qui correspond au jour du mois de naissance     
+  - *date_of_week* qui correspond au jour de la semaine (1= lundi, 2=mardi...)     
+  - *births* qui correspond au nombre de naissance     
+
+
+### Quelle est l'évolution moyenne du nombre de naissance par an du mois de Décembre?
+```{r}
+
+us_births %>% 
+  group_by(year) %>% 
+  ggplot( aes(x=month, y= births, color= year))+
+  geom_line () +
+   labs(title="Évolution des naissances de 2000 à 2014",
+     x="Mois",
+     y="Nombre de naissance")
+```
+
+
+### Quel est le jour de la semaine où il y a eu le plus de naissance sur ces 14 années ?
+```{r}
+us_births %>% 
+  group_by(day_of_week, births) %>% 
+  ggplot(aes(x= births , y= month, fill= day_of_week))+
+  scale_fill_viridis_c()+
+  geom_line()+
+  labs(title="Répartition des naissances en fonction des jours de la semaine",
+       x="Jour de la semaine",
+       y="Nombre de naissance")
+```
+
+
+### Quel est le mois où il y a eu le plus de naissance sur ces 14 années ?
+```{r}
+
+```
+
+
+### Quelle est l'année où il y a eu le plus de naissance sur ces 14 années ?
+```{r}
+
+```
+
+
+### Toutes années confondues est-ce qu'il y a plus d'enfant née en début ou en fin d'année ?
+```{r}
+
+```
+
+
+### Est-que les americains sont superstitieux à l'idée d'avoir un enfant un vendredi 13 ?
+```{r}
+
+```
+
+
+
+
