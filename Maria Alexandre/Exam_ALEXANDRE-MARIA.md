@@ -1,6 +1,5 @@
-Etude de la place de la Femme dans le monde de travail américain -
-DATABASE: Women in the workforce
-================
+# Etude de la place de la Femme dans le monde de travail américain -DATABASE: Women in the workforce
+### MARIA ALEXANDRE
 
 ## INTRODUCTION
 
@@ -200,7 +199,8 @@ professionels sont majoritairement voire exclusivement masculin comme :
   - Ressources naturelles, construction et entretien
   - Production, transport et déplacement de matériel
   - Informatique, ingénierie et sciences
-  - Gestion, affaires et finances Si la parité Homme-Femmes dans le
-    monde du travail est l’objectif à atteindre par le gouvernement
-    américain, il y a des amélioration mais certaines inégalités
-    persistes à travers les âges
+  - Gestion, affaires et finances 
+  
+Si la parité Homme-Femmes dans le monde du travail est l’objectif à atteindre 
+par le gouvernement américain, il y a des amélioration mais certaines inégalités
+persistes à travers les âges
