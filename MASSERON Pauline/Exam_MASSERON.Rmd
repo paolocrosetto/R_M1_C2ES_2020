@@ -1,41 +1,32 @@
 ---
-title: "Exam_MASSERON"
-author: "Pauline"
+title: "PALMER PENGUINS"
+author: "Pauline MASSERON"
 date: "02/11/2020"
-output:
-  pdf_document: default
-  html_document: default
+output: html_document
 ---
+
+
+
+## Introduction
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-#install.packages("tidytuesdayR")
+
 library(tidytuesdayR)
 library(tidyverse)
-```
 
-
-########################
-"PALMER PENGUINS"
-########################
-
-
-
-#1. Introduction
-
-```{r}
 #Télécharger la base de données
-
 tuesdata <- tidytuesdayR::tt_load('2020-07-28')
 tuesdata <- tidytuesdayR::tt_load(2020, week = 31)
-
 penguins <- tuesdata$penguins
 
 penguins
 ```
 
+
 Ce jeu de données contient des mesures de taille, de poids ou encore le sexe pour trois espèces de manchots observées sur trois îles de l'archipel Palmer, en Antarctique sur une période d'étude de trois ans (2007-2009).
+
 
 ```{r}
 #Quelques statistiques descriptives 
@@ -59,7 +50,7 @@ penguins %>%
 
 
 
-#2. Présentation des données 
+## Présentation des données 
 
 La longueur de la nageoire du manchot et la masse corporelle montrent une association positive pour chacune des 3 espèces :
 ```{r}
@@ -104,7 +95,7 @@ penguins %>%
 
 
 
-#3: Questions 
+## Questions 
 
 - Les pingouins mâles sont-ils plus gros que les pingouins femelles ?
 ```{r}
@@ -144,6 +135,8 @@ penguins %>%
   labs(x = "Ile", y = "Poids en gr", title = "Poids des manchots Adelie selon l'île")
 
 ```
+
+
 
 
 
