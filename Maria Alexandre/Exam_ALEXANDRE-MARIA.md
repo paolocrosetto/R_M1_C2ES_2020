@@ -2,7 +2,7 @@ Etude de la place de la Femme dans le monde de travail américain -
 DATABASE: Women in the workforce
 ================
 
-## Introduction
+## INTRODUCTION
 
 Les inégalités entre les Hommes et les Femmes sont omniprésentes à la
 surface du globe. En effet cette différence de traitement semble être
@@ -33,7 +33,7 @@ représentait 62.3 % du salaire des Hommes alors qu’en 2011 le salaire
 des Femmes représentait 82.2 % du salaire des Hommes soit une
 augentation de 19.9 points.
 
-![](Exam_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](Exam_ALEXANDRE-MARIA_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
 Sachant l’affirmation précédente concernant le salaire on peut se
 demander :
@@ -66,7 +66,7 @@ des classes âges. En effet nous avons 2 situations possibles:
     fortes pour ces classes en 1979. De ce fait en 2011 le salaire des
     Femmes environne les 77.5% du salaire des Hommes.
 
-![](Exam_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](Exam_ALEXANDRE-MARIA_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
 ## L’EMPLOI DES FEMMES PAR RAPPORT A LEUR HOMOLOGUE MASCULIN
 
@@ -82,7 +82,7 @@ représentent plus de 75% des emplois totaux. Nous allons nous focaliser
 sur les proportions d’emploi à temps pleins/partiel occupés par des
 Hommes/Femmes.
 
-![](Exam_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](Exam_ALEXANDRE-MARIA_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 ###### LES EMPLOIS A TEMPS PLEIN SONT-ILS ACCORDES PREFERENTIELLEMENT AUX HOMMES QU’AUX FEMMES ?
 
@@ -97,7 +97,7 @@ est supérieure au pourcentage de la population de Femmes ayant un emploi
 à temps plein. En effet environ 90% des Hommes ont un emploi à temps
 plein contre 75% pour les Femmes.
 
-![](Exam_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](Exam_ALEXANDRE-MARIA_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 ###### LES EMPLOIS A TEMPS PARTIELS SONT-ILS ACCORDES PREFERENTIELLEMENT AUX HOMMES QU’AUX FEMMES ?
 
@@ -112,7 +112,7 @@ est inférieure au pourcentage de la population de Femmes ayant un emploi
 à temps partiel. En effet environ 10% des Hommes ont un emploi à temps
 plein contre 25% pour les Femmes.
 
-![](Exam_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](Exam_ALEXANDRE-MARIA_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 ## LES POSTES ACCORDES AUX FEMMES
 
@@ -150,7 +150,7 @@ déterminisme positif sont les suivants :
   - Éducation, droit, service communautaire, arts et médias
   - Secrétariat et Ventes
 
-![](Exam_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](Exam_ALEXANDRE-MARIA_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 ###### QUELS SONT LES POSTES OU DOMAINES PROFESSIONELS POUR LESQUELS LES FEMMES SONT SOUS-REPRESENTEES ?
 
