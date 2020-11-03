@@ -1,6 +1,6 @@
-Etude de la place de la Femme dans le monde de travail américain -
-DATABASE: Women in the workforce
-================
+# Etude de la place de la Femme dans le monde de travail américain - DATABASE: Women in the workforce
+##### MARIA ALEXANDRE
+
 
 ## INTRODUCTION
 
