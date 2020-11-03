@@ -1,6 +1,6 @@
-# Etude de la place de la Femme dans le monde de travail américain - DATABASE: Women in the workforce
-##### MARIA ALEXANDRE
-
+Etude de la place de la Femme dans le monde de travail américain -
+DATABASE: Women in the workforce
+================
 
 ## INTRODUCTION
 
@@ -42,7 +42,7 @@ demander :
     âge confondu, se maintient pour chaque classes d’âge.
   - Si la variable classe d’âge influe sur les inégalités salariales.
 
-###### LA TENDANCE DE REDUCTION DES INEGALITES SALARIALES SE MAINTIENT-ELLE POUR CHAQUE CLASSES D’ÂGE ?
+###### *LA TENDANCE DE REDUCTION DES INEGALITES SALARIALES SE MAINTIENT-ELLE POUR CHAQUE CLASSES D’ÂGE ?*
 
 Le phénoméne de réduction des inégalités salariales est effectif, sur le
 long terme, pour toutes les classes d’âge malgré que le salaire pour
@@ -52,7 +52,7 @@ variations, fluctuations. En effet, prenons l’exemple de la classe d’âge
 des Hommes alors qu’en 2011 le salaire des Femmes correspondait à 92.5 %
 du salaire des Hommes; Soit une augmentation de 24.5 points.
 
-###### LA VARIABLE CLASSE D’ÂGE INFLUE T-ELLE SUR LES INEGALITES SALARIALES ?
+###### *LA VARIABLE CLASSE D’ÂGE INFLUE T-ELLE SUR LES INEGALITES SALARIALES ?*
 
 La variable classe influe les inégalités salariales dans le monde du
 travail américain. De ce fait, deux dynamiques se dessinent en fonction
@@ -84,7 +84,7 @@ Hommes/Femmes.
 
 ![](Exam_ALEXANDRE-MARIA_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
-###### LES EMPLOIS A TEMPS PLEIN SONT-ILS ACCORDES PREFERENTIELLEMENT AUX HOMMES QU’AUX FEMMES ?
+###### *LES EMPLOIS A TEMPS PLEIN SONT-ILS ACCORDES PREFERENTIELLEMENT AUX HOMMES QU’AUX FEMMES ?*
 
 La répartition des emplois à temps plein dans le monde du travail
 américain, entre Homme et Femmes sur la période 1968-2016 n’a que très
@@ -99,7 +99,7 @@ plein contre 75% pour les Femmes.
 
 ![](Exam_ALEXANDRE-MARIA_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
-###### LES EMPLOIS A TEMPS PARTIELS SONT-ILS ACCORDES PREFERENTIELLEMENT AUX HOMMES QU’AUX FEMMES ?
+###### *LES EMPLOIS A TEMPS PARTIELS SONT-ILS ACCORDES PREFERENTIELLEMENT AUX HOMMES QU’AUX FEMMES ?*
 
 La répartition des emplois à temps partiel dans le monde du travail
 américain, entre Homme et Femmes sur la période 1968-2016 n’a que très
@@ -121,7 +121,7 @@ postes balayant un bon nombre de domaines professionnnels. Le but étant
 de déterminer pour quels postes ou domaines professionnels il existe un
 détérminisme professionnels selon le sexe.
 
-###### QUELS SONT LES POSTES OU DOMAINES PROFESSIONELS POUR LESQUELS LES FEMMES SONT SUR-REPRESENTEES ?
+###### *QUELS SONT LES POSTES OU DOMAINES PROFESSIONELS POUR LESQUELS LES FEMMES SONT SUR-REPRESENTEES ?*
 
 Nous allons nous focaliser sur les domaines professionnels et plus
 particulièrement les postes pour lesquels il y a un détérminisme en
@@ -152,7 +152,7 @@ déterminisme positif sont les suivants :
 
 ![](Exam_ALEXANDRE-MARIA_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
-###### QUELS SONT LES POSTES OU DOMAINES PROFESSIONELS POUR LESQUELS LES FEMMES SONT SOUS-REPRESENTEES ?
+###### *QUELS SONT LES POSTES OU DOMAINES PROFESSIONELS POUR LESQUELS LES FEMMES SONT SOUS-REPRESENTEES ?*
 
 Maintenant nous allons nous concentrer sur les domaines professionnels
 et plus particulièrement les postes pour lesquels il y a un détérminisme
@@ -196,9 +196,11 @@ réceptionistes et commis à l’information, assistant administratif et
 secrétaire; C’est à dire des postes liés à la santé/esthétique, à
 l’enfant ou bien au secrétariat. En revanche beaucoup de domaines
 professionels sont majoritairement voire exclusivement masculin comme :
-\* Ressources naturelles, construction et entretien \* Production,
-transport et déplacement de matériel \* Informatique, ingénierie et
-sciences \* Gestion, affaires et finances Si la parité Homme-Femmes dans
-le monde du travail est l’objectif à atteindre par le gouvernement
-américain, il y a des amélioration mais certaines inégalités persistes
-à travers les âges
+
+  - Ressources naturelles, construction et entretien
+  - Production, transport et déplacement de matériel
+  - Informatique, ingénierie et sciences
+  - Gestion, affaires et finances Si la parité Homme-Femmes dans le
+    monde du travail est l’objectif à atteindre par le gouvernement
+    américain, il y a des amélioration mais certaines inégalités
+    persistes à travers les âges
