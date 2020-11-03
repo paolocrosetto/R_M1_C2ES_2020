@@ -1,13 +1,13 @@
 ---
 title: " Etude de la place de la Femme dans le monde de travail américain - DATABASE: Women in the workforce"
-subtitle: "Maria Alexandre"
+Authors: "Maria Alexandre"
 output: github_document
 chunk_output_type: inline
 ---
 
 
 
-## Introduction
+## INTRODUCTION
 
   Les inégalités entre les Hommes et les Femmes sont omniprésentes à la surface du globe. En effet cette différence de traitement semble être universelle, persistante à travers les âges et bien sûr en défaveur des Femmes. En France, au Sénégal, au Brésil, en Chine, au Liban, sur tous le globe , les femmes sont les premières touchées par des inégalités est surtout au niveau du marché de travail à cause d’un système économique qui est traditionnellement sexiste et qui n'est pas très juste.Nous allons étudié l'ampleur des inégalités Homme-Femme liées au monde professionnel et en particulier aux Etats-Unis d'Amérique. Nous allons nous focaliser sur 3 aspects principaux c'est-à-dire le salaire, l'emploi et les postes relatifs aux femmes américaines. 
 
