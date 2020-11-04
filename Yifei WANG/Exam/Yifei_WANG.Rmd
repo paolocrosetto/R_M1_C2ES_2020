@@ -1,73 +1,217 @@
 ---
-title: "Rapport statistique"
-author: "YIFEI WANG (M1 MIASHS-C2ES)"
-date: "2020-10-29"
+title: "**Rapport statistique sur un jeu de données**"
+author: "_YIFEI WANG, M1 MIASHS-C2ES_"
+date: "2020-11-01"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
 # install.packages("tidytuesdayR")
-library(tidytuesdayR)
+library(nycflights13)
 library(tidyverse)
-library(ggridges)
-## import data
-tuesdata <- tidytuesdayR::tt_load('2020-07-07')
-tuesdata <- tidytuesdayR::tt_load(2020, week = 28)
-coffee <- tuesdata$coffee_ratings
+library(skimr)
+library(dplyr)
+library(latticeExtra)
+library(ggrepel)
+
+## Import data
+commute_mode <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-11-05/commute.csv")
+social <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-11-05/table_3.csv")
+
 ```
 
 ***
 
-### **--- Description des données**
+### **Description des données**
 
-### **--- Objectifs**
+#### Dataset : `commute_mode` et `social`
 
-### **--- Analyser des données**
+#### Description
 
-#### *Question 1:*
+* L'influence des facteurs géographiques sur les habitudes de déplacement.
 
+* Tableau 1 : `commute_mode`
 
-```{r, echo=FALSE}
-coffee %>% 
-  filter(!is.na(country_of_origin)) %>%
-  group_by(country_of_origin) %>% 
-  summarise(n = n(), average_cupper_points = mean(cupper_points)) %>%
-  filter(n / sum(n) > 0.01)  %>% 
-  ggplot(aes(
-    x = cupper_points,
-    y = fct_reorder(country_of_origin, average_cupper_points),
-    fill = average_cupper_points)) + 
-  ggridges::geom_density_ridges() +
-  xlim(5, 10) +
-  scale_fill_gradient(low = "#A8805C", high = "#5F3622") +
-  ggtitle("Coffee quality by country of origin") +
-  xlab("cupper points") +
-  ylab(NULL) +
-  theme_minimal(base_size = 16, base_family = "Montserrat") +
-  theme(legend.position = "none")
-```
+    Introduction de facteurs sociaux et économiques tels que la taille de la ville et la localisation géographique des villes. Le tableau divise les villes en trois types en fonction de leur population résidente， divise les région par la localisation géographique des state.
 
-#### *Question 2:*
-
-
-```{r, echo=FALSE}
-
-```
-
-#### *Question 3:*
-
-
-```{r, echo=FALSE}
-
-```
-
-#### *Question 4:*
-
-
-```{r, echo=FALSE}
-
+```{r, include=FALSE}
+levels(as.factor(commute_mode$city_size))
+levels(as.factor(commute_mode$mode))
+levels(as.factor(commute_mode$state_region))
 ```
 
 
-### **--- Conclusion**
+| Nom de colonne | Description                    | Groupe                         | 
+|   :--------:   | :----------------------------: | :----------------------------: |
+| state          | Nom de state                   |                                |
+| <br/>city_size | <br/>La taille de la ville     | Small<br/>Medium<br/>Large<br> |
+| mode           | Les types de déplacement       | Bike<br/>Walk                  | 
+| percent        | Les pourcentage de chaque type |                                |
+| <br/>state_region | <br/>La localisation géographique des state | West<br/>Northeast<br/>South<br/>North Central |
+
+
+* Tableau 2 : `social`
+
+    Introduction de facteurs sociaux et économiques tels que l'âge, le sexe, le nombre d'enfants, la salaire etc.
+
+
+| Nom de colonne | Description |
+| :------------: | :----------:| 
+| total_workers  | Le nombre total de travailleurs | 
+| bike_percent   | Le pourcentage de déplacement à vélo | 
+| walk_percent   | Le pourcentage de déplacement à pied | 
+| other_percent  | Le pourcentage de déplacement aux autres façons | 
+
+### **Traiter des données**
+
+* Tableau : `social`
+
+    En divisant le tableau sociale, nous avons obtenu cinq sous-tableaux pour l'âge, le sexe, le nombre d'enfants et la salaire.
+
+
+```{r traiter1}
+social %>%
+  slice(1:6) %>%
+  pivot_longer(cols = !age & !total_workers &!other_percent, 
+               names_to = "Methode", values_to = "Percent") -> Age
+
+social %>% 
+  slice(9:10) %>%
+  rename("Sexe" = age) %>%
+  pivot_longer(cols = !Sexe & !total_workers &!other_percent, 
+               names_to = "Methode", values_to = "Percent") -> Sexe
+
+social %>%
+  slice(22:24) %>% 
+  rename("Enfant" = age) %>%
+  pivot_longer(cols = !Enfant & !total_workers &!other_percent, 
+               names_to = "Methode", values_to = "Percent") -> Enfant
+
+social %>%
+  slice(27:36) %>% 
+  rename("Salaire" = age) %>%
+  pivot_longer(cols = !Salaire & !total_workers &!other_percent, 
+               names_to = "Methode", values_to = "Percent") -> Salaire
+```
+
+* Tableau : `commute_mode`
+
+
+### **Questions**
+
+#### Question 1 : _À quel âge les travailleurs préfèrent-ils se rendre au travail à pied ou à vélo?_
+
+1. Les taux de déplacement à vélo étaient les plus fréquents chez les travailleurs âgés de 16 à 24 ans, soit 1,0 %. Ils diminuent avec l'âge, le taux le plus bas (0,3 %) étant enregistré chez les travailleurs âgés de 55 ans et plus.
+    
+2. Les travailleurs âgés de 16 à 24 ans affichaient le taux le plus élevé de déplacements à pied pour se rendre au travail, soit 6,8 %. Le taux a fortement diminué pour atteindre 3,1 % des travailleurs de la tranche d'âge supérieure, puis est resté inférieur à 3 % pour toutes les tranches d'âge.
+
+
+```{r, echo=FALSE, fig.width=12, fig.height=5}
+Age %>%
+  ggplot(aes(x = Methode, y = Percent, fill = age)) +
+  geom_bar(position="dodge", stat="identity", width = 0.5) +
+  # scale_fill_manual(values = c("#C89EC4","#84B1ED")) +
+  labs(x = "Groupes d'âge", 
+       y = "Pourcentage(%)",
+       title = "Les différentes façons pour se rendre au travail",
+       subtitle = "Selon les groupes de l'âge",
+       caption = "Source: U.S. Census Bureau, American Community Survey, 2008–2012.")+
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))   
+```
+
+#### Question 2 : _Y a-t-il une différence entre les taux de déplacement à vélo ou à pied entre les hommes et les femmes?_
+
+1. Aux États-Unis, les hommes qui se rendent au travail à pied ont un taux de 2,9 % et les femmes ont un taux de 2,8 %. 
+
+2. La différence entre les taux de déplacement à vélo des hommes et des femmes est plus prononcée que celle des taux de déplacement à pied. Avec 0,8 %, le taux de déplacement à vélo des hommes est plus de deux fois plus élevé que celui des femmes (0,3 %). 
+
+```{r, echo=FALSE, fig.width=12, fig.height=5}
+Sexe %>%
+  ggplot(aes(x = Methode, y = Percent, fill = Sexe)) +
+  geom_bar(position="dodge", stat="identity", width = 0.5) +
+  scale_fill_manual(values = c("#C89EC4","#84B1ED")) +
+  labs(x = "Sexe", 
+       y = "Pourcentage(%)",
+       title = "Les différentes façons pour se rendre au travail",
+       subtitle = "Selon les sexes",
+       caption = "Source: U.S. Census Bureau, American Community Survey, 2008–2012.")+
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
+```
+
+#### Question 3 : _Les travailleurs sans enfants préfèrent-ils se rendre au travail à pied ou à vélo ?_
+
+* Les travailleurs sans enfants sont relativement plus susceptibles de se rendre au travail à pied (2.8%) ou à vélo (0.7%).
+
+
+```{r, echo=FALSE, fig.width=12, fig.height=5}
+Enfant %>%
+  ggplot(aes(x = Methode, y = Percent, fill = Enfant)) +
+  geom_bar(position="dodge", stat="identity", width = 0.5) +
+  # scale_fill_manual(values = c("#C89EC4","#84B1ED")) +
+  labs(x = "Enfant", 
+       y = "Pourcentage(%)",
+       title = "Les différentes façons pour se rendre au travail",
+       subtitle = "Selon les nombres des enfants",
+       caption = "Source: U.S. Census Bureau, American Community Survey, 2008–2012.")+
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
+```
+
+#### Question 4 : _Les personnes à salaires élevés sont moins susceptibles de se déplacer à vélo ou à pied ?_
+
+* À mesure que les salaires augmentent, les taux de déplacement à pied et à vélo diminuent, mais s'inversent dans les deux catégories de sailaires les plus élevés.
+
+* Les travailleurs à salaire faibles avaient des taux relativement élevés, reflétant probablement des taux plus faibles de possession d'une voiture. Et les travailleurs à salaire élevés ont une augmentation des taux, peut-être liée à la localisation géographique de leurs villes de résidence.
+
+```{r, echo=FALSE, fig.width=12, fig.height=5}
+Salaire %>%
+  ggplot(aes(x = Methode, y = Percent, fill = Salaire)) +
+  geom_bar(position="dodge", stat="identity", width = 0.5) +
+  # scale_fill_manual(values = c("#C89EC4","#84B1ED")) +
+  coord_flip() +
+  labs(x = "Salaire", 
+       y = "Pourcentage(%)",
+       title = "Les différentes façons pour se rendre au travail",
+       subtitle = "Selon les salaires",
+       caption = "Source: U.S. Census Bureau, American Community Survey, 2008–2012.")+
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
+```
+
+
+##### Question 5 : 
+
+不同社区和地区的步行和自行车出行率差异很大。当地的因素，如社区规模、设计、基础设施和气候，影响着每种交通方式的可用性、吸引力和可负担性。例如，在小城市，更多的潜在目的地年龄可能在自行车或步行的距离内，汽车交通可能相对较少，增加了非机动车旅行的吸引力10。
+
+
+```{r, echo=FALSE}
+commute_mode %>%
+  ggplot(aes(x = mode, y = percent, fill = city_size, na.rm = T)) +
+  geom_bar(position="dodge", stat="identity", width = 0.5) +
+  facet_wrap(~ state_region)
+```
+
+##### *Question 4:*
+
+東北部地區步行上班的比例最高，為1,000人。4.7%，而西部地区骑车上班的比例最高，为1.1%，约为南部地区的4倍。在东北大城市，约有1/10的工人步行。南方所有地方规模类别中，步行上班的比率最低。骑自行车上下班的比例最高。在西部大城市，1.4%的工人骑车上班。在每个地区，大城市的步行比中小城市更普遍。
+
+```{r, echo=FALSE}
+
+```
+
+對於幾個地區來說，周邊郊區的非機動車旅行率相對較低，使得都市區的整體非機動車出行率低於中心城市。然而，许多较小的地方的步行或骑自行车的比率较高。
+
+#### **Conclusion**
+
+随着年龄的增长，自行车通勤率的下降可能与劳动者的体能、居住地、收入等因素有关。
+
+步行上班的比例也存在明显的地理差异。
+正如不同地方和地区的非机动车通勤率不同一样，它们也因年龄、性别、种族和收入等人口特征而不同。某一特定人群的非机动车通勤率在一定程度上可能反映了出行偏好，但也受到经济限制、居住区域、城市内家庭位置、体能或家庭中是否有子女等因素的群体差异影响。剖析每个人口特征对出行方式选择的独立影响超出了本报告的范围。对于所有工人，表3比较了几个人口特征的自行车、步行和所有其他出行方式的综合通勤率。虽然自行车和步行的比率因社会和经济特征而异，但相对于其他形式的通勤，非机动车旅行的比率都很低。
