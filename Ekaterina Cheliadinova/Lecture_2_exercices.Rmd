@@ -42,7 +42,11 @@ df %>%
   group_by(origin) %>%
   # summarise(unique_types = n_distinct(dest)) -> df_midnight
   count(dest) %>% 
+<<<<<<< HEAD
   top_n(1) -> df_midnight
+=======
+  top_n(1 ) -> df_midnight
+>>>>>>> 3c9bd9f6ea163c950af606b2e95df90425761c82
 
 df_midnight
 
@@ -171,3 +175,7 @@ df %>%
 
 
 
+<<<<<<< HEAD
+=======
+%>% %>% 
+>>>>>>> 3c9bd9f6ea163c950af606b2e95df90425761c82
