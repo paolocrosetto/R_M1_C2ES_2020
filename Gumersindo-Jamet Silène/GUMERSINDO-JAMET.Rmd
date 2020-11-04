@@ -46,13 +46,6 @@ us_births %>%
 
 
 
-```{r}
-us_births %>% 
-  filter(year == 2007) %>% 
-  ggplot(aes(x= month, y=births), fill= month)+
-  geom_boxplot()
-```
-
 
 
 ### Quelle est l'évolution moyenne du nombre de naissance par an du mois de Décembre?
