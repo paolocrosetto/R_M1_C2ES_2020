@@ -98,7 +98,7 @@ us_births %>%
   ggplot(aes(x= year,y=births, fill= year))+
   scale_color_viridis_d() +
   geom_col()+
-  #geom_text(stat = "count",aes(label = births), size = 4)+
+  #geom_text(aes(label = births), size = 2)+
   labs(title="Répartition des naissances par rapport aux années",
        x="Mois",
        y="Nombre de naissance")
@@ -108,7 +108,10 @@ C'est durant l'année 2007 qu'il y a eu le plus de naissance parmis ces 14 anné
 
 ### Est-que les americains sont superstitieux à l'idée d'avoir un enfant un vendredi 13 ?
 ```{r}
-
+us_births %>% 
+  filter(day_of_week == 5, date_of_month == 13) %>% 
+  
+  
 ```
 
 
