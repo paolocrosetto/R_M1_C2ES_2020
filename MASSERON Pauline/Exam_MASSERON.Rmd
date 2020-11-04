@@ -69,7 +69,9 @@ penguins %>%
 
 ## Présentation de la base de données 
 
-#Explorer les distributions :
+
+On peut, tout d'abord, explorer les distribution.
+
 Analysons la longueur du bec par espèce :
 ```{r}
 
@@ -92,8 +94,8 @@ penguins %>%
 
 ```
 
-#Explorer les nuages de points
-Ces données ont quatre variables continues, ce qui rend possible de représenter des nuages de point.
+
+De plus, ces données ont quatre variables continues, ce qui rend possible de représenter des nuages de point.
 
 La longueur de la nageoire du manchot et la masse corporelle montrent une association positive pour chacune des 3 espèces :
 ```{r}
@@ -117,7 +119,8 @@ penguins %>%
 
 ```
 
-La longueur et la profondeur du bec de manchot montrent également des modèles intéressants. Si on ignore les espèces, on pourrait penser qu'il y a une corrélation négative entre ces deux variables :
+La longueur et la profondeur du bec de manchot montrent également des modèles intéressants. 
+Si on ignore les espèces, on pourrait penser qu'il y a une corrélation négative entre ces deux variables :
 ```{r}
 penguins %>% 
   ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) +
