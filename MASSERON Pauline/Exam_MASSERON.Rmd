@@ -186,7 +186,7 @@ penguins %>%
 ```
 
 
-- Existe-t-il un lien entre poids et île sur laquelle les manchots "Adelie" sont ? 
+- Est-ce que l'île, sur laquelle les manchots "Adelie" sont, influe sur le poids de ces derniers ? 
 ```{r}
 
 penguins %>% 
