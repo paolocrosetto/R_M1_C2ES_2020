@@ -120,6 +120,7 @@ penguins %>%
 ```
 
 La longueur et la profondeur du bec de manchot montrent également des modèles intéressants. 
+![](bec.png)
 Si on ignore les espèces, on pourrait penser qu'il y a une corrélation négative entre ces deux variables :
 ```{r}
 penguins %>% 
