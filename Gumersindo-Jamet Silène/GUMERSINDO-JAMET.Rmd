@@ -10,7 +10,8 @@ output: html_document
 library(tidytuesdayR)
 library(tidyverse)
 ```
-### 1. Introduction
+
+## 1. Introduction
 ```{r}
 us_births <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2018/2018-10-02/us_births_2000-2014.csv')
 
@@ -25,6 +26,27 @@ La base de donnée *us_births_2000-2014.csv* contient des données sur les naiss
   - *date_of_week* qui correspond au jour de la semaine (1= lundi, 2=mardi...)     
   - *births* qui correspond au nombre de naissance     
 
+## 2. Analyse de la base de donnée
+Nous allons donc analyser cette base donnée notemment en repondant à différentes questions.    
+
+### Quel est le minimum/maximum de naissance qu'il y a eu en un jour ? 
+```{r}
+summary(us_births$births)
+```
+
+
+Observons graphiquement les variations de cette variable.
+```{r}
+us_births %>% 
+  group_by(year) %>% 
+  ggplot(aes(y=births,x=year, fill=births))+
+  geom_smooth(color= "darkseagreen3")+
+  labs(x = "Années", y="Naissances",title = "Évolution des naissances de 2000 à 2014")
+```
+
+
+
+
 
 ### Quelle est l'évolution moyenne du nombre de naissance par an du mois de Décembre?
 ```{r}
@@ -32,7 +54,7 @@ La base de donnée *us_births_2000-2014.csv* contient des données sur les naiss
 us_births %>% 
   group_by(year) %>% 
   filter(month == 12) %>% 
-  ggplot( aes(x = year, y= births))+
+  ggplot( aes(x = year, y= births), color=year)+
   geom_col () +
    labs(title="Évolution des naissances de 2000 à 2014",
      x="Annee",
@@ -45,35 +67,51 @@ us_births %>%
 us_births %>% 
   group_by(day_of_week, births) %>% 
   ggplot(aes(y= births , x= day_of_week, fill= day_of_week))+
-  scale_fill_viridis_c()+
+  scale_fill_viridis_b()+
   geom_col()+
+  #geom_text(stat = "count",aes(label = births), size = 4)+
   labs(title="Répartition des naissances en fonction des jours de la semaine",
        x="Jour de la semaine",
        y="Nombre de naissance")
 ```
-
+On constate que en moyenne le jour de la semaine où il y a le plus de naissance c'est le mardi. À l'inverse, le jour où il y a le moins de naissance c'est le dimanche.    
+De manière plus général, on constate qu'il y a plus de naissance en semaine qu'en week-end.
 
 ### Quel est le mois où il y a eu le plus de naissance sur ces 14 années ?
 ```{r}
-
+us_births %>% 
+  group_by(month, births) %>% 
+  ggplot(aes(y= births , x= month, fill= month))+
+   scale_fill_gradientn( colours = terrain.colors(6))+
+  geom_col()+
+  #geom_text(stat = "count",aes(label = births), size = 4)+
+  labs(title="Répartition des naissances en fonction des mois toutes années confondues",
+       x="Mois",
+       y="Nombre de naissance")
 ```
-
+En moyenne le mois d'août est le mois où il y a eu le plus de naissance.
 
 ### Quelle est l'année où il y a eu le plus de naissance sur ces 14 années ?
 ```{r}
-
+us_births %>% 
+  group_by(year) %>% 
+  ggplot(aes(x= year,y=births, fill= year))+
+  scale_color_viridis_d() +
+  geom_col()+
+  #geom_text(aes(label = births), size = 2)+
+  labs(title="Répartition des naissances par rapport aux années",
+       x="Mois",
+       y="Nombre de naissance")
 ```
-
-
-### Toutes années confondues est-ce qu'il y a plus d'enfant née en début ou en fin d'année ?
-```{r}
-
-```
+C'est durant l'année 2007 qu'il y a eu le plus de naissance parmis ces 14 années.
 
 
 ### Est-que les americains sont superstitieux à l'idée d'avoir un enfant un vendredi 13 ?
 ```{r}
-
+us_births %>% 
+  filter(day_of_week == 5, date_of_month == 13) %>% 
+  
+  
 ```
 
 
