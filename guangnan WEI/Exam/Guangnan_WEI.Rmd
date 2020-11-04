@@ -1,0 +1,234 @@
+---
+title: "<div align='right' > <font size='4'> Rapport statistique </font></div>"
+author: "<div align='right' >guangnan WEI </font></div>"
+date: "<div align='right' > 27/10/2020 </font></div> "
+output: html_document
+
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+```
+<div align='center' ><font size='8'> **L'analyse de la qualité du vin ** </font></div>
+
+***
+## 1. Introduction
+
+  > <font color=#4682B4  size=4 > Introduction </font>
+
+***
+
+### 1.1 Importation de données
+
+
+
+```{r}
+
+ 
+wine_ratings <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-05-28/winemag-data-130k-v2.csv")
+
+```
+
+
+### 1.2 Explication des variables
+
+| variable | description |
+|:-:|:-:|
+| country|	Pays d'origine |
+| description	|	Saveurs et profil de goût rédigé par le critique |
+| designation	|	Le vignoble dans la cave d'où proviennent les raisins qui ont fait le vin |
+| points	| La notation que WineEnthusiast a noté le vin sur une échelle de 1 à 100 **(bien qu'ils disent qu'ils ne publient que des critiques pour les vins qui obtiennent> = 80)** |
+| price	|	Le coût d'une bouteille de vin |
+| province	| La province ou l'État d'origine du vin |
+| region_1	|	  La zone viticole d'une province ou d'un état (c.-à-d. Napa) |
+| taster_name|	Le dégustateur / critique |
+| title|	Le titre de la revue de vin, qui contient souvent le millésime (année) |
+| variety|	Variété |
+| winery|	La cave qui a fait le vin |
+
+
+## 2. Analyse des données
+
+### 2.1 Extraction de données
+
+  > <font color=#4682B4  size=4 > **Afin de rendre la table de données plus lisible, élimine ces variables inutiles** </font>
+
+```{r}
+wine_use<- wine_ratings%>%
+  select(-X1,-description,-taster_name,-region_2,-taster_twitter_handle,-title)
+wine_use  
+```
+
+
+
+
+### 2.2 Analyse statistique des données
+
+```{r}
+#install.packages("skimr")
+library(skimr)
+skim(wine_use)
+```
+  > <font color=#4682B4  size=4 > La moyenne de note est 88.4 ;</font>
+  > <font color=#4682B4  size=4 > La moyenne du prix est 33.5 ;</font>
+  
+  
+### 2.3 Quelle province de France a le note moyen le plus élevé pour les vins qui sont   "White Blend" et le prix est inférieur à 33,5?
+
+  > <font color=#4682B4  size=4 >Parmi tous les "White Blend  dont le prix est inférieur à 33,5, le score moyen des vins de la vallée est supérieur à celui des autres régions </font>
+  
+```{r}
+
+wine_use%>%
+  filter( price<=33.5 & variety=="White Blend"& country=="France")->wine_use1
+wine_use1%>%
+  group_by(province)%>%
+  summarise(mean_points_province=mean(points))%>%
+  arrange(-mean_points_province)
+
+
+
+  
+  
+```
+
+
+```{r}
+wine_use1%>%
+  group_by(province)%>%
+  ggplot(aes(x=province,y=points,fill=province))+
+  geom_boxplot()
+```
+
+
+
+
+
+### 2.4 Relation entre la notation et le prix
+  > <font color=#4682B4  size=4 >   </font>
+
+```{r}
+wine_use%>%
+  ggplot(aes(x=points,y=price))+
+  geom_point()+
+  geom_smooth()
+```
+
+```{r}
+#nul
+wine_use%>%
+  ggplot(aes(x=points,y=price))+
+  geom_jitter()
+```
+
+```{r}
+#nul
+wine_use%>%
+  filter(points>=88.3)%>%
+  ggplot(aes(country,points))+
+  geom_boxplot()
+```
+
+
+
+### Densité des notes de vin
+
+```{r}
+wine_use%>%
+  ggplot(aes(x=points))+
+  geom_density()
+```
+
+```{r}
+#nul
+wine_use%>%
+  ggplot(aes(x=points))+
+  geom_histogram(aes(fill=country))
+```
+
+
+###
+```{r}
+#nul
+wine_use%>%
+ 
+  ggplot(aes(x=variety))+
+  geom_bar()
+```
+
+###
+```{r}
+#nul
+wine_use%>%
+  group_by(variety)%>%
+  summarise(n=n())%>%
+  filter(n>=5000)%>%
+  ggplot(aes(x=reorder(variety,n),y=n))+
+  geom_col()
+```
+
+***
+```{r}
+#deux variable discrte
+wine_use%>%
+  ggplot(aes(x=country,y=variety))+
+  geom_count()
+```
+
+```{r}
+wine_use%>%
+  group_by(country,variety)%>%
+  summarise(n=n())%>%
+  filter(n>=1000)%>%
+  ggplot(aes(x=country,y=variety))+
+  geom_tile()
+```
+
+
+
+### 2.5 Quels pays ont le vin exceptionnel? (99≥x≥90)
+
+```{r}
+wine_use%>%
+  select(country,points)%>%
+  group_by(country)%>%
+  summarise(mean_points=mean(points))->mean_points_country
+
+mean_points_country%>%
+  ggplot(aes(x=country,y=mean_points,col=country))+
+  geom_point()+
+  geom_text(aes(x=country,y=mean_points+0.3,label=paste(country)))+
+  theme(legend.position = "none")+
+  labs(
+    title ="La notation moyenne de vin dans chaque pays" 
+  )+
+  geom_hline(yintercept = 90,col="red")
+  
+
+
+```
+
+  > <font color=#4682B4  size=4 > En moyenne, l'Angleterre , l'Australie et l'Inde ont la notation moyenne supérieur à 90, donc ces pays ont le vin exceptionnel .</font>
+
+### 2.2 
+
+```{r}
+
+wine_use%>%
+  filter(country=="England")%>%
+  group_by(variety)%>%
+  n=count(points)%>%
+  ggplot(aes(x=variety,y=points,col=n))+
+  geom_point()
+```
+
+```{r}
+wine_use%>%
+  ggplot(aes(x=variety,y=points,col=country))+
+  geom_line()+
+  facet_wrap(~ country ,ncol=4)
+```
+
