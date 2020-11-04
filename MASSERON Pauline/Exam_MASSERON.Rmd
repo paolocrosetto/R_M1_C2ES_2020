@@ -28,7 +28,7 @@ Ce jeu de données contient des mesures de taille, de poids ou encore le sexe po
 ![](penguins.png)
 Les manchots de l'archipel Palmer. Illustration de @allison_horst .
 
-Ces données ont été recueillies de 2007 à 2009 par le Dr Kristen Gorman avec le programme de recherche écologique à long terme de la station Palmer , qui fait partie du réseau américain de recherche écologique à long terme .
+Ces données ont été recueillies de 2007 à 2009 par le Dr Kristen Gorman avec le programme de recherche écologique à long terme de la station Palmer, qui fait partie du réseau américain de recherche écologique à long terme .
 
 ```{r}
 #Quelques statistiques descriptives 
