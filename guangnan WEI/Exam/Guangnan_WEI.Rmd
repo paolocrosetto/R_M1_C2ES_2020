@@ -7,31 +7,30 @@ output: html_document
 
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-
+```{r setup,include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE
+)
 library(tidyverse)
 ```
-<div align='center' ><font size='8'> **L'analyse de la qualité du vin ** </font></div>
+<div align='center' ><font size='8'> **L'analyse de la relation entre la qualité du vin et le prix ** </font></div>
 
+***
 ***
 ## 1. Introduction
 
-  > <font color=#4682B4  size=4 > Introduction </font>
-
-***
-
 ### 1.1 Importation de données
 
+```{r }
 
-
-```{r}
-
- 
 wine_ratings <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-05-28/winemag-data-130k-v2.csv")
 
-```
+wine_ratings
 
+```
+***
 
 ### 1.2 Explication des variables
 
@@ -49,186 +48,197 @@ wine_ratings <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidy
 | variety|	Variété |
 | winery|	La cave qui a fait le vin |
 
+***
+***
 
 ## 2. Analyse des données
 
 ### 2.1 Extraction de données
+***
+  > <font color=#4682B4  size=4 >-->Afin de rendre la table de données plus lisible, élimine ces variables inutiles </font>
 
-  > <font color=#4682B4  size=4 > **Afin de rendre la table de données plus lisible, élimine ces variables inutiles** </font>
-
-```{r}
+```{r echo=TRUE}
 wine_use<- wine_ratings%>%
   select(-X1,-description,-taster_name,-region_2,-taster_twitter_handle,-title)
 wine_use  
 ```
 
-
-
-
+***
 ### 2.2 Analyse statistique des données
 
-```{r}
+```{r echo=TRUE, warning=FALSE}
 #install.packages("skimr")
 library(skimr)
 skim(wine_use)
-```
-  > <font color=#4682B4  size=4 > La moyenne de note est 88.4 ;</font>
-  > <font color=#4682B4  size=4 > La moyenne du prix est 33.5 ;</font>
-  
-  
-### 2.3 Quelle province de France a le note moyen le plus élevé pour les vins qui sont   "White Blend" et le prix est inférieur à 33,5?
 
-  > <font color=#4682B4  size=4 >Parmi tous les "White Blend  dont le prix est inférieur à 33,5, le score moyen des vins de la vallée est supérieur à celui des autres régions </font>
-  
-```{r}
+```
+ 
+  > <font color=#4682B4  size=4 >-->La moyenne de note est 88.4 ;</font>
+  > <font color=#4682B4  size=4 >-->La moyenne du prix est 33.5 ;</font>
+ 
+
+ 
+***  
+### 2.3 Quelle province de France a la qualité la plus élevée pour les vins qui sont   "Red Blend" et le prix est inférieur à 33,5?
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
 
 wine_use%>%
-  filter( price<=33.5 & variety=="White Blend"& country=="France")->wine_use1
+  filter( price<=33.5 & variety==c("Red Blend","Bordeaux-style Red Blend") & country=="France")->wine_use1
+
+wine_use1
+```
+
+  > <font color=#4682B4  size=4 >-->Grâce à la boîte à moustaches, on ne peut pas observer plus intuitivement, parce que la qualité dans la Loire Valley et la qualité de la Provence sont très proche  </font>
+
+```{r,echo=TRUE , message=FALSE, warning=FALSE,}
+wine_use1%>%
+  group_by(province)%>%
+  ggplot(aes(x=province,y=points,,fill=province))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(size = 7, vjust = 0.5, hjust = 0.5),legend.position="bottom")+
+  scale_fill_brewer(palette = "Spectral")+
+  theme(panel.background =element_rect(fill="aliceblue"))
+  
+  
+```
+
+  > <font color=#4682B4  size=4 >-->Parmi tous les "Red Blend"  dont le prix est inférieur à 33,5, la quantité moyenne des vins de Loire Valley est supérieur à celui des autres régions. </font>
+  
+```{r,echo=TRUE}
+
 wine_use1%>%
   group_by(province)%>%
   summarise(mean_points_province=mean(points))%>%
-  arrange(-mean_points_province)
-
-
-
-  
-  
-```
-
-
-```{r}
-wine_use1%>%
-  group_by(province)%>%
-  ggplot(aes(x=province,y=points,fill=province))+
-  geom_boxplot()
-```
-
-
-
-
-
-### 2.4 Relation entre la notation et le prix
-  > <font color=#4682B4  size=4 >   </font>
-
-```{r}
-wine_use%>%
-  ggplot(aes(x=points,y=price))+
-  geom_point()+
-  geom_smooth()
-```
-
-```{r}
-#nul
-wine_use%>%
-  ggplot(aes(x=points,y=price))+
-  geom_jitter()
-```
-
-```{r}
-#nul
-wine_use%>%
-  filter(points>=88.3)%>%
-  ggplot(aes(country,points))+
-  geom_boxplot()
-```
-
-
-
-### Densité des notes de vin
-
-```{r}
-wine_use%>%
-  ggplot(aes(x=points))+
-  geom_density()
-```
-
-```{r}
-#nul
-wine_use%>%
-  ggplot(aes(x=points))+
-  geom_histogram(aes(fill=country))
-```
-
-
-###
-```{r}
-#nul
-wine_use%>%
- 
-  ggplot(aes(x=variety))+
-  geom_bar()
-```
-
-###
-```{r}
-#nul
-wine_use%>%
-  group_by(variety)%>%
-  summarise(n=n())%>%
-  filter(n>=5000)%>%
-  ggplot(aes(x=reorder(variety,n),y=n))+
-  geom_col()
+  arrange(-mean_points_province) 
 ```
 
 ***
-```{r}
-#deux variable discrte
+
+### 2.4 En France,la relation entre la quatité et le prix
+ 
+```{r,message=FALSE, warning=FALSE, echo=TRUE}
 wine_use%>%
-  ggplot(aes(x=country,y=variety))+
-  geom_count()
-```
-
-```{r}
-wine_use%>%
-  group_by(country,variety)%>%
-  summarise(n=n())%>%
-  filter(n>=1000)%>%
-  ggplot(aes(x=country,y=variety))+
-  geom_tile()
-```
-
-
-
-### 2.5 Quels pays ont le vin exceptionnel? (99≥x≥90)
-
-```{r}
-wine_use%>%
-  select(country,points)%>%
-  group_by(country)%>%
-  summarise(mean_points=mean(points))->mean_points_country
-
-mean_points_country%>%
-  ggplot(aes(x=country,y=mean_points,col=country))+
+  filter(country=="France")%>%
+  ggplot(aes(x=points,y=price))+
   geom_point()+
-  geom_text(aes(x=country,y=mean_points+0.3,label=paste(country)))+
-  theme(legend.position = "none")+
-  labs(
-    title ="La notation moyenne de vin dans chaque pays" 
-  )+
-  geom_hline(yintercept = 90,col="red")
+  geom_smooth()+
+  theme(panel.background =element_rect(fill="aliceblue"))
+```
+
+ > <font color=#4682B4  size=4 >--> En général, Le prix du vin augmente à mesure que la quantité augmente. </font>
+
+### 2.4.1 Analyser la relation entre la quantité et le prix dans les différentes provinces ?
+
+ > <font color=#4682B4  size=4 >-->Selon le graphique ci-dessus, La plupart des points distribuent entre 0 et 1000. Par conséquent, on doit modifier la limite d'affichage de l'axe y entre 0 et 1000.   </font>
+
+```{r,message=FALSE, warning=FALSE, echo=TRUE}
+wine_use%>%
+  filter(country=="France")%>%
+  ggplot(aes(x=points,y=price,col=province))+
+  geom_point(size=1,alpha = 0.5)+
+  geom_smooth(col="black")+
+  facet_wrap(~ province)+
+  coord_cartesian(ylim = c(0,1000))+
+  theme(legend.position = "none" ,
+        panel.background =element_rect(fill="aliceblue"),
+        strip.background = element_rect(fill="#4682B4"),
+        )
   
-
-
+  
 ```
 
-  > <font color=#4682B4  size=4 > En moyenne, l'Angleterre , l'Australie et l'Inde ont la notation moyenne supérieur à 90, donc ces pays ont le vin exceptionnel .</font>
+ > <font color=#4682B4  size=4 >-->Donc on peux estimer que le prix des vins qui viennent des provinces Bordeaux, Burgundy et Champagne , est plus affecté par la quantité des vins  . </font>
+ 
+### 2.4.2 Quels vins sont principalement produits dans ces trois provinces viticoles?
 
-### 2.2 
-
-```{r}
-
+```{r echo=TRUE, message=FALSE, warning=FALSE}
 wine_use%>%
-  filter(country=="England")%>%
-  group_by(variety)%>%
-  n=count(points)%>%
-  ggplot(aes(x=variety,y=points,col=n))+
-  geom_point()
+  filter(country=="France",province==c("Bordeaux","Burgundy","Champagne"))-> wine_use2
+
+wine_use2%>%
+  group_by(province,variety)%>%
+  ggplot(aes(x=points,fill=variety))+
+  geom_histogram()+
+  scale_fill_manual(values=c("steelblue4","steelblue3","sienna2","blue","papayawhip","paleturquoise4","orchid","plum3","thistle3","lightpink3","royalblue","salmon2","hotpink2","dodgerblue3","darkslategray4","pink4","darkred","chocolate3","burlywood3","darkolivegreen2","darkseagreen2","firebrick","darkcyan"))+
+  facet_wrap(~ province)+
+  theme(legend.position="bottom",
+        panel.background =element_rect(fill="aliceblue"),
+        strip.background = element_rect(fill="#4682B4"),
+        legend.background = element_rect(fill="aliceblue"))
+        
+  
 ```
 
-```{r}
-wine_use%>%
-  ggplot(aes(x=variety,y=points,col=country))+
-  geom_line()+
-  facet_wrap(~ country ,ncol=4)
+> <font color=#4682B4  size=4 >--> Bordeaux produit principalement le vin de "Bordeaux-style Red Blend" , le vin "Bordeaux-style White Blend" et le vin rosé. </font>
+> <font color=#4682B4  size=4 >--> Burgundy produit principalement le vin de "Chardonnay" et le vin "Pinot Noir". </font>
+> <font color=#4682B4  size=4>--> Champagne produit principalement le vin de "Champagne Blend" et le vin "	Chardonnay". </font>
+
+### 2.4.3 Pour les vins produits à Bordeaux, le prix de quelles variété est-il affecté par la qualité du vin?
+
+```{r ,message=FALSE, warning=FALSE,echo=TRUE}
+
+wine_use2%>%
+  filter(province=="Bordeaux")%>%
+  ggplot(aes(x=points,y=price,col=variety))+
+  geom_point(size=0.5)+
+  facet_wrap(~ variety)+
+  geom_smooth(col="black",size=0.5)+
+    theme(legend.position = "none" ,
+        panel.background =element_rect(fill="aliceblue"),
+        strip.background = element_rect(fill="#4682B4"),
+        )
+  
 ```
+
+ > <font color=#4682B4  size=4 >-->Selons ces graphiques , On peut penser que seul le prix de ces deux vins dont le vin de "Bordeaux-style Red Blend" et le vin "Bordeaux-style White Blend" est affecté par la qualité du vin , et plus le score est élevé, plus le prix est cher </font>
+
+### 2.4.4 Pour les vins produits à Burgundy, le prix de quelles variété est-il affecté par la qualité du vin?
+
+```{r ,message=FALSE, warning=FALSE,echo=TRUE}
+
+wine_use2%>%
+  filter(province=="Burgundy")%>%
+  ggplot(aes(x=points,y=price,col=variety))+
+  geom_point(size=0.5)+
+  facet_wrap(~ variety)+
+  geom_smooth(col="black",size=0.6)+
+   theme(legend.position = "none" ,
+        panel.background =element_rect(fill="aliceblue"),
+        strip.background = element_rect(fill="#4682B4"),
+        )+
+  scale_y_continuous(limits = c(0,1200))
+  
+```
+
+ > <font color=#4682B4  size=4>-->Selons ces graphiques , On peut penser que seul le prix de ces deux vins dont le vin de "Chardonnay" et le vin "Pinot Noir" est affecté par la qualité du vin , et plus le score est élevé, plus le prix est cher </font>
+ 
+### 2.4.5 Pour les vins produits à Champagne, le prix de quelles variété est-il affecté par la qualité du vin?
+
+```{r, message=FALSE, warning=FALSE,echo=TRUE}
+
+wine_use2%>%
+  filter(province=="Champagne")%>%
+  ggplot(aes(x=points,y=price,col=variety))+
+  geom_point(size=0.5)+
+  facet_wrap(~ variety)+
+  geom_smooth(col="black",size=0.5)+
+  theme(legend.position = "none" ,
+        panel.background =element_rect(fill="aliceblue"),
+        strip.background = element_rect(fill="#4682B4"),
+        )+
+  scale_y_continuous(limits = c(0,1200))
+  
+```
+
+ > <font color=#4682B4  size=4 >-->Selons ces graphiques , On peut penser que seul le prix de ces trois vins dont le vin "Champagne Blend" , le vin "	Chardonnay" et le vin "Pinot Noir" est affecté par la qualité du vin , et plus le score est élevé, plus le prix est cher </font>
+
+ > <font color=#4682B4  size=4 >-->En conclusion, La qualité des principaux types de vins produits dans ces trois provinces viticoles de France a une grande influence sur le prix. </font>
+ 
+***
+***
+
+
+
+
 
