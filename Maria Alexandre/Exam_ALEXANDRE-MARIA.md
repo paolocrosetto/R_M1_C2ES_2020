@@ -40,8 +40,7 @@ demander :
 
   - Si cette tendance de réduction des inégalités salariales, pour tout
     âge confondu, se maintient pour chaque classes d’âge.
-  - Si la variable classe d’âge influe sur les inégalités
-salariales.
+  - Si la variable classe d’âge influe sur les inégalités salariales.
 
 ###### *LA TENDANCE DE REDUCTION DES INEGALITES SALARIALES SE MAINTIENT-ELLE POUR CHAQUE CLASSES D’ÂGE ?*
 
@@ -51,8 +50,7 @@ chaque classes d’âge, à court terme, peut connaître d’importantes
 variations, fluctuations. En effet, prenons l’exemple de la classe d’âge
 25-34 ans, en 1979 le salaire des Femmes correspondait à 68 % du salaire
 des Hommes alors qu’en 2011 le salaire des Femmes correspondait à 92.5 %
-du salaire des Hommes; Soit une augmentation de 24.5
-points.
+du salaire des Hommes; Soit une augmentation de 24.5 points.
 
 ###### *LA VARIABLE CLASSE D’ÂGE INFLUE T-ELLE SUR LES INEGALITES SALARIALES ?*
 
@@ -97,8 +95,7 @@ popultation feminine, représentée en rouge. Nous pouvons remarquer que
 le pourcentage de la population d’Hommes ayant un emploi à temps plein
 est supérieure au pourcentage de la population de Femmes ayant un emploi
 à temps plein. En effet environ 90% des Hommes ont un emploi à temps
-plein contre 75% pour les
-Femmes.
+plein contre 75% pour les Femmes.
 
 ![](Exam_ALEXANDRE-MARIA_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
@@ -122,8 +119,7 @@ plein contre 25% pour les Femmes.
 On s’intéresse maintenant à la représentation des Femmes dans chaque
 postes balayant un bon nombre de domaines professionnnels. Le but étant
 de déterminer pour quels postes ou domaines professionnels il existe un
-détérminisme professionnels selon le
-sexe.
+détérminisme professionnels selon le sexe.
 
 ###### *QUELS SONT LES POSTES OU DOMAINES PROFESSIONELS POUR LESQUELS LES FEMMES SONT SUR-REPRESENTEES ?*
 
@@ -152,8 +148,7 @@ déterminisme positif sont les suivants :
   - Le service
   - Professionnels de la santé/technicien
   - Éducation, droit, service communautaire, arts et médias
-  - Secrétariat et
-Ventes
+  - Secrétariat et Ventes
 
 ![](Exam_ALEXANDRE-MARIA_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 

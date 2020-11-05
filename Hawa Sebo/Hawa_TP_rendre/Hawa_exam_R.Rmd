@@ -12,23 +12,27 @@ editor_options:
   chunk_output_type: console
 ---
 
-# Introductio,  
+# Introduction  
 
    La base de données sur laquelle porte l'étude regroupe l'ensemble des
-décès dus au paludisme par tranche d'âge dans le monde au fil des années.
-L'objectif est de faire une description de la base de données en la 
-soumettant à des questions. Une visualisation des données sera faite selon
-le résultat attendu.
+décès dus au paludisme, entre 1990 et 2016, par tranche d'âge dans le
+monde au fil des années. L'objectif est de faire une description de la 
+base de données en la soumettant à des questions. Une visualisation des 
+données sera faite selon le résultat attendu. Il faudra prendre en compte
+la présence de l'indice de développement social(faible, moyen, élevé).
+
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-# Chargement librairies
+# Chargement librairie
 
 ```{r}
 library(tidyverse)
+library(dplyr)
 ```
 
 # Importation des données
@@ -38,7 +42,7 @@ library(tidyverse)
 malaria_deaths_age <-read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2018/2018-11-13/malaria_deaths_age.csv")
 
 ```
-## Vérification importation et structure des données
+# Vérification importation et structure des données
 
 ```{r}
 #------importation
@@ -46,6 +50,7 @@ malaria_deaths_age <-read_csv("https://raw.githubusercontent.com/rfordatascience
 malaria_deaths_age
 
 ```
+
 
 ```{r}
 #------Controle de la structure
@@ -64,34 +69,202 @@ malaria_deaths_age %>%
   select( -X1, -code)-> data
 data
 ```
-** Nombre de deces du paludisme en 1990 en Afghanistan par tranche d'age**
+*1.Nombre de deces du paludisme en 1990 en Afghanistan par tranche d'age?*
 
 ```{r}
 data %>% 
   filter(annee == 1990 & pays == "Afghanistan") %>% 
   ggplot(aes(x=tranche_age, y = nbr.deces), fill)+
+  geom_col()
+
+
+```
+
+*2.Quelle est l'evolution du nombre de décès dus au paludisme*
+*au Sénégal de 1990 à 2016?*
+
+> Etapes
+
+- Trier le jeu de données: décès dus au paludisme au Sénégal(filter)
+- Faire un group_by année
+- Faire un sumarise pour le nombre de décès par an
+- Faire une représentation graphique
+
+```{r}
+
+data %>% 
+  filter(pays == "Senegal") %>% 
+  group_by(annee) %>% 
+  summarise(nbr_deces_par_an = sum(nbr.deces)) %>% 
+  ggplot(aes(x = annee, y = nbr_deces_par_an))+
+  geom_point()+
+  geom_smooth()+
+  theme_minimal()
+  
+
+```
+
+*3.Quelle est l'evolution du nombre de décès dus au paludisme*
+*en Argentine de 1990 à 2016?*
+
+```{r}
+data %>% 
+  filter(pays == "Argentina") %>% 
+  group_by(annee) %>% 
+  summarise(nbr_deces_par_an = sum(nbr.deces)) %>% 
+  ggplot(aes(x = annee, y = nbr_deces_par_an))+
+  geom_point()+
+  geom_smooth()+
+  theme_minimal()
+```
+
+*4.Quelle est l'evolution du nombre de décès dus au paludisme*
+*en France de 1990 à 2016?*
+
+```{r}
+data %>% 
+  filter(pays == "France") %>% 
+  group_by(annee) %>% 
+  summarise(nbr_deces_par_an = sum(nbr.deces)) %>% 
+  ggplot(aes(x = annee, y = nbr_deces_par_an))+
+  geom_point()+
+  geom_smooth()+
+  theme_minimal()
+```
+
+
+La question 4 montre qu'il y'a des pays dont le nombre de décès dus au Paludisme
+au fil des années est égal à 0. 
+
+*5.Quels sont les pays dont la somme des nombres de décès dans le temps*
+*est egale à zero?*
+
+```{r}
+data %>% 
+   group_by(pays,annee) %>% 
+  summarise(nbr_deces_par_an = sum(nbr.deces)) %>% 
+   count(nbr_deces_par_an)%>%
+  filter(nbr_deces_par_an == 0 & n==27) %>% 
+  select(pays)
+  
+  
+
+```
+
+
+*6. Quels sont les 10 pays qui enregistrent plus de décés d'enfants de moins de 5 ans*
+*en 2016?*
+
+
+```{r}
+
+data %>% 
+  filter(annee == 2016 & 
+           tranche_age == "Under 5" &
+           nbr.deces != 0) %>% 
+  arrange(desc(nbr.deces))-> deces_moins_5_2016
+  
+deces_moins_5_2016 [1:13,]%>% 
+  filter(pays!= "Low SDI") %>% 
+  filter(pays!= "Low-middle SDI") %>% 
+  filter(pays != "World") %>% 
+  ggplot(aes(x= reorder(pays, nbr.deces), y = nbr.deces, color =pays, fill = pays))+
   geom_col()+
-  scale_fill_brewer()
-
+  theme_minimal()
+ 
+  
 
 ```
 
-## R Markdown
+*7. Quels sont les 10 pays qui enregistrent moins de décés d'enfants de moins de 5 ans*
+*en 2016?*
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+```{r}
+data %>% 
+  filter(annee == 2016 & 
+           tranche_age == "Under 5" &
+           nbr.deces != 0) %>% 
+  arrange(nbr.deces)-> deces_moins
+  
+deces_moins [1:11,]%>% 
+  filter(pays!= "High SDI") %>% 
+  ggplot(aes(x= reorder(pays, nbr.deces), y = nbr.deces, color =pays, fill = pays))+
+  geom_col()+
+  theme_minimal()
+```
+*8.Sur combien de pays porte notre étude?*
 
-```{r cars}
-summary(cars)
+```{r}
+data %>% 
+  distinct(pays) %>% 
+  filter(pays !="Low SDI") %>% 
+  filter(pays !="Low-middle SDI") %>% 
+  filter(pays !="World") %>% 
+  filter(pays !="High SDI") %>% 
+  filter(pays !="High-middle SDI" ) %>% 
+  count() %>% 
+  rename("nombre de pays dans la base de données" = n)
+
 ```
 
-## Including Plots
+*9.Nombre de décès par pays dus au paludisme?*
 
-You can also embed plots, for example:
+```{r}
+data %>% 
+  filter(pays !="Low SDI") %>% 
+  filter(pays !="Low-middle SDI") %>% 
+  filter(pays !="World") %>% 
+  filter(pays !="High SDI") %>% 
+  filter(pays !="High-middle SDI" ) -> country
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+
+country %>% 
+  filter(annee == 2008) %>% 
+  group_by(pays,annee) %>% 
+  summarise(nbr_deces_par_an = sum(nbr.deces)) ->country_1 
+
+country_1 [1:25,] %>% 
+  ggplot(aes(x = pays, y = nbr_deces_par_an))+
+  geom_col(aes(fill = pays))+
+  theme_minimal()
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+*10.50 pays qui ont le plus grand pourcentage de décés?*
+
+
+```{r}
+
+#---nombre de décés par an et par pays
+country %>% 
+  group_by(pays,annee) %>% 
+  summarise(nbr_deces_an = sum(nbr.deces)) ->country_2
+
+#---nombre de décés par an dans le monde
+data %>% 
+  filter(pays == "World") %>% 
+  group_by(pays,annee) %>% 
+  summarise(nbr_deces_World = sum(nbr.deces)) -> deces_world
+
+#--- fusion des des tableau par pays
+merge(country_2, deces_world, by ="annee")-> deces_per_pays_monde
+
+#------pourcentage de décés par pays 
+#------ représentation 50 pays avec la plus grande proportion
+deces_per_pays_monde %>% 
+  select(-pays.y) %>% 
+  mutate(proportion = (nbr_deces_an/nbr_deces_World)*100) %>% 
+  filter(annee == 1998 & proportion != 0.0) %>% 
+  arrange(desc(proportion))-> proportion_50
+
+proportion_50[1:50,] %>% 
+  ggplot(aes(x = reorder(pays.x,proportion), y = proportion)) +
+  geom_col(fill = "chartreuse")+
+  coord_flip()+
+  theme_minimal()+
+  labs(title= "50 pays qui ont le plus grand pourcentage de décés")
+  
+  
+
+```
+

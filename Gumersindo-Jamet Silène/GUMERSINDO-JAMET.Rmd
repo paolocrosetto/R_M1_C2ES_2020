@@ -1,42 +1,47 @@
 ---
-title: "Projet R"
+title: "Rapport statistique sous RStudio"
 author: "Silène Gumersindo-Jamet"
 date: "11/3/2020"
 output: html_document
 ---
 
-```{r}
+
+```{r include=FALSE}
 #install.packages("tidytuesdayR")
 library(tidytuesdayR)
 library(tidyverse)
 ```
 
-## Introduction
+### Introduction
 ```{r}
 us_births <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2018/2018-10-02/us_births_2000-2014.csv')
 
 View(us_births)
 
 ```
+       
+La base de donnée *us_births_2000-2014.csv* contient des données sur les naissances aux États-Unis pour les années 2000 à 2014, fournies par la **Social Security Administration**. La base de donnée contient $5479$ données et est composée de $5$ variables:      
+  - **year** qui correspond à l'année de naissance *(2000,2001...)  *   
+  - **month** qui correspond au mois de naissance *(1= Janvier, 2= Février...)   *    
+  - **date_of_month** qui correspond au jour du mois de naissance *(1,2...) *      
+  - **date_of_week** qui correspond au jour de la semaine *(1= Lundi, 2= Mardi...)*         
+  - **births** qui correspond au nombre de naissance       
 
-La base de donnée *us_births_2000-2014.csv* contient des données sur les naissances aux États-Unis pour les années 2000 à 2014, fournies par la **Social Security Administration**. La base de donnée contient $5479$ données et est composée de 5 variables:      
-  - *year* qui correspond à l'année de naissance     
-  - *month* qui correspond au mois de naissance     
-  - *date_of_month* qui correspond au jour du mois de naissance     
-  - *date_of_week* qui correspond au jour de la semaine (1= lundi, 2=mardi...)     
-  - *births* qui correspond au nombre de naissance     
+```{r}
+summary(us_births)
+```
 
 
+### Analyse de la base de donnée   
 
-## Analyse de la base de donnée   
-
-### Quel est le minimum/maximum de naissance qu'il y a eu en un jour parmis ces 14 années? 
+#### Quel est le minimum/maximum de naissance qu'il y a eu en un jour parmis ces 14 années? 
 ```{r}
 summary(us_births$births)
 ```
 
 
-Observons cette variable graphiquement.
+#### Comment le nombre de naissances a évolué de 2000 à 2014 aux États-Unis?
+
 ```{r}
 us_births %>% 
   group_by(year) %>% 
@@ -44,28 +49,38 @@ us_births %>%
   geom_boxplot() +
   scale_fill_gradientn(colours = RColorBrewer::brewer.pal(12, "Set2"))+
   geom_hline(yintercept=mean(us_births$births), linetype="solid",color="lightsalmon4", size=0.5)+
-  labs(x = "Années", y="Naissances",title = "Évolution des naissances aux États-Unis de 2000 à 2014")+
-  theme(legend.position = "none")
+  theme(axis.text.x = element_blank())+
+  labs(x = "Années", y="Nombre de naissances",title = "Évolution des naissances aux États-Unis de 2000 à 2014")
+
 ```
+          
+          
+On constate que le maximum de naissance a eu lieu en 2009 et le minimum en 2011.
 
+          
+            
+#### Quelle est la date exacte du jour où il y a eu le plus de naissance?   
 
-### Quel est la date exacte du jour où il y a eu le plus de naissance ?   
-
-Grâce au graphique précédent on sait que ce jour a eu lieu en 2009. Nous allons maintenant regarder durant quel mois de l'année cela s'est produit.
+Grâce au graphique précédent on sait déjà que ce jour a eu lieu en 2009. Nous allons maintenant regarder durant quel mois de l'année cela s'est produit.
 
 ```{r}
 us_births %>% 
   filter(year == 2009) %>% 
   ggplot(aes(x=month,y=births,color=month))+
-  geom_point(shape=17)+
+  geom_point(shape=17,size=3)+
   scale_color_gradientn(colours = RColorBrewer::brewer.pal(12, "Set2"))+
-  geom_hline(yintercept=16081, linetype="dotted",color="grey23", size=0.4)+
-  labs(x = "Mois",y= "Nombre de naissance", title = "Nombre de naissances aux États-Unis par mois en 2007")+
+  geom_hline(yintercept=16081, linetype="dotted",color="red", size=0.6)+
+  scale_x_discrete(limit = c("1","2","3","4","5","6","7","8","9","10","11","12"),
+                    labels = c("Janv","Févr","Mars","Avr","Mai","Juin",
+                               "Juil","Août","Sep","Oct","Nov","Déc"))+
+  labs(x = "Mois",y= "Nombre de naissances", title = "Nombre de naissances aux États-Unis par mois en 2009")+
   theme(legend.position = "none")
 
 ```
 
-Observons maintenant plus en détail les données de naissance du mois d'août de 2007.  
+       
+Observons maintenant plus en détail les données de naissance du mois d'août de 2009.  
+
 
 ```{r}
 us_births %>% 
@@ -76,31 +91,23 @@ us_births %>%
   coord_flip() +
   geom_text(aes(label=births),hjust=1,size=2.5)+
   labs(y = "Nombre de naissance",x= "Date du jour", title = "Nombre de naissances par jour du mois d'août de 2007")
-```
-Le jour où il y a eu le plus de naissance entre 2000 et 2014 aux États-Unis est le 9 août 2009.
 
-
-
-????????????????????????????????????????????????????????????????????????????????
-????????????????????????????????????????????????????????????????????????????????
-
-### Quel est la date exacte du jour où il y a eu le moins de naissance ?
-```{r}
 
 ```
 
-????????????????????????????????????????????????????????????????????????????????
-????????????????????????????????????????????????????????????????????????????????
 
+                     
+Le jour où il y a eu le plus de naissance entre 2000 et 2014 aux États-Unis est donc le **9 août 2009**.
 
-
-### Quelle est l'évolution moyenne du nombre de naissance par an du mois de Décembre?
+                
+              
+#### Quelle est l'évolution du nombre de naissance pendant le mois de Décembre de 2000 à 2014?
 ```{r}
 
 us_births %>% 
   filter(month == 12) %>%
   ggplot(aes(x=date_of_month,y=births, color=year))+
-  geom_line() +
+  geom_point() +
   scale_color_gradientn(colours = RColorBrewer::brewer.pal(12, "Set2")) ->d
 
 d +
@@ -109,74 +116,88 @@ d +
   labs(y = "Nombre de naissance",x= "Date du jour", title = "Évolution du nombre de naissance durant le mois de décembre aux États-Unis des années 2000 à 2014")
 
 ```
-De manière général on constate que le mois de décembre a moins de naissance que les autres. En effet une grande partie des données se situent en dessous de la moyenne. Si on compare les années entre elles, le mois de décembre de l'année 2011 et 2014 ont eu moins de nouveaux nés que les mois de décembre des autres années.
-
-
-### Quel est le jour de la semaine où il y a eu le plus de naissance sur ces 14 années ?
+          
+On constate que les naissances du mois de décembre sont plutôt similaires au fil des années et que de manière général la plupart des données se situent au dessus de la moyenne de naissance par jour. Néanmoins on remarque qu'à partir de 2011 les données sont moins élevés qu'au début des années 2000.
+             
+                
+#### Quel est le jour de la semaine où il y a le plus de naissance?
 ```{r}
+
 us_births %>% 
   group_by(day_of_week) %>% 
   ggplot(aes(y= births , x= day_of_week, fill= day_of_week))+
   geom_col()+
   scale_fill_gradientn(colours = RColorBrewer::brewer.pal(12, "Set2"))+
+  scale_x_discrete(limit = c("1","2","3","4","5","6","7"),
+                    labels = c("Lun","Mar","Mer","Jeu","Ven","Sam","Dim"))+
   labs(title="Répartition des naissances en fonction des jours de la semaine",
-       x="Jour de la semaine",
-       y="Nombre de naissance") 
-
+       x="Jours de la semaine",
+       y="Nombre de naissances") 
 
 ```
-On constate que en moyenne le jour de la semaine où il y a le plus de naissance c'est le mardi. À l'inverse, le jour où il y a le moins de naissance c'est le dimanche.    
+           
+On observe qu'en moyenne le jour de la semaine où il y a le plus de naissance c'est le **mardi**. À l'inverse, le jour où il y a le moins de naissance c'est le **dimanche**.    
 De manière plus général, on constate qu'il y a plus de naissance en semaine qu'en week-end.
-
-
-### Quel est le mois où il y a eu le plus de naissance sur ces 14 années ?
+              
+             
+#### Quel est le mois où il y a eu le plus de naissance en 2010?
 ```{r}
 us_births %>% 
+  filter(year==2010) %>% 
   group_by(month) %>% 
-  ggplot(aes(y= births , x= month, fill= month))+
-  geom_col()+
-  scale_fill_gradientn(colours = RColorBrewer::brewer.pal(12, "Set2"))+
-  coord_flip() +
- # geom_vline(xintercept=11350, linetype="solid",color="lightsalmon4", size=0.5)+
-  labs(title="Répartition des naissances en fonction des mois toutes années confondues",
+  ggplot(aes(y= births , x= month, size=births,color= month))+
+  geom_point(alpha=0.7,pch=18)+
+  scale_color_gradientn(colours = RColorBrewer::brewer.pal(12, "Set2"))+
+  scale_x_discrete(limit = c("1","2","3","4","5","6","7","8","9","10","11","12"),
+                    labels = c("Janv","Févr","Mars","Avr","Mai","Juin",
+                               "Juil","Août","Sep","Oct","Nov","Déc"))+
+  geom_hline(yintercept=11350, linetype="solid",color="lightsalmon4", size=0.5)+
+  labs(title="Répartition des naissances par mois en 2010",
        x="Mois",
-       y="Nombre de naissance")
-
-<<<<<<< HEAD
-=======
-### Quelle est l'année où il y a eu le plus de naissance sur ces 14 années ?
+       y="Nombre de naissances") 
+  
+```
+          
+Observons plus en détail le mois de septembre et de décembre de l'année 2010.
+       
 ```{r}
 us_births %>% 
-  group_by(year) %>% 
-  ggplot(aes(x= year,y=births, fill= year))+
-  scale_color_viridis_d() +
-  geom_col()+
-  #geom_text(aes(label = births), size = 2)+
-  labs(title="Répartition des naissances par rapport aux années",
+  filter(year==2010,month ==c(9,12)) %>% 
+  group_by(month) %>% 
+  ggplot(aes(y= births , group= month, fill= month))+
+  geom_boxplot()+
+  scale_fill_gradientn(colours = RColorBrewer::brewer.pal(12, "Set2"))+
+  geom_hline(yintercept=14000, linetype="solid",color="red", size=0.5)+
+  labs(title="Répartition des naissances en août et en décembre en 2010",
        x="Mois",
-       y="Nombre de naissance")
->>>>>>> 4d48028755c47edeb1080379d6a56dfb68d32e99
+       y="Nombre de naissances") ->w
+
+w+
+facet_wrap(~month)+
+  theme(legend.position = "none")+
+  theme(axis.text.x = element_blank())
+
 ```
-En moyenne le mois d'août est le mois où il y a eu le plus de naissance.
+                     
+Le mois où il y a eu le plus de naissance en 2010 est donc le mois de **décembre**.
 
+             
+              
 
-### Est-que les americains sont superstitieux à l'idée d'avoir un enfant un vendredi 13 ?
+#### Est-que les americains sont superstitieux à l'idée d'avoir un enfant un vendredi 13?
 ```{r}
 us_births %>% 
   filter(day_of_week == 5, date_of_month == 13) %>% 
-<<<<<<< HEAD
   ggplot(aes(x=year, y=births, fill=births))+
   geom_point(shape=8,size=2.5,color="mediumpurple3")+
   geom_text(aes(label=births),hjust=1.2,size=3)+
   geom_hline(yintercept=mean(us_births$births), color="red") +
   labs(x = "Années", y="Naissances",title = "Évolution des naissances les vendredis 13 aux États-Unis de 2000 à 2014")+
   theme(legend.position = "none")
-=======
-  
-  
->>>>>>> 4d48028755c47edeb1080379d6a56dfb68d32e99
+
 ```
-On constate qu'une grande partie des données se situent au dessus de la moyenne donc on peut en conclure que non les americains sont superstitieux à l'idée d'avoir un enfant un vendredi 13.
+                           
+On constate qu'une grande partie des données se situent au dessus de la moyenne donc on peut en conclure que non les americains ne sont pas superstitieux à l'idée d'avoir un enfant un vendredi 13.
 
 
 
