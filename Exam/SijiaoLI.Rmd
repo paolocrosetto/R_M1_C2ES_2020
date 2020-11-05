@@ -46,7 +46,7 @@ Ils contiennent 1339 observations en colonnes et 43 variables en lignes. Dans mo
 ```{r}
 coffee_ratings <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-07-07/coffee_ratings.csv')
 coffee_ratings
-View(coffee_ratings)
+#View(coffee_ratings)
 ```
 
 ### 	Reconstruction des données-Sélecter les 8 variable
