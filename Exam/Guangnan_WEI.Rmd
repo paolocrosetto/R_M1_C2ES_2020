@@ -82,7 +82,7 @@ skim(wine_use)
   > <font color=#4682B4  size=4 >-->Dans ce base de données, il contient 43 pays , 425  provinces et 707 variétés de vin ect. ;<br>
   -->Pour la note de vin, la moyenne  est 88.4 et 75% dépasse à 91 ;<br>
   -->Pour le prix , la moyenne  est 33.5 et  75% est supérieur à 42 ;<br>
-  -->L'écart-type du prix égale à 41 , donc la dispersion du prix est grande ;</font>
+  -->L'écart-type du prix égale à 41 , donc la dispersion du prix est forte ;</font>
 
 ***
 ### 2.2.1 Analyse du nombre d'échantillons avec la note supérieur à 88.4 dans les échantillons de vin de chaque pays
@@ -105,7 +105,7 @@ wine_use%>%
  > <font color=#4682B4  size=4 >-->Pour les échatillons qui ont le note supérieur à 88.4,les États-Unis ont le plus grand nombre d'échantillons, suivis de la France et de l'Italie .On peut penser que la qualité moyenne des vins de ces trois pays est très élevée. Ensuite, on analyse la proportion de vins de meilleure qualité dans tous les vins de ces pays qui ont le nombre d'échantillons avec la note supérieur à 88,4 dépasse 1000).  </font>
 
 
-```{r}
+```{r echo=TRUE, warning=FALSE}
 wine_use%>%
   group_by(country)%>%
   summarise(n=n())->w1
@@ -144,7 +144,7 @@ wine_use%>%
 
 ```
 
-  > <font color=#4682B4  size=4 >-->Grâce à la boîte à moustaches, on ne peut pas observer plus intuitivement, parce que la qualité de la Loire Valley et la qualité de la Provence sont très proche  </font>
+  > <font color=#4682B4  size=4 >-->Grâce à la boîte à moustaches, on  peut observer plus intuitivement, la qualité de la Loire Valley et la Provence supérieur à celui des autres régions </font>
 
 ```{r echo=TRUE , message=FALSE, warning=FALSE}
 wine_use1%>%
@@ -158,16 +158,6 @@ wine_use1%>%
   theme(panel.background =element_rect(fill="aliceblue"))
   
   
-```
-
-  > <font color=#4682B4  size=4 >-->Parmi tous les "Red Blend"  dont le prix est inférieur à 33,5, la qualité moyenne des vins de Loire Valley est supérieur à celui des autres régions. </font>
-  
-```{r,echo=TRUE}
-
-wine_use1%>%
-  group_by(province)%>%
-  summarise(mean_points_province=mean(points))%>%
-  arrange(-mean_points_province) 
 ```
 
 ***
