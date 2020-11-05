@@ -175,11 +175,11 @@ wine_use%>%
 
 ```
 
- > <font color=#4682B4  size=4 >--> En général, Le prix du vin augmente à mesure que la quantité augmente. </font>
+ > <font color=#4682B4  size=4 >--> En général, Le prix du vin augmente à mesure que la qualité augmente. </font>
 
 ### 2.4.1 Analyser la relation entre la qualité et le prix dans les différentes provinces ?
 
- > <font color=#4682B4  size=4 >-->Selon le graphique ci-dessus, La plupart des points distribuent entre 0 et 1000. Par conséquent, on doit modifier la limite d'affichage de l'axe y entre 0 et 1000.   </font>
+ > <font color=#4682B4  size=4 >-->Selon le graphique ci-dessus, La plupart des points distribuent entre 0 et 1000. Par conséquent, on peut modifier la limite d'affichage de l'axe y entre 0 et 1000.   </font>
 
 ```{r,message=FALSE, warning=FALSE, echo=TRUE}
 wine_use%>%
@@ -221,9 +221,9 @@ wine_use2%>%
   
 ```
 
-> <font color=#4682B4  size=4 >--> Bordeaux produit principalement le vin vient de raisin "Bordeaux-style Red Blend" ,  "Bordeaux-style White Blend" et rosé. </font>
-> <font color=#4682B4  size=4 >--> Burgundy produit principalement le vin vient de "Chardonnay" et "Pinot Noir". </font>
-> <font color=#4682B4  size=4>--> Champagne produit principalement le vin vient de "Champagne Blend" et "Chardonnay". </font>
+> <font color=#4682B4  size=4 >--> Bordeaux produit principalement le vin vient de raisin "Bordeaux-style Red Blend" ,  "Bordeaux-style White Blend" et rosé. <br/>
+ --> Burgundy produit principalement le vin vient de "Chardonnay" et "Pinot Noir". <br/>
+ -->Champagne produit principalement le vin vient de "Champagne Blend" et "Chardonnay". </font>
 
 ### 2.4.3 Pour quelles variété de raisin , le prix de vin vient de celle est-il affecté par la qualité du vin  à Bordeaux?
 
@@ -264,7 +264,7 @@ wine_use2%>%
   
 ```
 
- > <font color=#4682B4  size=4>-->Selons ces graphiques , On peut penser que seul le prix de ces deux vins dont le vin vient de raisin "Chardonnay" et "Pinot Noir" est affecté par la qualité du vin , et plus le score est élevé, plus le prix est cher .Pour les autres types,  , ils ne sont pas estimés, car il y a moins de observations .</font>
+ > <font color=#4682B4  size=4>-->Selons ces graphiques , On peut penser que seul le prix de ces deux vins dont le vin vient de raisin "Chardonnay" et "Pinot Noir" est affecté par la qualité du vin , et plus la note est élevé, plus le prix est cher .Pour les autres types,  , ils ne sont pas estimés, car il y a moins de observations .</font>
  
 ### 2.4.5 Pour quelles variété de raisin , le prix de vin vient de celle est-il affecté par la qualité du vin  à Champagne?
 
@@ -285,14 +285,14 @@ wine_use2%>%
   
 ```
 
- > <font color=#4682B4  size=4 >-->Selons ces graphiques , On peut penser que seul le prix de ces trois vins dont le vin vient de raisin "Champagne Blend" , "	Chardonnay" et "Pinot Noir" est affecté par la qualité du vin , et plus le score est élevé, plus le prix est cher .Pour les autres types,  ils ne sont pas estimés, car il y a moins de observations . </font>
+ > <font color=#4682B4  size=4 >-->Selons ces graphiques , On peut penser que seul le prix de ces trois vins dont le vin vient de raisin "Champagne Blend" , "	Chardonnay" et "Pinot Noir" est affecté par la qualité du vin , et plus la note est élevé, plus le prix est cher .Pour les autres types,  ils ne sont pas estimés, car il y a moins de observations . </font>
 
  > <font color=#4682B4  size=4 >-->En conséquence, la qualité des principaux types de vins produits dans ces trois provinces viticoles de France a une grande influence sur le prix. </font>
 
 ***
 
  > <font color=#4682B4  size=4 >-->En conclusion, selon les analyses ci-dessus, on peut penser que meilleure est la qualité du vin, plus le prix est cher, mais pour différents types de vin, cet effet est différent.<br/>
- Dans différentes provinces, les types de raisins qui affectent la relation entre la qualité du vin et le prix sont différents. par exemple ,pour Bordeaux ,c'est raisin "Bordeaux-style Red Blend" .par contre , à Champagne , c'est raisin "Champagne Blend" , "	Chardonnay" et "Pinot Noir" .</font>
+ Dans les différentes provinces, les types de raisins qui affectent la relation entre la qualité du vin et le prix sont différents. par exemple ,pour Bordeaux ,c'est raisin "Bordeaux-style Red Blend" .par contre , à Champagne , c'est raisin "Champagne Blend" , "	Chardonnay" et "Pinot Noir" .</font>
 
 ***
 ***
