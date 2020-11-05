@@ -16,7 +16,11 @@ professionnel et en particulier aux Etats-Unis d’Amérique. Nous allons
 nous focaliser sur 3 aspects principaux c’est-à-dire le salaire,
 l’emploi et les postes relatifs aux femmes américaines.
 
+<<<<<<< HEAD
+## Salaire des Femmes par rapport à leur homologue masculin
+=======
 ## SALAIRE DES FEMMES PAR RAPPORT A LEUR HOMOLOGUE MASCULIN
+>>>>>>> 74919b9ccd7ff75173112a2623bef31ade9743ce
 
 Sur le marché du travail, de nombreuses inégalités séparent les Hommes
 des Femmes, de même qualifications tel que le salaire. Nous remarquons
@@ -36,12 +40,18 @@ augentation de 19.9 points.
 ![](Exam_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
 Sachant l’affirmation précédente concernant le salaire on peut se
+<<<<<<< HEAD
+demander : \* Si cette tendance de réduction des inégalités salariales,
+pour tout âge confondu, se maintient pour chaque classes d’âge. \* Si la
+variable classe d’âge influe sur les inégalités salariales.
+=======
 demander :
 
   - Si cette tendance de réduction des inégalités salariales, pour tout
     âge confondu, se maintient pour chaque classes d’âge.
   - Si la variable classe d’âge influe sur les inégalités
 salariales.
+>>>>>>> 74919b9ccd7ff75173112a2623bef31ade9743ce
 
 ###### LA TENDANCE DE REDUCTION DES INEGALITES SALARIALES SE MAINTIENT-ELLE POUR CHAQUE CLASSES D’ÂGE ?
 
@@ -51,13 +61,26 @@ chaque classes d’âge, à court terme, peut connaître d’importantes
 variations, fluctuations. En effet, prenons l’exemple de la classe d’âge
 25-34 ans, en 1979 le salaire des Femmes correspondait à 68 % du salaire
 des Hommes alors qu’en 2011 le salaire des Femmes correspondait à 92.5 %
+<<<<<<< HEAD
+du salaire des Hommes; Soit une augmentation de 24.5 points.
+=======
 du salaire des Hommes; Soit une augmentation de 24.5
 points.
+>>>>>>> 74919b9ccd7ff75173112a2623bef31ade9743ce
 
 ###### LA VARIABLE CLASSE D’ÂGE INFLUE T-ELLE SUR LES INEGALITES SALARIALES ?
 
 La variable classe influe les inégalités salariales dans le monde du
 travail américain. De ce fait, deux dynamiques se dessinent en fonction
+<<<<<<< HEAD
+des classes âges. En effet nous avons 2 situations possibles: \* De 16 à
+34 ans : La réduction des inégalités salariales fut intense et a
+propulsé le salaire des Femmes autour des 90% du salaire des Hommes en
+2011. \* De 35 à 65 ans et plus : La réduction des inégalités salariales
+fut moins intense ou du moins les inégalités salariales étaient plus
+fortes pour ces classes en 1979. De ce fait en 2011 le salaire des
+Femmes environne les 77.5% du salaire des Hommes.
+=======
 des classes âges. En effet nous avons 2 situations possibles:
 
   - De 16 à 34 ans : La réduction des inégalités salariales fut intense
@@ -67,6 +90,7 @@ des classes âges. En effet nous avons 2 situations possibles:
     moins intense ou du moins les inégalités salariales étaient plus
     fortes pour ces classes en 1979. De ce fait en 2011 le salaire des
     Femmes environne les 77.5% du salaire des Hommes.
+>>>>>>> 74919b9ccd7ff75173112a2623bef31ade9743ce
 
 ![](Exam_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
@@ -97,8 +121,12 @@ popultation feminine, représentée en rouge. Nous pouvons remarquer que
 le pourcentage de la population d’Hommes ayant un emploi à temps plein
 est supérieure au pourcentage de la population de Femmes ayant un emploi
 à temps plein. En effet environ 90% des Hommes ont un emploi à temps
+<<<<<<< HEAD
+plein contre 75% pour les Femmes.
+=======
 plein contre 75% pour les
 Femmes.
+>>>>>>> 74919b9ccd7ff75173112a2623bef31ade9743ce
 
 ![](Exam_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
@@ -119,6 +147,9 @@ plein contre 25% pour les Femmes.
 
 ## LES POSTES ACCORDES AUX FEMMES
 
+<<<<<<< HEAD
+![](Exam_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+=======
 On s’intéresse maintenant à la représentation des Femmes dans chaque
 postes balayant un bon nombre de domaines professionnnels. Le but étant
 de déterminer pour quels postes ou domaines professionnels il existe un
@@ -207,3 +238,4 @@ sciences \* Gestion, affaires et finances Si la parité Homme-Femmes dans
 le monde du travail est l’objectif à atteindre par le gouvernement
 américain, il y a des amélioration mais certaines inégalités persistes
 à travers les âges
+>>>>>>> 74919b9ccd7ff75173112a2623bef31ade9743ce
