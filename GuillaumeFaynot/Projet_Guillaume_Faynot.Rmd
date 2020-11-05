@@ -408,3 +408,13 @@ ggplot(data=TypeParc[1:10,], aes(x=reorder(unit_type, -SommeVisitors), y=SommeVi
 *Commentaires :* 
 
 Les Parcs nationaux hitoriques sont les parcs les plus fréquentés depuis 1904 devant les mémorials ainsi que les sites nationaux historiques.
+
+
+# ** Conclusion **
+
+Basé sur ce jeu de données, on peut affirmer quelques points :
+
+-  La population américaine a évolué et a été multiplié par 5 entre 1904 et 2015
+-  La population vivait dans l'Est des Etats-Unis en 1900. Aujourd'hui, la population a migré vers l'Ouest (CA & Texas principalement mais pas que).
+-  Le nombre de visiteurs a également augmenté
+-  Il existe une corrélation positive entre le prix du carburant et le nombre de visiteurs : La population ne se limite pas de voyage due au prix du carburant.
