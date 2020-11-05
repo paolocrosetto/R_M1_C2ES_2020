@@ -105,14 +105,17 @@ Conclusion : le prix du carburant augmente depuis les années 1904 et a drastiqu
 
 
 # **2) Montrer que la population augmente : Augmente-t-elle constamment?**
+
 ```{r}
 state_pop %>% 
   select(year,pop) %>% 
+  filter(!is.na(pop)) %>% 
   group_by(year) %>% 
-  summarise(somme = sum(pop)) %>% 
-  filter(!is.na(somme)) -> PopAugmentation
-ggplot(PopAugmentation, aes(x = year, y = somme))+
-  geom_bar(stat="identity")
+  summarise(somme = sum(pop))-> PopAugmentation
+ggplot(PopAugmentation, aes(x =as.factor(year), y = somme))+
+  geom_point(shape=20, size=2)+
+  scale_x_discrete(breaks=seq(1904,2016,10))+
+  labs(title="Evolution de la population aux Etats-Unis de 1900 à 2015",x ="Années", y = "Population par An")
 ```
 
 
@@ -133,22 +136,6 @@ state_pop %>%
 
 PopAugmentationPerState <- PopAugmentationPerState[order(-PopAugmentationPerState$diff),]
 
-
-
-ggplot(PopAugmentationPerState[1:5,], aes(x="", y=diff, fill=state))+
-  geom_bar(width = 1, stat = "identity")+
-  coord_polar("y", start=0)+
-  theme_minimal()+
-  theme(
-  axis.title.x = element_blank(),
-  axis.title.y = element_blank(),
-  panel.border = element_blank(),
-  panel.grid=element_blank(),
-  axis.ticks = element_blank(),
-  plot.title=element_text(size=14, face="bold")
-  )+
-  theme(axis.text.x=element_blank())+
-  labs(title="Représentation des TOP 5 états ayant connus \n la plus grosse augmentation de population depuis 1904")
 ```
 
 
