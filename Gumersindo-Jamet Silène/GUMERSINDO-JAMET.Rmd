@@ -142,6 +142,20 @@ us_births %>%
        x="Mois",
        y="Nombre de naissance")
 
+<<<<<<< HEAD
+=======
+### Quelle est l'année où il y a eu le plus de naissance sur ces 14 années ?
+```{r}
+us_births %>% 
+  group_by(year) %>% 
+  ggplot(aes(x= year,y=births, fill= year))+
+  scale_color_viridis_d() +
+  geom_col()+
+  #geom_text(aes(label = births), size = 2)+
+  labs(title="Répartition des naissances par rapport aux années",
+       x="Mois",
+       y="Nombre de naissance")
+>>>>>>> 4d48028755c47edeb1080379d6a56dfb68d32e99
 ```
 En moyenne le mois d'août est le mois où il y a eu le plus de naissance.
 
@@ -150,12 +164,17 @@ En moyenne le mois d'août est le mois où il y a eu le plus de naissance.
 ```{r}
 us_births %>% 
   filter(day_of_week == 5, date_of_month == 13) %>% 
+<<<<<<< HEAD
   ggplot(aes(x=year, y=births, fill=births))+
   geom_point(shape=8,size=2.5,color="mediumpurple3")+
   geom_text(aes(label=births),hjust=1.2,size=3)+
   geom_hline(yintercept=mean(us_births$births), color="red") +
   labs(x = "Années", y="Naissances",title = "Évolution des naissances les vendredis 13 aux États-Unis de 2000 à 2014")+
   theme(legend.position = "none")
+=======
+  
+  
+>>>>>>> 4d48028755c47edeb1080379d6a56dfb68d32e99
 ```
 On constate qu'une grande partie des données se situent au dessus de la moyenne donc on peut en conclure que non les americains sont superstitieux à l'idée d'avoir un enfant un vendredi 13.
 
