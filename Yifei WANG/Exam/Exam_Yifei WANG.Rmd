@@ -244,7 +244,7 @@ tgv_sncf %>%
   
 ```
 
-```{r}
+```{r，warning=FALSE , message=FALSE}
 tgv_sncf %>%
   filter(departure_station == 'LYON PART DIEU' & year == 2017) %>%
   select(month, departure_station, avg_delay_late_at_departure, avg_delay_late_on_arrival) %>%
