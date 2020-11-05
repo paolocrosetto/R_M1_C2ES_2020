@@ -4,20 +4,16 @@ author: "SijiaoLI"
 date: "25/10/2020"
 output:
   html_document: 
-    toc: yes
     theme: cerulean
-    number_sections: yes
+    toc: yes
   word_document: default
-  pdf_document: default
+  pdf_document: 
+    toc: yes
 ---
-
 
 ```{r global_options, include=FALSE}
 knitr::opts_chunk$set(fig.width=12, fig.height=8, echo=TRUE, warning=FALSE, message=FALSE)
-
 ```
-
-
 
 ```{r}
 #install.packages("tidyverse")
@@ -25,8 +21,7 @@ library(tidyverse)
 ```
 
 
-
-##  Introduction
+## I) Introduction
 
 le grain de café joue un rôle très important dans la vie quotidienne. Il y a deux espèces de grains de café commercent économiquement dans le monde. Ce sont l'Arabica et le Robusta. Dans le monde, environ 60% de produits de café sont fabriqués par le grain de l’Arabica et 40% par le Robusta.  D’ailleurs, les grains de café font une grande partie de commerce export pour les pays en développement. Les dégustateurs de café évaluent la qualité de grain de café en fonction du goût, en particulier de la douceur, de l’acidité et de l’arrière-goût. Les grains de café incarnent des saveurs révélatrices dans chaque région, donc les dégustateurs peuvent identifier l’origine du café.   
 
@@ -35,47 +30,53 @@ Dans ce rapport, nous allons commencer une discussion sur la qualité des grains
 
 ---
 
-##  Présentation des données
+## II) Présentation des données
 
 Ces données ont été collectées à partir des pages d'examen de Coffee Quality Institute en janvier 2018. J'ai pris ces données sur ce site:
 'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-07-07/coffee_ratings.csv'.
 Ils contiennent 1339 observations en colonnes et 43 variables en lignes. Dans mon rapport, je vais utiliser 8 variables et 1339 observations afin de procéder le jeu des données.
 
-###  Obtention des données originales
+### 1) Obtention des données originales
 
 ```{r}
 coffee_ratings <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-07-07/coffee_ratings.csv')
 coffee_ratings
-View(coffee_ratings)
+#View(coffee_ratings)
 ```
 
-### 	Reconstruction des données-Sélecter les 8 variable
+### 2)	Reconstruction des données-Sélecter les 8 variable
 
 ```{r}
-new_table<-select(coffee_ratings,total_cup_points,species,country_of_origin,company,region,color,acidity,sweetness)
+new_table<-select(coffee_ratings,total_cup_points,species,country_of_origin,
+                  company,region,color,acidity,sweetness)
 new_table
 ```
 
-### 	Renommer les variables en français
+### 3)	Renommer les variables en français
 
 Total rating/points (0 - 100 scale) =Note totale / points (échelle de 0 à 100),
 species =Espèce de grain de café (arabica ou robusta),country_of_origin=Pays d’origine du grain, company=Nom de l'entreprise, color=Couleur du grain,region=Région d'où provient le grain, sweetness=Classe de douceur, acidity=Classe d'acidité  
 
 ```{r}
 df<-new_table%>%
-  rename("notes"="total_cup_points","espèce"="species","pays"="country_of_origin",
-           "nom_entreprise"="company","région"="region","couleur"="color",
-         "acidité"="acidity","douceur"="sweetness")
+  rename("notes"="total_cup_points",
+         "espèce"="species",
+         "pays"="country_of_origin",
+           "nom_entreprise"="company",
+         "région"="region",
+         "couleur"="color",
+         "acidité"="acidity",
+         "douceur"="sweetness")
 df
 ```
 
-###  Affiche la base de données
+### 4) Affiche la base de données
 
 ```{r}
 view(df)
 ```
 
-###  Descriptif des données
+### 5) Descriptif des données
 
 ```{r}
 summary(df)
@@ -83,15 +84,20 @@ summary(df)
 
 ---
 
-##  Jeu des données et Graphiques
+## III) Jeu des données et Graphiques
 
 > Question 1 : Quel couleur de grain de café a la note le plus haute?
 
 ```{r}
 note_haute_couleur<-df%>%
-  select(notes,couleur)%>% group_by(couleur)%>%summarise(max(notes, na.rm = TRUE))
+  select(notes,couleur)%>% 
+  group_by(couleur)%>%
+  summarise(max(notes, na.rm = TRUE))
+  
 note_couleur<-df%>%
-  select(notes,couleur)%>% group_by(couleur)%>%summarise(mean(notes, na.rm = TRUE))%>%
+  select(notes,couleur)%>% 
+  group_by(couleur)%>%
+  summarise(mean(notes, na.rm = TRUE))%>%
 left_join(note_haute_couleur, by = "couleur")
 note_couleur
 
@@ -116,7 +122,9 @@ plot(plot2)
 
 
 df%>%filter(espèce %in% c("Arabica","Robusta"))%>%
-  select(espèce,notes)%>%group_by(espèce)%>%summarise(notemoyenne=mean(notes,na.rm = TRUE))%>% 
+  select(espèce,notes)%>%
+  group_by(espèce)%>%
+  summarise(notemoyenne=mean(notes,na.rm = TRUE))%>% 
   ggplot(aes(x=espèce,y=notemoyenne))+
   geom_col(aes(color = espèce, fill = espèce),position = "dodge", width=0.3)+
   scale_color_manual(values = c("black", "brown"))+
@@ -127,7 +135,9 @@ df%>%filter(espèce %in% c("Arabica","Robusta"))%>%
  p1
  
  df%>%filter(espèce %in% c("Arabica","Robusta"))%>%
-  select(espèce,notes)%>%group_by(espèce)%>%ggplot(aes(x=espèce,y=notes))+
+  select(espèce,notes)%>%
+   group_by(espèce)%>%
+   ggplot(aes(x=espèce,y=notes))+
    geom_boxplot(aes(color = espèce, fill = espèce),position = "dodge",width=0.5)+
    coord_fixed(ratio = 1/100)+
    scale_size_area(max_size = 30)+
@@ -177,7 +187,8 @@ gg2<-df%>%
   geom_smooth()+
 coord_equal(ratio = 1,
                     xlim = c(0, 10),
-                    ylim = c(0, 100))+ scale_size_area(max_size = 30)+
+                    ylim = c(0, 100))+ 
+  scale_size_area(max_size = 30)+
   coord_fixed(ratio = 1/30)+
   theme(panel.background = element_rect(fill = "aliceblue"))+
    labs(subtitle="note vs acidité", 
@@ -220,7 +231,7 @@ lm(notes ~ acidité , data = df) %>%
 - D'après ce test statistique, on a bien obtenu la valeur de corrélation est de 0.797, donc il montre que la relation entre la classe de douceur et la qualité de grain de café est très forte, P- Valeur est égale de environ zéro, donc la corrélation entre ces deux variable est très significativement.
 
 
-## Conclusion
+## IV) Conclusion
  
 Grâce au jeu de données, on a bien obtenu des connaissance de gain de café.
 
