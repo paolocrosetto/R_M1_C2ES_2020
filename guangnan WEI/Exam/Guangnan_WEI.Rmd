@@ -78,6 +78,27 @@ skim(wine_use)
   -->Pour la note de vin, la moyenne  est 88.4 et 75% dépasse à 91 ;<br>
   -->Pour le prix , la moyenne  est 33.5 et  75% est supérieur à 42 ;<br>
   -->L'écart-type du prix égale à 41 , donc la dispersion du prix est grande ;</font>
+
+***
+### 2.2.1 Analyse de la taille de l'échantillon dans chaque pays
+
+```{r}
+wine_use%>%
+  filter(points>=88.3)%>%
+  group_by(country)%>%
+  summarise(n=n())%>%
+  ggplot(aes(x=reorder(country,n),y=n))+
+  geom_col(aes(fill=country))+
+  theme(axis.text.x = element_text(size = 7,angle = 90, vjust = 0.5,                    hjust=1),legend.position="none",panel.background=element_rect(fill="aliceblue"))+
+  labs(title="Nombre d'échantillons par pays",y="Nombre d'échantillons",x="État")+
+  coord_flip()
+  
+```
+
+
+
+
+
  
 ***  
 ### 2.3 Quelle province de France a la qualité la plus élevée pour les vins qui sont "Red Blend" et le prix est inférieur à 33,5?
@@ -87,7 +108,6 @@ skim(wine_use)
 wine_use%>%
   filter( price<33.5 & variety==c("Red Blend","Bordeaux-style Red Blend") & country=="France")->wine_use1
 
-wine_use1
 ```
 
   > <font color=#4682B4  size=4 >-->Grâce à la boîte à moustaches, on ne peut pas observer plus intuitivement, parce que la qualité de la Loire Valley et la qualité de la Provence sont très proche  </font>
@@ -237,7 +257,7 @@ wine_use2%>%
         strip.background = element_rect(fill="#4682B4"),
         )+
   scale_y_continuous(limits = c(0,1200))+
-  labs(title=" L'effet de type de raisin sur la relations entre la qualité et le prix à Bordeaux" , y="Prix",x="Champagne" )
+  labs(title=" L'effet de type de raisin sur la relations entre la qualité et le prix à Bordeaux" , y="Prix",x="Notation" )
   
 ```
 
