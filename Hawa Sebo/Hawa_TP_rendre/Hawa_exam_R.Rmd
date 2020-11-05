@@ -1,18 +1,80 @@
 ---
-title: "Base de données MALARIA: 2018-11-13"
-output: html_document
-
+title:  "       Base de données MALARIA: 2018-11-13"
+auteur: "BALDE Hawa Sebo"
+date:   "05/11/2020"
+output: 
+  html_document: 
+    toc: yes
+    highlight: pygments
+    theme: cerulean
+    number_sections: yes
+editor_options: 
+  chunk_output_type: console
 ---
 
-## BALDE Hawa Sebo
+# Introductio,  
+
+   La base de données sur laquelle porte l'étude regroupe l'ensemble des
+décès dus au paludisme par tranche d'âge dans le monde au fil des années.
+L'objectif est de faire une description de la base de données en la 
+soumettant à des questions. Une visualisation des données sera faite selon
+le résultat attendu.
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-# Importation de la base de donnée github
+
+
+# Chargement librairies
+
 ```{r}
 library(tidyverse)
 ```
 
+# Importation des données
+
+```{r}
+
+malaria_deaths_age <-read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2018/2018-11-13/malaria_deaths_age.csv")
+
+```
+## Vérification importation et structure des données
+
+```{r}
+#------importation
+
+malaria_deaths_age
+
+```
+
+```{r}
+#------Controle de la structure
+str(malaria_deaths_age)
+```
+
+
+Le tableau de données a 6 colonnes. On va les renommer
+afin de mieux se familiariser avec la base de données. Etant donné
+que les colonnes "X1" et "code" n'ont pas d'importance, il est préférable de les supprimer.
+
+
+```{r}
+malaria_deaths_age %>% 
+  rename(pays = entity, annee = year, tranche_age = age_group, nbr.deces=deaths) %>% 
+  select( -X1, -code)-> data
+data
+```
+** Nombre de deces du paludisme en 1990 en Afghanistan par tranche d'age**
+
+```{r}
+data %>% 
+  filter(annee == 1990 & pays == "Afghanistan") %>% 
+  ggplot(aes(x=tranche_age, y = nbr.deces), fill)+
+  geom_col()+
+  scale_fill_brewer()
+
+
+```
 
 ## R Markdown
 
