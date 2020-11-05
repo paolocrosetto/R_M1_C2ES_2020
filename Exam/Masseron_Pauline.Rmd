@@ -19,7 +19,7 @@ library(tidyverse)
 #Télécharger la base de données
 penguins <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-07-28/penguins.csv')
 
-penguins
+View(penguins)
 ```
 
 
@@ -119,6 +119,7 @@ penguins %>%
 
 ```
 
+
 La longueur et la profondeur du bec de manchot montrent également des modèles intéressants. 
 ![](bec.png)
 Si on ignore les espèces, on pourrait penser qu'il y a une corrélation négative entre ces deux variables :
@@ -141,6 +142,7 @@ penguins %>%
   labs(x = "Longueur du bec en mm", y = "Profondeur du bec en mm", title = "Corrélation entre la longueur et la profondeur du bec selon l'espèce")
 
 ```
+
 
 Enfin, on peut obtenir une séparation assez claire entre les trois espèces en regardant la longueur des nageoires par rapport à la longueur du bec:
 ```{r}
