@@ -82,15 +82,14 @@ head(location)
 ```{r}
 library(ggplot2)
 ggplot(data=gas_price, aes(x=year, y=gas_current, colour = "black"))+
-  #geom_point(size=2)+
   geom_line()+
-  geom_line(aes(y = gas_constant, colour="blue"))+
   geom_smooth(method="lm", aes(color="red"))+
   scale_color_identity(name = "Légende",
-                    breaks = c("black", "blue", "red"),
-                    labels = c("gas_current", "gas_constant", "droite de régression"),
+                    breaks = c("black", "red"),
+                    labels = c("gas_current", "droite de régression"),
                     guide = "legend")+
-    labs(title="Représentation des prix du carburant à travers les années",x ="Années", y = "Prix du carburant($)/Gallon")
+    labs(title="Représentation des prix du carburant à travers les années",x ="Années", y = "Prix du carburant($)/Gallon")+
+  scale_x_continuous(breaks=seq(1925,2015,10))
 ```
 
 
@@ -135,7 +134,8 @@ state_pop %>%
   filter(!is.na(diff)) -> PopAugmentationPerState
 
 PopAugmentationPerState <- PopAugmentationPerState[order(-PopAugmentationPerState$diff),]
-
+PopAugmentationPerState[1:5,]
+tail(PopAugmentationPerState,1)
 ```
 
 
@@ -161,15 +161,16 @@ state_pop %>%
 
 library(cowplot)
 
-plot_grid(plot_usmap(data = state_pop_1904, values = "pop", color = "red") + 
-  scale_fill_continuous(low = "white", high = "red",name = "Population (1904)", label = scales::comma) + 
+plot_grid(plot_usmap(data = state_pop_1904, values = "pop", color = "red") +
+  scale_fill_continuous(low = "white", high = "red",name = "Population (1904)", label = scales::comma) +
   theme(legend.position = "right")+
   labs(title = "Carte de la population des US en 1904"),
 
-plot_usmap(data = state_pop_2015, values = "pop", color = "red") + 
-  scale_fill_continuous(low = "white", high = "red", name = "Population (2015)", label = scales::comma) + 
+plot_usmap(data = state_pop_2015, values = "pop", color = "red") +
+  scale_fill_continuous(low = "white", high = "red", name = "Population (2015)", label = scales::comma) +
   theme(legend.position = "right")+
   labs(title = "Carte de la population des US en 2015"))
+
 ```
 
 
@@ -235,7 +236,13 @@ park_visits_SansDoublons %>%
   group_by(state) %>% 
   summarise(NombreDeParcs = n())-> NbParcParState
 NbParcParState <- NbParcParState[order(-NbParcParState$NombreDeParcs),]
-barplot(NbParcParState$NombreDeParcs)
+NbParcParState$NombreDeParcs <- as.numeric(NbParcParState$NombreDeParcs)
+ggplot(data=NbParcParState, aes(x=reorder(state, -NombreDeParcs), y=NombreDeParcs)) +
+  geom_bar(stat="identity")+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+  labs(title="Histogramme du nombre de parcs par état",
+        x ="State", y = "Nombre de Parcs")
+
 ```
 
 
@@ -397,7 +404,7 @@ ggplot(data=TypeParc[1:10,], aes(x=reorder(unit_type, -SommeVisitors), y=SommeVi
 Les Parcs nationaux hitoriques sont les parcs les plus fréquentés depuis 1904 devant les mémorials ainsi que les sites nationaux historiques.
 
 
-# ** Conclusion **
+# **Conclusion **
 
 Basé sur ce jeu de données, on peut affirmer quelques points :
 
