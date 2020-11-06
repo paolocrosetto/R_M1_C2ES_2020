@@ -101,6 +101,17 @@ note_couleur<-df%>%
 left_join(note_haute_couleur, by = "couleur")
 note_couleur
 
+plot0<-df%>%
+  select(notes,couleur)%>% 
+  group_by(couleur)%>%
+  summarise(moyenne_note=mean(notes, na.rm = TRUE))%>%
+  ggplot(aes(x=moyenne_note,y=reorder(couleur,moyenne_note)))+
+  geom_col(aes(fill = couleur),position = "dodge", width=0.4)+
+  geom_text(aes(label=round(moyenne_note,2)),vjust=-0.2)+
+  theme(panel.background = element_rect(fill = "aliceblue"))+
+  labs(subtitle = "graphique note moyennne de chaque couleur de grain de café",title = " barplot")
+plot(plot0)
+
 plot1<-df%>%select(notes,couleur)%>%
   group_by(couleur)%>%
   ggplot(aes(x = notes))+
@@ -150,7 +161,6 @@ df%>%filter(espèce %in% c("Arabica","Robusta"))%>%
    coord_fixed(ratio = 1/100)+
    scale_size_area(max_size = 30)+
    theme(axis.text.x = element_text(size = 7, vjust = 0.5, hjust = 0.5),legend.position="bottom")+
-  scale_fill_brewer(palette = "Spectral")+
   theme(panel.background = element_rect(fill = "aliceblue"))+
    labs(x="espèce des grains",y="note des grains",subtitle="les notes des deux grains",title = "boxplot")->p2
  p2
@@ -245,7 +255,7 @@ lm(notes ~ acidité , data = df) %>%
  
 Grâce au jeu de données, on a bien obtenu des connaissance de gain de café.
 
-- 1. Les grains verts sont très coutants dans le monde , et ils ont souvent la note plus haute que les autres couleurs de grain, mais ils ont des mauvais notes aussi.
+- 1. Les grains verts sont très courants dans le monde , et ils ont souvent la note plus haute que les autres couleurs de grain, mais ils ont des mauvais notes aussi.
 
 - 2. Le type de Arabica ont souvent la note moyenne plus haute que Robusta, la qualité de Robusta est plus centralisé.       
 
