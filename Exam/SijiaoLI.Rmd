@@ -73,7 +73,7 @@ df
 ### 4) Affiche la base de données
 
 ```{r}
-view(df)
+#view(df)
 ```
 
 ### 5) Descriptif des données
@@ -92,23 +92,41 @@ summary(df)
 note_haute_couleur<-df%>%
   select(notes,couleur)%>% 
   group_by(couleur)%>%
-  summarise(max(notes, na.rm = TRUE))
+  summarise(max_note=max(notes, na.rm = TRUE))
   
 note_couleur<-df%>%
   select(notes,couleur)%>% 
   group_by(couleur)%>%
-  summarise(mean(notes, na.rm = TRUE))%>%
+  summarise(moyenne_note=mean(notes, na.rm = TRUE))%>%
 left_join(note_haute_couleur, by = "couleur")
 note_couleur
+
+plot0<-df%>%
+  select(notes,couleur)%>% 
+  group_by(couleur)%>%
+  summarise(moyenne_note=mean(notes, na.rm = TRUE))%>%
+  ggplot(aes(x=moyenne_note,y=reorder(couleur,moyenne_note)))+
+  geom_col(aes(fill = couleur),position = "dodge", width=0.4)+
+  geom_text(aes(label=round(moyenne_note,2)),vjust=-0.2)+
+  theme(panel.background = element_rect(fill = "aliceblue"))+
+  labs(subtitle = "graphique note moyennne de chaque couleur de grain de café",title = " barplot")
+plot(plot0)
 
 plot1<-df%>%select(notes,couleur)%>%
   group_by(couleur)%>%
   ggplot(aes(x = notes))+
   geom_density(aes(fill=factor(couleur)), alpha=0.8)+
+  theme(panel.background = element_rect(fill = "aliceblue"))+
   labs(subtitle = "graphique densité de chaque couleur de grain de café",title = "density plot")
 plot(plot1)
 
-plot2<-plot1+facet_wrap(~couleur)
+plot2<-df%>%select(notes,couleur)%>%
+  group_by(couleur)%>%
+  ggplot(aes(x = notes))+
+  geom_histogram(aes(fill = couleur), alpha = 0.5, position = "identity")+
+  theme(panel.background = element_rect(fill = "aliceblue"))+
+  labs(subtitle = "graphique densité de chaque couleur de grain de café",title = "density plot")+
+  facet_wrap(~couleur)
 plot(plot2)
 ```
 
@@ -125,12 +143,13 @@ df%>%filter(espèce %in% c("Arabica","Robusta"))%>%
   select(espèce,notes)%>%
   group_by(espèce)%>%
   summarise(notemoyenne=mean(notes,na.rm = TRUE))%>% 
-  ggplot(aes(x=espèce,y=notemoyenne))+
+  ggplot(aes(y=notemoyenne,x=espèce))+
   geom_col(aes(color = espèce, fill = espèce),position = "dodge", width=0.3)+
   scale_color_manual(values = c("black", "brown"))+
   geom_text(aes(label=round(notemoyenne,2)),vjust=-0.2)+
-  coord_fixed(ratio = 1/75)+
-  scale_size_area(max_size = 30)+
+  coord_fixed(ratio = 1/50)+
+  theme(panel.background = element_rect(fill = "aliceblue"))+
+  scale_size_area(max_size = 25)+
   labs(x="espèce des grains",y="note moyenne des grains",subtitle="les notes des deux grains",title = "barplot")->p1
  p1
  
@@ -141,7 +160,8 @@ df%>%filter(espèce %in% c("Arabica","Robusta"))%>%
    geom_boxplot(aes(color = espèce, fill = espèce),position = "dodge",width=0.5)+
    coord_fixed(ratio = 1/100)+
    scale_size_area(max_size = 30)+
-   theme_set(theme_bw())+
+   theme(axis.text.x = element_text(size = 7, vjust = 0.5, hjust = 0.5),legend.position="bottom")+
+  theme(panel.background = element_rect(fill = "aliceblue"))+
    labs(x="espèce des grains",y="note des grains",subtitle="les notes des deux grains",title = "boxplot")->p2
  p2
  
@@ -235,7 +255,7 @@ lm(notes ~ acidité , data = df) %>%
  
 Grâce au jeu de données, on a bien obtenu des connaissance de gain de café.
 
-- 1. Les grains verts sont très coutants dans le monde , et ils ont souvent la note plus haute que les autres couleurs de grain, mais ils ont des mauvais notes aussi.
+- 1. Les grains verts sont très courants dans le monde , et ils ont souvent la note plus haute que les autres couleurs de grain, mais ils ont des mauvais notes aussi.
 
 - 2. Le type de Arabica ont souvent la note moyenne plus haute que Robusta, la qualité de Robusta est plus centralisé.       
 

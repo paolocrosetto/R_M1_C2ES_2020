@@ -11,11 +11,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ***
 
-### **Description**
+## **Description**
 
 * **Sujet : "_French Train stats_" ->** [Source](https://github.com/Da11tura/tidytuesday/tree/master/data/2019/2019-02-26)
 
-* **Packages utilisées**
+* **Packages utilisés**
 
 ```{r packages, message=FALSE}
 library(nycflights13)
@@ -41,11 +41,11 @@ tgv <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytu
 
 * **Description des données**
 
-    Cet ensemble de données présente les annulations et les retards de TGV, ainsi que les causes des retards, sur la période 2015-2018. Il contient un total de 5462 observations et 27 variables. 
+    Cet ensemble de données présente les annulations et les retards de trains, ainsi que les causes de retard, sur la période de 2015-2018. Il contient un total de 5462 observations et 27 variables. 
 
 *** 
 
-### **Traiter le tableau**
+## **Traiter le tableau**
 
 &emsp;&emsp;&emsp;Tout d'abord, j'ai traité l'ensemble de données original, et j'ai obtenu deux sous-tableaux `tgv_sncf` et `pourquoi_taux`.
 
@@ -56,18 +56,20 @@ tgv %>%
   mutate(nombre_trains = total_num_trips - num_of_canceled_trains,
          taux_retard_departure = num_late_at_departure / nombre_trains * 100,
          taux_retard_arrival = num_arriving_late / nombre_trains * 100) %>%
-  select(year, month, nombre_trains, service, journey_time_avg, total_num_trips, num_of_canceled_trains, 
+  select(year, month, nombre_trains, journey_time_avg, total_num_trips, num_of_canceled_trains, 
          contains("departure"), contains("departing"), contains("arrival"), 
          contains("arriving"),-contains("comment")) -> tgv_sncf
 
 tgv_sncf
 ```
 
-&emsp;&emsp;&emsp;C'est une explication des certains variables ：
+1. Le sous-tableau `tgv_sncf` contient 16 variables telles que l'année, le mois, le nombre total de trains, le nom de la gare au départ et à l’arrivée, le temps moyen de retard, le taux de retard et le taux d'annulation etc.
+
+2. Ce sont des explications de certains variables avec l'abréviation：
 
 | Nom de colonnes             | Explication |
 | :-------------------------: | :------------------: |
-| journey_time_avg            | Temps de trajet moyen (minutes) |
+| journey_time_avg            | Temps moyen de trajet (minutes) |
 | total_num_trips             | Nombre total de trains au cours de la période |
 | num_late_at_departure       | Nombre de trains en retard au départ |
 | avg_delay_late_at_departure | Temps moyen (minutes) pour les trains en retard au départ |
@@ -98,8 +100,9 @@ tgv %>%
 pourquoi_taux
 ```
 
-&emsp;&emsp;&emsp;Ce tableau décrit les causes des retards de train : 
+1. Ce tableau décrit les causes des retards de trains et leurs pourcentages. Les causes sont divisées en six catégories.
 
+2. Ce sont des explications de causes ：
 
 | Les causes                      | Explication |
 | :-----------------------------: | :------------------: |
@@ -110,13 +113,15 @@ pourquoi_taux
 | delay_cause_station_management  | La gestion en gare et réutilisation de matériel |
 | delay_cause_travelers           | Prise en compte voyageurs (affluence) |
 
-<br>
-
 ***
 
-### **Questions**
+<br>
 
-#### Question 1 : Quelle année est une mauvaise année en termes d'annulation de trains?
+## **QUESTIONS** <br>
+
+### -> Partie 1 : Le taux d'annulation <br>
+
+#### Question 1 : Quelle année est une mauvaise année en termes d'annulation de trains? 
 
 ```{r annulation1, warning=FALSE , message=FALSE}
 tgv_sncf %>%
@@ -126,11 +131,12 @@ tgv_sncf %>%
   mutate(year = as.factor(year)) %>%
   ggplot(aes(x = year, y = departure_station)) +
   geom_tile(aes(fill = taux_annulation)) +
-  labs(x = "Année", y = "",fill = "Taux d'annulation", title = "Taux d'annulation de TGV en France (%)",
+  labs(x = "", y = "",fill = "Taux d'annulation", title = "Taux d'annulation de trains en France (%)",
        caption  = "Source: data.sncf.com") + 
   scale_fill_gradient(low = "#d6ecfa", high = "#84B1ED") +
   theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5))
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text.y=element_text(angle = 20, size = 5))
 ```
 
 ```{r annulation2, warning=FALSE , message=FALSE}
@@ -143,15 +149,17 @@ tgv_sncf %>%
   theme_bw() +
   facet_wrap(~year) +
   coord_cartesian(xlim = c(1, 12)) +
-  labs(x="Mois", y="Taux d'annulation", title = "Taux d'annulation de TGV en France (%)", 
+  labs(x="Mois", y="Taux d'annulation", title = "Taux d'annulation de trains en France (%)", 
        caption = "Source: data.sncf.com") +
   theme(plot.title = element_text(hjust = 0.5))
 
 ```
 
+* **Réponse** : L'année **2018** a été une mauvaise année pour les annulations de trains. On peut aussi dire que l'augmentation rapide du taux d'annulation de trains est influencée par des facteurs sociaux tels que les grèves.
+
 <br>
 
-#### Question 2 : Quel gare a le taux d'annulation plus élevé, en 2015-2017?
+#### Question 2 : Quelle gare a le taux le plus élevé d'annulation, en 2015-2017?
 
 ```{r mauvais_gare, warning=FALSE , message=FALSE}
 tgv_sncf %>%
@@ -165,18 +173,20 @@ tgv_sncf %>%
   geom_bar(position="dodge", stat="identity", fill = "#84B1ED", width = 0.6) +
   geom_text(mapping = aes(label = round(taux_annulation,2)), size = 4, 
             vjust = 0.5, hjust = 1.1, colour = "white") +
-  labs(x = "Taux d'annulation (%)", y = "", title = "Les gares avec le taux d'annulation élevé",
+  labs(x = "Taux d'annulation (%)", y = "", title = "Les gares de départ \n avec le taux d'annulation élevé",
        subtitle = "2015 - 2017", caption  = "Source: data.sncf.com") + 
-  scale_fill_gradient(low = "#d6ecfa", high = "#84B1ED") +
   theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+  theme(plot.title = element_text(hjust = 0.05), plot.subtitle = element_text(hjust = 0.04))
 
 ```
 
+* **Réponse** : La gare de **Nice Ville** a enregistré le taux d'annulation le plus élevé, soit 2,05 %.
 
 <br>
 
-#### Question 3 : En 2015-2018, quel mois a la taux de retard plus élevé?
+### -> Partie 2 : Le taux de retard de trains<br>
+
+#### Question 3 : À quel mois le taux de retard de trains à l'arrivée ou au départ est le plus élevé, en 2015-2018?
 
 ```{r retard_dep_arr, warning=FALSE , message=FALSE}
 tgv_sncf %>%
@@ -191,15 +201,19 @@ tgv_sncf %>%
   scale_x_continuous(breaks = seq(0, 12, 1)) +
   facet_wrap(~year) +
   scale_color_manual(values=c("#84B1ED", "#C89EC4"), 
-                     name="Retard",labels=c("Arrive", "Départ")) +
-  labs(x="Mois", y="Taux de retard mensuel(%)",
-       title = "Taux de retard mensuel de TGV en France par an (%)", 
+                     name="Retard",labels=c("Arrivée", "Départ")) +
+  labs(x="Mois", y="Taux mensuel de retard(%)",
+       title = "Taux mensuel de retard de trains en France par an (%)", 
        caption = "Source: data.sncf.com") +
   theme_bw() +
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
-#### Question 4 : Quel gare avait le taux le plus élevé de départs tardifs en juillet 2018？
+* **Réponse** : Le mois **juillet en 2018**, les taux de retard de trains à l'arrivée et au départ sont le plus élevé.
+
+<br>
+
+#### Question 4 : Quelle gare avait le taux le plus élevé de départs tardifs en juillet 2018？
 
 ```{r retard_gares, warning=FALSE , message=FALSE}
 tgv_sncf %>%
@@ -211,40 +225,58 @@ tgv_sncf %>%
   geom_bar(position="dodge", stat="identity", fill = "#84B1ED", width = 0.6) +
   geom_text(mapping = aes(label = round(mean_dep,1)), size = 4, 
             vjust = 0.5, hjust = 1.1, colour = "white") +
-  labs(x = "Taux de retard (%)", y = "", title = "Les gares avec le taux de retard élevé",
+  labs(x = "Taux de retard de départs (%)",y = "", 
+       title = "Les gares de départs \n avec le taux élevé de retard de départs tardifs",
        subtitle = "En juilet 2018", caption  = "Source: data.sncf.com") + 
   theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.03))
   
 ```
 
+* **Réponse** : Le graphique montre les dix premières gares ayant des retards importants, la gare **AVIGNON TGV** ayant le taux de retard le plus élevé, soit 66,8 %.
+
 <br>
 
-#### Question 5 : Quelle est le temps mensuel de retard dans le gare "LYON PART DIEU" en 2017?
+### -> Partie 3 : Le temps moyen de retard de trains <br>
 
-```{r retard_gare, warning=FALSE , message=FALSE}
+#### Question 5 : Quelle gare a le temps le plus long de retard?
+
+```{r retard_gare, warning=FALSE , message=FALSE, comment = ''}
 tgv_sncf %>%
   group_by(departure_station) %>%
   summarise(moyenne_retard_dep = mean(avg_delay_late_at_departure, na.rm = T),
             moyenne_retard_arr = mean(avg_delay_late_on_arrival, na.rm = T)) %>%
   select(departure_station, moyenne_retard_dep, moyenne_retard_arr) %>%
-  pivot_longer(cols = !departure_station, names_to = "retard", values_to = "moyenne_taux") %>%
-  ggplot(aes(y = departure_station, x = moyenne_taux, fill = retard)) +
+  pivot_longer(cols = !departure_station, names_to = "retard", values_to = "moyenne_temps") -> tgv_sncf_temps
+
+tgv_sncf_temps %>%
+  ggplot(aes(y = departure_station, x = moyenne_temps, fill = retard)) +
   geom_bar(position="dodge", stat="identity") +
   scale_fill_manual(values=c("#84B1ED", "#C89EC4"), 
                      name="Retard",labels=c("Arrive", "Départ")) +
   labs(x="Temps moyen de retard (min)", y="",
        title = "Temps moyen de retard (min)", 
-       subtitle = "Pour les stations de départ en 2015-2018",
+       subtitle = "Pour les gares de départ en 2015-2018",
        caption = "Source: data.sncf.com") +
   theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5),
-        plot.subtitle = element_text(hjust = 0.5),
-        legend.position = "bottom")
+  theme(plot.title = element_text(hjust = 0.05),
+        plot.subtitle = element_text(hjust = 0.05),
+        legend.position = "bottom",
+        axis.text.y=element_text(angle = 20, size = 5))
+
+tgv_sncf_temps %>%
+  group_by(retard) %>%
+  filter(moyenne_temps == max(moyenne_temps))
   
 ```
 
-```{r，warning=FALSE , message=FALSE}
+* **Réponse** : Les deux gares avec les plus longs délais ont été identifiées par la méthode de `filter()`. La gare avec le temps de retard à l'arrivée le plus long est **MADRID**, soit 52,6 minute, et la gare avec le temps de retard au départ le plus long est **MONTPELLIER**, soit 21,3 minute.
+
+<br>
+
+#### Question 6 : Quelle est le temps mensuel de retard dans le gare "LYON PART DIEU" en 2017?
+
+```{r retard_gare1, warning=FALSE , message=FALSE}
 tgv_sncf %>%
   filter(departure_station == 'LYON PART DIEU' & year == 2017) %>%
   select(month, departure_station, avg_delay_late_at_departure, avg_delay_late_on_arrival) %>%
@@ -260,8 +292,8 @@ tgv_sncf %>%
   scale_color_manual(values=c("#84B1ED", "#77AAAD"),
                      name="Retard",labels=c("Depart", "Arrive")) +
   labs(x="Mois", y="Temps moyen de retard (min)",
-       title = "Temps moyen de retard (min)", 
-       subtitle = "LYON PART DIEU en 2017",
+       title = "Temps moyen de retard (min) \n LYON PART DIEU", 
+       subtitle = "en 2017",
        caption = "Source: data.sncf.com") +
   theme_classic()+
   theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
@@ -269,7 +301,9 @@ tgv_sncf %>%
 
 <br>
 
-#### Question 6 : Quels sont les cinq grandes lignes qui présentant le taux plus élevé de départ en retard?
+### -> Partie 4 : Les grandes lignes <br>
+
+#### Question 7 : Quelles sont les cinq premières grandes lignes qui présentant le taux plus élevé de retard au départ?
 
 ```{r freq_dep, warning=FALSE , message=FALSE}
 tgv_sncf %>%
@@ -284,16 +318,16 @@ tgv_sncf %>%
   geom_text(mapping = aes(label = round(taux_retard_arrival, 1)), 
             size = 4, vjust = 0.5, hjust = 1.1, colour = "white") +
   labs(x="Taux de retard à l'arrivée (%)", y="",
-       title = "Les grandes lignes avec le taux de retard à l'arrivée", 
+       title = "Les grandes lignes \n avec le taux de retard à l'arrivée", 
        subtitle = "2015 - 2018",
        caption = "Source: data.sncf.com") +
   theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+  theme(plot.title = element_text(hjust = 0.05), plot.subtitle = element_text(hjust = 0.04))
 ```
 
 <br>
 
-#### Question 7 ：Quels sont les cinq grandes lignes qui présentant le taux plus élevé d'arrivée en retard?
+#### Question 8 ：Quelles sont les cinq premières grandes lignes qui présentant le taux plus élevé de retard à l'arrivée?
 
 ```{r freq_arr, warning=FALSE , message=FALSE}
 tgv_sncf %>%
@@ -308,38 +342,51 @@ tgv_sncf %>%
   geom_text(mapping = aes(label = round(taux_retard_departure,1)), 
             size = 4, vjust = 0.5, hjust = 1.1, colour = "white") +
   labs(x="Taux de retard en départ (%)", y="",
-       title = "Les grandes ligne avec le taux de retard en départ", 
+       title = "Les grandes ligne \n avec le taux de retard en départ", 
        subtitle = "2015 - 2018",
        caption = "Source: data.sncf.com") +
   theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))
+  theme(plot.title = element_text(hjust = 0.05), plot.subtitle = element_text(hjust = 0.04))
 ```
 
 <br>
 
-#### Question 8 : Y a-t-il une relation entre le temps de retard et la distance de trajet?
+### -> Partie 5 : Relation <br>
+
+#### Question 9 : Y a-t-il une relation entre le temps de retard et la distance de trajet?
 
 
-```{r lm, warning=FALSE , message=FALSE}
+```{r relation, warning=FALSE , message=FALSE}
 tgv_sncf %>%
   select(year,month,avg_delay_late_at_departure,avg_delay_late_on_arrival,journey_time_avg,arrival_station) %>%
   filter(!is.na(avg_delay_late_at_departure), !is.na(avg_delay_late_on_arrival)) %>%
   group_by(arrival_station) %>%
   summarise(count = n(), dist = mean(journey_time_avg, na.rm = TRUE), 
-            retard = mean(avg_delay_late_on_arrival,na.rm = TRUE)) %>%
+            retard = mean(avg_delay_late_on_arrival,na.rm = TRUE)) -> tgv_sncf_r
+tgv_sncf_r %>%
   ggplot(aes(x = dist, y = retard)) +
   geom_point() +
-  geom_smooth(col = "#ff7473", method = "lm") +
+  geom_smooth(col = "#ff7473") +
   theme_minimal() +
-  labs(title = "Le temps de retard VS La distance de trajet", 
+  labs(x = "La distance de trajet", y = "Le temps de retard",
+       title = "Le temps de retard VS La distance de trajet", 
        caption = "Source: data.sncf.com") +
   theme(plot.title = element_text(hjust = 0.5))
 
 ```
 
+* **Réponse** : D'après ce graphique, on peut savoir qu'il y a une forte relation entre le temps de retard et la distance de trajet.
+
+```{r anova, comment = ''}
+lm1=lm(retard~dist,data=tgv_sncf_r)
+summary(lm1)
+```
+
+* En utilisant la méthode de l'ANOVA, on peut voir que la p-valeur est faible et que le modèle suppoé est valable. Le coefficient de détermination est également de 0,7968, il s'explique que 79,68% de la variance est expliquée par ce modèle.
+
 <br>
 
-#### Question 9 : Les causes du retard de TGV ?
+#### Question 10 : Les causes du retard de TGV ?
 
 ```{r causes, warning=FALSE , message=FALSE}
 pourquoi_taux %>%
@@ -356,8 +403,19 @@ pourquoi_taux %>%
 
 ```
 
+* **Réponse** : Nous constatons que les facteurs externes ont l'impact le plus important sur les retards des trains soit 27.8%, suivis par l'infrastructure ferroviaire, soit 25.18%.
+
 ***
 
 ### **Conclusion**
 
+Sur la base de l'analyse de l'ensemble des données :
+
+* Au cours de la période 2015-2017, la gare de NICE VILLE a connu le taux d'annulation de trains le plus élevé.
+
+* Le taux moyen de retards au départ de la gare de Montpellier et le taux moyen de retard à l'arrivée de la gare de Madrid ont été les plus longs au cours de la période 2015-2018.
+
+* Avec la validation de la méthode ANOVA, nous avons conclu qu'il existe une relation linéaire positive entre le temps de retard et la distance parcourue.
+
+* Les taux de retard et d'annulation de trains en 2018 ont été influencés par des facteurs sociaux, tels que les grèves, qui ont connu une forte augmentation à court terme.
 
